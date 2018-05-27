@@ -107,29 +107,31 @@ void st7586_write(const uint8_t category, const uint8_t data)
     nrf_delay_us(10);
 }
 
-void clear_noise(){
+
+void clear_gallag(){
 
 	st7586_write(ST_COMMAND,  0x2A); 	        //set column
 	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x-1); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x7f); 
+	st7586_write(ST_DATA, x+5); 
 
 	st7586_write(ST_COMMAND,  0x2B); 	        //set row
 	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y-1); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x9f);
+	st7586_write(ST_DATA, y+17);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
 
-	for(int i = 0; i<0x0000007f*3;i++){
-		for(int j = 0; j<0x0000009f ; j++){
+	for(int i = 0; i<=6;i++){
+		for(int j = 0; j<=18 ; j++){
 			st7586_write(ST_DATA,  0x00);
 		}
 	}
 }
+
 
 void plane(){	
 
@@ -687,14 +689,14 @@ void plane(){
 void led0_invert(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(0);
 	x++;
-	clear_noise();
+	clear_gallag();
 	plane();
 }
 
 void led1_invert(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(1);
 	y++;
-	clear_noise();
+	clear_gallag();
 	plane();
 }
 
@@ -861,6 +863,32 @@ void init(){
 
 	st7586_write(ST_COMMAND,  0x29);		    // disp on
 }
+
+
+void clear_noise(){
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x7f); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x9f);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<0x0000007f*3;i++){
+		for(int j = 0; j<0x0000009f ; j++){
+			st7586_write(ST_DATA,  0x00);
+		}
+	}
+}
+
 
 
 void led_invert(){
