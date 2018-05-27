@@ -77,8 +77,8 @@ static volatile bool st7586_spi_xfer_done = false;  						/**< Flag used to indi
 #define RATIO_SPI0_LCD_CS			31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
-int x = 0;
-int y = 0;
+int x = 17;
+int y = 120;
 static unsigned char rx_data;
 
 
@@ -107,6 +107,58 @@ void st7586_write(const uint8_t category, const uint8_t data)
     nrf_delay_us(10);
 }
 
+void bullet()
+{
+	int st = y-3;
+	while(st>0)
+	{
+		//bsp_board_led_invert(1);
+
+		st7586_write(ST_COMMAND,  0x2A); 	        //set column
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, x+2);
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, x+2);
+
+		st7586_write(ST_COMMAND,  0x2B); 	        //set row
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, st-10);
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, st);
+
+		st7586_write(ST_COMMAND, 0x2c);
+
+		for(int i = 0; i < 30; i++)
+		{
+			st7586_write(ST_DATA, 0xff);
+		}
+
+		nrf_delay_ms(4);
+
+		st7586_write(ST_COMMAND,  0x2A); 	        //set column
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, x+2);
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, x+2);
+
+		st7586_write(ST_COMMAND,  0x2B); 	        //set row
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, st-10);
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, st);
+
+		st7586_write(ST_COMMAND, 0x2c);
+
+		for(int i = 0; i < 30; i++)
+		{
+			st7586_write(ST_DATA, 0x00);
+		}
+
+		st -= 3;
+	}
+
+}
+
 
 void clear_gallag(){
 
@@ -114,19 +166,19 @@ void clear_gallag(){
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, x-1); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+5); 
+	st7586_write(ST_DATA, x+6); 
 
 	st7586_write(ST_COMMAND,  0x2B); 	        //set row
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y-1); 
+	st7586_write(ST_DATA, y-4); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	st7586_write(ST_DATA, y+21);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
 
-	for(int i = 0; i<=6;i++){
-		for(int j = 0; j<=18 ; j++){
+	for(int i = 0; i<=7;i++){
+		for(int j = 0; j<=25 ; j++){
 			st7586_write(ST_DATA,  0x00);
 		}
 	}
@@ -686,18 +738,36 @@ void plane(){
 		}
 	}
 }
-void led0_invert(void * p_event_data, uint16_t event_size){
+
+void left(void * p_event_data, uint16_t event_size){
+	bsp_board_led_invert(0);
+	x--;
+	clear_gallag();
+	plane();
+	bullet();
+}
+
+void right(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(0);
 	x++;
 	clear_gallag();
 	plane();
+	bullet();
 }
 
-void led1_invert(void * p_event_data, uint16_t event_size){
+void up(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(1);
-	y++;
+	y+=3;
 	clear_gallag();
 	plane();
+	bullet();
+}
+void down(void * p_event_data, uint16_t event_size){
+	bsp_board_led_invert(1);
+	y-=3;
+	clear_gallag();
+	plane();
+	bullet();
 }
 
 /**@brief Function for handling bsp events.
@@ -709,13 +779,23 @@ void bsp_evt_handler(bsp_event_t evt)
     {
         case BSP_EVENT_KEY_0:
 
-	     app_sched_event_put (&evt, sizeof(evt),led0_invert);
+	     app_sched_event_put (&evt, sizeof(evt),left);
 		
             break;
 
         case BSP_EVENT_KEY_1:
 
-	     app_sched_event_put (&evt, sizeof(evt),led1_invert);
+	     app_sched_event_put (&evt, sizeof(evt),right);
+            break;
+
+	  case BSP_EVENT_KEY_2:
+
+	     app_sched_event_put (&evt, sizeof(evt),up);
+            break;
+
+	  case BSP_EVENT_KEY_3:
+	
+	     app_sched_event_put (&evt, sizeof(evt),down);
             break;
 
         default:
@@ -782,7 +862,7 @@ static inline void st7586_pinout_setup()
 
 void init(){
 	
-    nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 0);
+    	nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 0);
 	LCD_INIT_DELAY(10);
 	nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 1);
 
@@ -899,14 +979,13 @@ void led_invert(){
 }
 
 int main(void)
-{
+{	
     	bsp_board_leds_init();
-
     	APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
     	NRF_LOG_DEFAULT_BACKENDS_INIT();
-    
     	st7586_pinout_setup();
 
+    	st7586_write(ST_COMMAND,  0x28);
     	NRF_LOG_INFO("SPI example.");
 
 	//Reset_ms(10); 
@@ -916,6 +995,7 @@ int main(void)
 	init();
 	clear_noise();
 	plane();
+	bullet();
 
 	st7586_write(ST_COMMAND,  0x29);		    //disp on
 
@@ -925,13 +1005,14 @@ int main(void)
     	APP_ERROR_CHECK(err_code);
     	APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
 
-	APP_SCHED_INIT(sizeof(bsp_event_t),10*sizeof(bsp_event_t));
+	APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
     	bsp_configuration();
 	
 
     while (1)
     {
 	app_sched_execute();
+	//bullet();
         NRF_LOG_FLUSH();
         __WFE();
 
