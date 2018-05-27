@@ -77,8 +77,8 @@ static volatile bool st7586_spi_xfer_done = false;  						/**< Flag used to indi
 #define RATIO_SPI0_LCD_CS			31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
-#define x 0
-#define y 0
+int x = 0;
+int y = 0;
 static unsigned char rx_data;
 
 
@@ -92,72 +92,6 @@ static const char * indications_list[] = BSP_INDICATIONS_LIST;
 
 //start button code
 
-void led0_invert(void * p_event_data, uint16_t event_size){
-	bsp_board_led_invert(0);
-}
-
-void led1_invert(void * p_event_data, uint16_t event_size){
-	bsp_board_led_invert(1);
-}
-
-/**@brief Function for handling bsp events.
- */
-void bsp_evt_handler(bsp_event_t evt)
-{
-    uint32_t err_code;
-    switch (evt)
-    {
-        case BSP_EVENT_KEY_0:
-
-	     app_sched_event_put (&evt, sizeof(evt),led0_invert);
-		
-            break;
-
-        case BSP_EVENT_KEY_1:
-
-	     app_sched_event_put (&evt, sizeof(evt),led1_invert);
-            break;
-
-        default:
-            return; // no implementation needed
-    }
-    err_code = bsp_indication_set(actual_state);
-    NRF_LOG_INFO("%s", (uint32_t)indications_list[actual_state]);
-    APP_ERROR_CHECK(err_code);
-}
-
-
-/**@brief Function for initializing low frequency clock.
- */
-void clock_initialization()
-{
-    NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
-    NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
-    NRF_CLOCK->TASKS_LFCLKSTART    = 1;
-
-    while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0)
-    {
-        // Do nothing.
-    }
-}
-
-
-/**@brief Function for initializing bsp module.
- */
-void bsp_configuration()
-{
-    uint32_t err_code;
-
-    err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, bsp_evt_handler);
-    APP_ERROR_CHECK(err_code);
-}
-
-//finish button code
-
-void spi_event_handler(nrf_drv_spi_evt_t const * p_event, void * p_context)
-{
-	st7586_spi_xfer_done = true;
-}
 
 void st7586_write(const uint8_t category, const uint8_t data)
 {
@@ -171,111 +105,6 @@ void st7586_write(const uint8_t category, const uint8_t data)
     	__WFE();
     }
     nrf_delay_us(10);
-}
-
-static inline void st7586_pinout_setup()
-{
-    // spi setup
-	int err_code;
-	nrf_drv_spi_config_t spi_config = NRF_DRV_SPI_DEFAULT_CONFIG;
-	spi_config.ss_pin   = RATIO_SPI0_LCD_CS;
-    	spi_config.miso_pin = NRF_DRV_SPI_PIN_NOT_USED;
-    	spi_config.mosi_pin = RATIO_SPI0_LCD_MOSI;
-    	spi_config.sck_pin  = RATIO_SPI0_LCD_SCK;
-    	spi_config.frequency = NRF_SPI_FREQ_1M;
-    	spi_config.mode = NRF_DRV_SPI_MODE_3;
-	err_code = nrf_drv_spi_init(&st7586_spi, &spi_config, spi_event_handler, NULL);
-	APP_ERROR_CHECK(err_code);
-
-    nrf_gpio_pin_set(RATIO_SPI0_LCD_A0);
-    nrf_gpio_cfg_output(RATIO_SPI0_LCD_A0);
-
-    nrf_gpio_pin_clear(RATIO_SPI0_LCD_BSTB);
-    nrf_gpio_cfg_output(RATIO_SPI0_LCD_BSTB);
-}
-
-void init(){
-	
-    nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 0);
-	LCD_INIT_DELAY(10);
-	nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 1);
-
-
-	LCD_INIT_DELAY(120);
-
-
-	st7586_write(ST_COMMAND,  0xD7); 
-	st7586_write(ST_DATA, 0x9F); 
-	st7586_write(ST_COMMAND,  0xE0); 
-	st7586_write(ST_DATA, 0x00); 
-	LCD_INIT_DELAY(10);
-	st7586_write(ST_COMMAND,  0xE3); 
-	LCD_INIT_DELAY(20);
-	st7586_write(ST_COMMAND,  0xE1); 
-	st7586_write(ST_COMMAND,  0x11); 
-	st7586_write(ST_COMMAND,  0x28); 
-	LCD_INIT_DELAY(50);
-	st7586_write(ST_COMMAND,  0xC0);
-	st7586_write(ST_DATA, 0x53);
-	st7586_write(ST_DATA, 0x01);
-	st7586_write(ST_COMMAND,  0xC3);
-	st7586_write(ST_DATA, 0x02);
-	st7586_write(ST_COMMAND,  0xC4);
-	st7586_write(ST_DATA, 0x06);	
-
-	st7586_write(ST_COMMAND,  0xD0); 
-	st7586_write(ST_DATA, 0x1D); 
-	st7586_write(ST_COMMAND,  0xB5); 
-	st7586_write(ST_DATA, 0x00); 
-
-	st7586_write(ST_COMMAND,  0x39); 
-	st7586_write(ST_COMMAND,  0x3A); 
-	st7586_write(ST_DATA, 0x02); 
-	st7586_write(ST_COMMAND,  0x36); 
-	st7586_write(ST_DATA, 0x00); 
-
-	st7586_write(ST_COMMAND,  0xB0); 
-	st7586_write(ST_DATA, 0x9F); 
-	st7586_write(ST_COMMAND,  0xB4); 
-	st7586_write(ST_DATA, 0xA0); 
-
-	st7586_write(ST_COMMAND,  0x30); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x77); 
-	st7586_write(ST_COMMAND,  0x20);
-	st7586_write(ST_COMMAND,  0x2A); 
-	
-
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x7F);
-	st7586_write(ST_COMMAND,  0x2B); 
-	
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x9F);
-
-	//Clear_DDRAM();
-
-
-	st7586_write(ST_COMMAND,  0x2A); 	
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x4F); 
-	st7586_write(ST_COMMAND,  0x2B); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x78);
-
-	//Disp_Image();
-
-	st7586_write(ST_COMMAND,  0x29);		    // disp on
 }
 
 void clear_noise(){
@@ -854,6 +683,183 @@ void plane(){
 			st7586_write(ST_DATA,  0xff);
 		}
 	}
+}
+void led0_invert(void * p_event_data, uint16_t event_size){
+	bsp_board_led_invert(0);
+	x++;
+	clear_noise();
+	plane();
+}
+
+void led1_invert(void * p_event_data, uint16_t event_size){
+	bsp_board_led_invert(1);
+	y++;
+	clear_noise();
+	plane();
+}
+
+/**@brief Function for handling bsp events.
+ */
+void bsp_evt_handler(bsp_event_t evt)
+{
+    uint32_t err_code;
+    switch (evt)
+    {
+        case BSP_EVENT_KEY_0:
+
+	     app_sched_event_put (&evt, sizeof(evt),led0_invert);
+		
+            break;
+
+        case BSP_EVENT_KEY_1:
+
+	     app_sched_event_put (&evt, sizeof(evt),led1_invert);
+            break;
+
+        default:
+            return; // no implementation needed
+    }
+    err_code = bsp_indication_set(actual_state);
+    NRF_LOG_INFO("%s", (uint32_t)indications_list[actual_state]);
+    APP_ERROR_CHECK(err_code);
+}
+
+
+/**@brief Function for initializing low frequency clock.
+ */
+void clock_initialization()
+{
+    NRF_CLOCK->LFCLKSRC            = (CLOCK_LFCLKSRC_SRC_Xtal << CLOCK_LFCLKSRC_SRC_Pos);
+    NRF_CLOCK->EVENTS_LFCLKSTARTED = 0;
+    NRF_CLOCK->TASKS_LFCLKSTART    = 1;
+
+    while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0)
+    {
+        // Do nothing.
+    }
+}
+
+
+/**@brief Function for initializing bsp module.
+ */
+void bsp_configuration()
+{
+    uint32_t err_code;
+
+    err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, bsp_evt_handler);
+    APP_ERROR_CHECK(err_code);
+}
+
+//finish button code
+
+void spi_event_handler(nrf_drv_spi_evt_t const * p_event, void * p_context)
+{
+	st7586_spi_xfer_done = true;
+}
+
+static inline void st7586_pinout_setup()
+{
+    // spi setup
+	int err_code;
+	nrf_drv_spi_config_t spi_config = NRF_DRV_SPI_DEFAULT_CONFIG;
+	spi_config.ss_pin   = RATIO_SPI0_LCD_CS;
+    	spi_config.miso_pin = NRF_DRV_SPI_PIN_NOT_USED;
+    	spi_config.mosi_pin = RATIO_SPI0_LCD_MOSI;
+    	spi_config.sck_pin  = RATIO_SPI0_LCD_SCK;
+    	spi_config.frequency = NRF_SPI_FREQ_1M;
+    	spi_config.mode = NRF_DRV_SPI_MODE_3;
+	err_code = nrf_drv_spi_init(&st7586_spi, &spi_config, spi_event_handler, NULL);
+	APP_ERROR_CHECK(err_code);
+
+    nrf_gpio_pin_set(RATIO_SPI0_LCD_A0);
+    nrf_gpio_cfg_output(RATIO_SPI0_LCD_A0);
+
+    nrf_gpio_pin_clear(RATIO_SPI0_LCD_BSTB);
+    nrf_gpio_cfg_output(RATIO_SPI0_LCD_BSTB);
+}
+
+void init(){
+	
+    nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 0);
+	LCD_INIT_DELAY(10);
+	nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 1);
+
+
+	LCD_INIT_DELAY(120);
+
+
+	st7586_write(ST_COMMAND,  0xD7); 
+	st7586_write(ST_DATA, 0x9F); 
+	st7586_write(ST_COMMAND,  0xE0); 
+	st7586_write(ST_DATA, 0x00); 
+	LCD_INIT_DELAY(10);
+	st7586_write(ST_COMMAND,  0xE3); 
+	LCD_INIT_DELAY(20);
+	st7586_write(ST_COMMAND,  0xE1); 
+	st7586_write(ST_COMMAND,  0x11); 
+	st7586_write(ST_COMMAND,  0x28); 
+	LCD_INIT_DELAY(50);
+	st7586_write(ST_COMMAND,  0xC0);
+	st7586_write(ST_DATA, 0x53);
+	st7586_write(ST_DATA, 0x01);
+	st7586_write(ST_COMMAND,  0xC3);
+	st7586_write(ST_DATA, 0x02);
+	st7586_write(ST_COMMAND,  0xC4);
+	st7586_write(ST_DATA, 0x06);	
+
+	st7586_write(ST_COMMAND,  0xD0); 
+	st7586_write(ST_DATA, 0x1D); 
+	st7586_write(ST_COMMAND,  0xB5); 
+	st7586_write(ST_DATA, 0x00); 
+
+	st7586_write(ST_COMMAND,  0x39); 
+	st7586_write(ST_COMMAND,  0x3A); 
+	st7586_write(ST_DATA, 0x02); 
+	st7586_write(ST_COMMAND,  0x36); 
+	st7586_write(ST_DATA, 0x00); 
+
+	st7586_write(ST_COMMAND,  0xB0); 
+	st7586_write(ST_DATA, 0x9F); 
+	st7586_write(ST_COMMAND,  0xB4); 
+	st7586_write(ST_DATA, 0xA0); 
+
+	st7586_write(ST_COMMAND,  0x30); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x77); 
+	st7586_write(ST_COMMAND,  0x20);
+	st7586_write(ST_COMMAND,  0x2A); 
+	
+
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x7F);
+	st7586_write(ST_COMMAND,  0x2B); 
+	
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x9F);
+
+	//Clear_DDRAM();
+
+
+	st7586_write(ST_COMMAND,  0x2A); 	
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x4F); 
+	st7586_write(ST_COMMAND,  0x2B); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, 0x78);
+
+	//Disp_Image();
+
+	st7586_write(ST_COMMAND,  0x29);		    // disp on
 }
 
 
