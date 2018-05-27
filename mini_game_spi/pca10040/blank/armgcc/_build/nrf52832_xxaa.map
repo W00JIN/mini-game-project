@@ -3396,7 +3396,7 @@ RAM              0x0000000020000000 0x0000000000010000 xrw
 Linker script and memory map
 
 
-.text           0x0000000000000000     0x58c4
+.text           0x0000000000000000     0x5c28
  *(.isr_vector)
  .isr_vector    0x0000000000000000      0x200 _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
                 0x0000000000000000                __isr_vector
@@ -3626,116 +3626,116 @@ Linker script and memory map
  .text.spi_event_handler
                 0x0000000000004014        0xc _build/nrf52832_xxaa/main.c.o
                 0x0000000000004014                spi_event_handler
- .text.bsp_evt_handler
-                0x0000000000004020       0x64 _build/nrf52832_xxaa/main.c.o
-                0x0000000000004020                bsp_evt_handler
- .text.led1_invert
-                0x0000000000004084       0x98 _build/nrf52832_xxaa/main.c.o
-                0x0000000000004084                led1_invert
  .text.led0_invert
-                0x000000000000411c       0x98 _build/nrf52832_xxaa/main.c.o
-                0x000000000000411c                led0_invert
+                0x0000000000004020        0x8 _build/nrf52832_xxaa/main.c.o
+                0x0000000000004020                led0_invert
+ .text.led1_invert
+                0x0000000000004028        0x8 _build/nrf52832_xxaa/main.c.o
+                0x0000000000004028                led1_invert
+ .text.bsp_evt_handler
+                0x0000000000004030       0x64 _build/nrf52832_xxaa/main.c.o
+                0x0000000000004030                bsp_evt_handler
  .text.st7586_write.constprop.3
-                0x00000000000041b4       0xd4 _build/nrf52832_xxaa/main.c.o
+                0x0000000000004094       0xd4 _build/nrf52832_xxaa/main.c.o
  .text.st7586_write.constprop.4
-                0x0000000000004288       0xd4 _build/nrf52832_xxaa/main.c.o
+                0x0000000000004168       0xd4 _build/nrf52832_xxaa/main.c.o
  .text.bsp_configuration
-                0x000000000000435c       0x1c _build/nrf52832_xxaa/main.c.o
-                0x000000000000435c                bsp_configuration
- .text.init     0x0000000000004378      0x3e4 _build/nrf52832_xxaa/main.c.o
-                0x0000000000004378                init
+                0x000000000000423c       0x1c _build/nrf52832_xxaa/main.c.o
+                0x000000000000423c                bsp_configuration
+ .text.init     0x0000000000004258      0x3e4 _build/nrf52832_xxaa/main.c.o
+                0x0000000000004258                init
  .text.clear_noise
-                0x000000000000475c      0x13c _build/nrf52832_xxaa/main.c.o
-                0x000000000000475c                clear_noise
- .text.plane    0x0000000000004898      0x480 _build/nrf52832_xxaa/main.c.o
-                0x0000000000004898                plane
+                0x000000000000463c      0x13c _build/nrf52832_xxaa/main.c.o
+                0x000000000000463c                clear_noise
+ .text.plane    0x0000000000004778      0x904 _build/nrf52832_xxaa/main.c.o
+                0x0000000000004778                plane
  .text.startup.main
-                0x0000000000004d18       0xf8 _build/nrf52832_xxaa/main.c.o
-                0x0000000000004d18                main
- .text          0x0000000000004e10       0x3c _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
-                0x0000000000004e10                Reset_Handler
-                0x0000000000004e38                NMI_Handler
-                0x0000000000004e3a                HardFault_Handler
-                0x0000000000004e3c                MemoryManagement_Handler
-                0x0000000000004e3e                BusFault_Handler
-                0x0000000000004e40                UsageFault_Handler
-                0x0000000000004e42                SVC_Handler
-                0x0000000000004e44                DebugMon_Handler
-                0x0000000000004e46                PendSV_Handler
-                0x0000000000004e48                SysTick_Handler
-                0x0000000000004e4a                FPU_IRQHandler
-                0x0000000000004e4a                TIMER4_IRQHandler
-                0x0000000000004e4a                I2S_IRQHandler
-                0x0000000000004e4a                SWI4_EGU4_IRQHandler
-                0x0000000000004e4a                TIMER0_IRQHandler
-                0x0000000000004e4a                TIMER1_IRQHandler
-                0x0000000000004e4a                PWM2_IRQHandler
-                0x0000000000004e4a                ECB_IRQHandler
-                0x0000000000004e4a                SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1_IRQHandler
-                0x0000000000004e4a                Default_Handler
-                0x0000000000004e4a                SAADC_IRQHandler
-                0x0000000000004e4a                CCM_AAR_IRQHandler
-                0x0000000000004e4a                WDT_IRQHandler
-                0x0000000000004e4a                SWI5_EGU5_IRQHandler
-                0x0000000000004e4a                RNG_IRQHandler
-                0x0000000000004e4a                RTC2_IRQHandler
-                0x0000000000004e4a                PWM0_IRQHandler
-                0x0000000000004e4a                SWI3_EGU3_IRQHandler
-                0x0000000000004e4a                SWI1_EGU1_IRQHandler
-                0x0000000000004e4a                SPIM2_SPIS2_SPI2_IRQHandler
-                0x0000000000004e4a                NFCT_IRQHandler
-                0x0000000000004e4a                MWU_IRQHandler
-                0x0000000000004e4a                TIMER2_IRQHandler
-                0x0000000000004e4a                COMP_LPCOMP_IRQHandler
-                0x0000000000004e4a                RTC0_IRQHandler
-                0x0000000000004e4a                SWI2_EGU2_IRQHandler
-                0x0000000000004e4a                PWM1_IRQHandler
-                0x0000000000004e4a                POWER_CLOCK_IRQHandler
-                0x0000000000004e4a                RADIO_IRQHandler
-                0x0000000000004e4a                PDM_IRQHandler
-                0x0000000000004e4a                TEMP_IRQHandler
-                0x0000000000004e4a                QDEC_IRQHandler
-                0x0000000000004e4a                TIMER3_IRQHandler
+                0x000000000000507c       0xf8 _build/nrf52832_xxaa/main.c.o
+                0x000000000000507c                main
+ .text          0x0000000000005174       0x3c _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
+                0x0000000000005174                Reset_Handler
+                0x000000000000519c                NMI_Handler
+                0x000000000000519e                HardFault_Handler
+                0x00000000000051a0                MemoryManagement_Handler
+                0x00000000000051a2                BusFault_Handler
+                0x00000000000051a4                UsageFault_Handler
+                0x00000000000051a6                SVC_Handler
+                0x00000000000051a8                DebugMon_Handler
+                0x00000000000051aa                PendSV_Handler
+                0x00000000000051ac                SysTick_Handler
+                0x00000000000051ae                FPU_IRQHandler
+                0x00000000000051ae                TIMER4_IRQHandler
+                0x00000000000051ae                I2S_IRQHandler
+                0x00000000000051ae                SWI4_EGU4_IRQHandler
+                0x00000000000051ae                TIMER0_IRQHandler
+                0x00000000000051ae                TIMER1_IRQHandler
+                0x00000000000051ae                PWM2_IRQHandler
+                0x00000000000051ae                ECB_IRQHandler
+                0x00000000000051ae                SPIM1_SPIS1_TWIM1_TWIS1_SPI1_TWI1_IRQHandler
+                0x00000000000051ae                Default_Handler
+                0x00000000000051ae                SAADC_IRQHandler
+                0x00000000000051ae                CCM_AAR_IRQHandler
+                0x00000000000051ae                WDT_IRQHandler
+                0x00000000000051ae                SWI5_EGU5_IRQHandler
+                0x00000000000051ae                RNG_IRQHandler
+                0x00000000000051ae                RTC2_IRQHandler
+                0x00000000000051ae                PWM0_IRQHandler
+                0x00000000000051ae                SWI3_EGU3_IRQHandler
+                0x00000000000051ae                SWI1_EGU1_IRQHandler
+                0x00000000000051ae                SPIM2_SPIS2_SPI2_IRQHandler
+                0x00000000000051ae                NFCT_IRQHandler
+                0x00000000000051ae                MWU_IRQHandler
+                0x00000000000051ae                TIMER2_IRQHandler
+                0x00000000000051ae                COMP_LPCOMP_IRQHandler
+                0x00000000000051ae                RTC0_IRQHandler
+                0x00000000000051ae                SWI2_EGU2_IRQHandler
+                0x00000000000051ae                PWM1_IRQHandler
+                0x00000000000051ae                POWER_CLOCK_IRQHandler
+                0x00000000000051ae                RADIO_IRQHandler
+                0x00000000000051ae                PDM_IRQHandler
+                0x00000000000051ae                TEMP_IRQHandler
+                0x00000000000051ae                QDEC_IRQHandler
+                0x00000000000051ae                TIMER3_IRQHandler
  .text.SystemInit
-                0x0000000000004e4c      0x384 _build/nrf52832_xxaa/system_nrf52.c.o
-                0x0000000000004e4c                SystemInit
- .text.exit     0x00000000000051d0       0x28 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-exit.o)
-                0x00000000000051d0                exit
+                0x00000000000051b0      0x384 _build/nrf52832_xxaa/system_nrf52.c.o
+                0x00000000000051b0                SystemInit
+ .text.exit     0x0000000000005534       0x28 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-exit.o)
+                0x0000000000005534                exit
  .text.__libc_init_array
-                0x00000000000051f8       0x48 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-init.o)
-                0x00000000000051f8                __libc_init_array
+                0x000000000000555c       0x48 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-init.o)
+                0x000000000000555c                __libc_init_array
  .text.__locale_ctype_ptr
-                0x0000000000005240       0x1c /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-locale.o)
-                0x0000000000005240                __locale_ctype_ptr
+                0x00000000000055a4       0x1c /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-locale.o)
+                0x00000000000055a4                __locale_ctype_ptr
  .text.__ascii_mbtowc
-                0x000000000000525c       0x24 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-mbtowc_r.o)
-                0x000000000000525c                __ascii_mbtowc
- .text.memcpy   0x0000000000005280       0x16 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-memcpy-stub.o)
-                0x0000000000005280                memcpy
- .text.memset   0x0000000000005296       0x10 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-memset.o)
-                0x0000000000005296                memset
- .text          0x00000000000052a6       0x10 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-strlen.o)
-                0x00000000000052a6                strlen
+                0x00000000000055c0       0x24 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-mbtowc_r.o)
+                0x00000000000055c0                __ascii_mbtowc
+ .text.memcpy   0x00000000000055e4       0x16 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-memcpy-stub.o)
+                0x00000000000055e4                memcpy
+ .text.memset   0x00000000000055fa       0x10 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-memset.o)
+                0x00000000000055fa                memset
+ .text          0x000000000000560a       0x10 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-strlen.o)
+                0x000000000000560a                strlen
  .text.__ascii_wctomb
-                0x00000000000052b6       0x1a /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-wctomb_r.o)
-                0x00000000000052b6                __ascii_wctomb
- .text._exit    0x00000000000052d0        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libnosys.a(_exit.o)
-                0x00000000000052d0                _exit
- .text          0x00000000000052d4       0x30 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_aeabi_uldivmod.o)
-                0x00000000000052d4                __aeabi_uldivmod
- .text          0x0000000000005304      0x2cc /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_udivmoddi4.o)
-                0x0000000000005304                __udivmoddi4
- .text          0x00000000000055d0        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_dvmd_tls.o)
-                0x00000000000055d0                __aeabi_ldiv0
-                0x00000000000055d0                __aeabi_idiv0
+                0x000000000000561a       0x1a /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-wctomb_r.o)
+                0x000000000000561a                __ascii_wctomb
+ .text._exit    0x0000000000005634        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libnosys.a(_exit.o)
+                0x0000000000005634                _exit
+ .text          0x0000000000005638       0x30 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_aeabi_uldivmod.o)
+                0x0000000000005638                __aeabi_uldivmod
+ .text          0x0000000000005668      0x2cc /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_udivmoddi4.o)
+                0x0000000000005668                __udivmoddi4
+ .text          0x0000000000005934        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_dvmd_tls.o)
+                0x0000000000005934                __aeabi_ldiv0
+                0x0000000000005934                __aeabi_idiv0
  *(.init)
- .init          0x00000000000055d4        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crti.o
-                0x00000000000055d4                _init
- .init          0x00000000000055d8        0x8 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
+ .init          0x0000000000005938        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crti.o
+                0x0000000000005938                _init
+ .init          0x000000000000593c        0x8 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
  *(.fini)
- .fini          0x00000000000055e0        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crti.o
-                0x00000000000055e0                _fini
- .fini          0x00000000000055e4        0x8 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
+ .fini          0x0000000000005944        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crti.o
+                0x0000000000005944                _fini
+ .fini          0x0000000000005948        0x8 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtn.o
  *crtbegin.o(.ctors)
  *crtbegin?.o(.ctors)
  *(EXCLUDE_FILE(*crtend.o *crtend?.o) .ctors)
@@ -3747,136 +3747,136 @@ Linker script and memory map
  *(SORT_BY_NAME(.dtors.*))
  *(.dtors)
  *(.rodata*)
- .rodata        0x00000000000055ec       0x20 _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
+ .rodata        0x0000000000005950       0x20 _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
  .rodata.nrf_log_backend_uart_api
-                0x000000000000560c        0xc _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
-                0x000000000000560c                nrf_log_backend_uart_api
+                0x0000000000005970        0xc _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
+                0x0000000000005970                nrf_log_backend_uart_api
  .rodata.mempool
-                0x0000000000005618       0x14 _build/nrf52832_xxaa/nrf_log_frontend.c.o
+                0x000000000000597c       0x14 _build/nrf52832_xxaa/nrf_log_frontend.c.o
  .rodata.str1.4
-                0x000000000000562c        0x4 _build/nrf52832_xxaa/nrf_log_frontend.c.o
+                0x0000000000005990        0x4 _build/nrf52832_xxaa/nrf_log_frontend.c.o
  .rodata.m_colors
-                0x0000000000005630       0x24 _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
+                0x0000000000005994       0x24 _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
  .rodata.nrf_log_hexdump_entry_process.str1.4
-                0x0000000000005654       0x13 _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
+                0x00000000000059b8       0x13 _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
                                          0x16 (size before relaxing)
- *fill*         0x0000000000005667        0x1 
+ *fill*         0x00000000000059cb        0x1 
  .rodata.nrf_log_std_entry_process.str1.4
-                0x0000000000005668       0x1b _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
- *fill*         0x0000000000005683        0x1 
+                0x00000000000059cc       0x1b _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
+ *fill*         0x00000000000059e7        0x1 
  .rodata.severity_names
-                0x0000000000005684       0x14 _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
+                0x00000000000059e8       0x14 _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
  .rodata.str1.4
-                0x0000000000005698       0x5e _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
- *fill*         0x00000000000056f6        0x2 
+                0x00000000000059fc       0x5e _build/nrf52832_xxaa/nrf_log_str_formatter.c.o
+ *fill*         0x0000000000005a5a        0x2 
  .rodata.m_board_led_list
-                0x00000000000056f8        0x4 _build/nrf52832_xxaa/boards.c.o
+                0x0000000000005a5c        0x4 _build/nrf52832_xxaa/boards.c.o
  .rodata.m_detection_delay_timer_id
-                0x00000000000056fc        0x4 _build/nrf52832_xxaa/app_button.c.o
+                0x0000000000005a60        0x4 _build/nrf52832_xxaa/app_button.c.o
  .rodata.app_error_fault_handler.str1.4
-                0x0000000000005700       0x19 _build/nrf52832_xxaa/app_error_weak.c.o
- *fill*         0x0000000000005719        0x3 
+                0x0000000000005a64       0x19 _build/nrf52832_xxaa/app_error_weak.c.o
+ *fill*         0x0000000000005a7d        0x3 
  .rodata.str1.4
-                0x000000000000571c        0x7 _build/nrf52832_xxaa/nrf_balloc.c.o
- *fill*         0x0000000000005723        0x1 
+                0x0000000000005a80        0x7 _build/nrf52832_xxaa/nrf_balloc.c.o
+ *fill*         0x0000000000005a87        0x1 
  .rodata._aV2C.7959
-                0x0000000000005724       0x10 _build/nrf52832_xxaa/nrf_fprintf_format.c.o
+                0x0000000000005a88       0x10 _build/nrf52832_xxaa/nrf_fprintf_format.c.o
  .rodata.str1.4
-                0x0000000000005734        0x7 _build/nrf52832_xxaa/nrf_drv_gpiote.c.o
- *fill*         0x000000000000573b        0x1 
+                0x0000000000005a98        0x7 _build/nrf52832_xxaa/nrf_drv_gpiote.c.o
+ *fill*         0x0000000000005a9f        0x1 
  .rodata.str1.4
-                0x000000000000573c        0x4 _build/nrf52832_xxaa/nrf_drv_spi.c.o
+                0x0000000000005aa0        0x4 _build/nrf52832_xxaa/nrf_drv_spi.c.o
  .rodata.str1.4
-                0x0000000000005740        0x5 _build/nrf52832_xxaa/nrf_drv_uart.c.o
- *fill*         0x0000000000005745        0x3 
+                0x0000000000005aa4        0x5 _build/nrf52832_xxaa/nrf_drv_uart.c.o
+ *fill*         0x0000000000005aa9        0x3 
  .rodata.app_buttons
-                0x0000000000005748       0x20 _build/nrf52832_xxaa/bsp.c.o
+                0x0000000000005aac       0x20 _build/nrf52832_xxaa/bsp.c.o
  .rodata.m_alert_timer_id
-                0x0000000000005768        0x4 _build/nrf52832_xxaa/bsp.c.o
+                0x0000000000005acc        0x4 _build/nrf52832_xxaa/bsp.c.o
  .rodata.m_button_timer_id
-                0x000000000000576c        0x4 _build/nrf52832_xxaa/bsp.c.o
+                0x0000000000005ad0        0x4 _build/nrf52832_xxaa/bsp.c.o
  .rodata.m_leds_timer_id
-                0x0000000000005770        0x4 _build/nrf52832_xxaa/bsp.c.o
- .rodata        0x0000000000005774       0x10 _build/nrf52832_xxaa/main.c.o
+                0x0000000000005ad4        0x4 _build/nrf52832_xxaa/bsp.c.o
+ .rodata        0x0000000000005ad8       0x10 _build/nrf52832_xxaa/main.c.o
  .rodata.bsp_evt_handler.str1.4
-                0x0000000000005784       0x12 _build/nrf52832_xxaa/main.c.o
+                0x0000000000005ae8       0x12 _build/nrf52832_xxaa/main.c.o
                                          0x17 (size before relaxing)
- *fill*         0x0000000000005796        0x2 
+ *fill*         0x0000000000005afa        0x2 
  .rodata.main.str1.4
-                0x0000000000005798       0x10 _build/nrf52832_xxaa/main.c.o
+                0x0000000000005afc       0x10 _build/nrf52832_xxaa/main.c.o
                                           0xd (size before relaxing)
  .rodata.st7586_spi
-                0x00000000000057a8        0x8 _build/nrf52832_xxaa/main.c.o
+                0x0000000000005b0c        0x8 _build/nrf52832_xxaa/main.c.o
  .rodata._global_impure_ptr
-                0x00000000000057b0        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-impure.o)
-                0x00000000000057b0                _global_impure_ptr
+                0x0000000000005b14        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-impure.o)
+                0x0000000000005b14                _global_impure_ptr
  .rodata._setlocale_r.str1.1
-                0x00000000000057b4        0x8 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-locale.o)
+                0x0000000000005b18        0x8 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-locale.o)
                                           0x9 (size before relaxing)
  .rodata.str1.1
-                0x00000000000057bc        0x2 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-locale.o)
+                0x0000000000005b20        0x2 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-locale.o)
  .rodata._ctype_
-                0x00000000000057be      0x101 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-ctype_.o)
-                0x00000000000057be                _ctype_
+                0x0000000000005b22      0x101 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-ctype_.o)
+                0x0000000000005b22                _ctype_
  *(.eh_frame*)
- *fill*         0x00000000000058bf        0x1 
- .eh_frame      0x00000000000058c0        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
- .eh_frame      0x00000000000058c0        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtend.o
+ *fill*         0x0000000000005c23        0x1 
+ .eh_frame      0x0000000000005c24        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
+ .eh_frame      0x0000000000005c24        0x4 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtend.o
 
-.glue_7         0x00000000000058c4        0x0
- .glue_7        0x00000000000058c4        0x0 linker stubs
+.glue_7         0x0000000000005c28        0x0
+ .glue_7        0x0000000000005c28        0x0 linker stubs
 
-.glue_7t        0x00000000000058c4        0x0
- .glue_7t       0x00000000000058c4        0x0 linker stubs
+.glue_7t        0x0000000000005c28        0x0
+ .glue_7t       0x0000000000005c28        0x0 linker stubs
 
-.vfp11_veneer   0x00000000000058c4        0x0
- .vfp11_veneer  0x00000000000058c4        0x0 linker stubs
+.vfp11_veneer   0x0000000000005c28        0x0
+ .vfp11_veneer  0x0000000000005c28        0x0 linker stubs
 
-.v4_bx          0x00000000000058c4        0x0
- .v4_bx         0x00000000000058c4        0x0 linker stubs
+.v4_bx          0x0000000000005c28        0x0
+ .v4_bx         0x0000000000005c28        0x0 linker stubs
 
-.iplt           0x00000000000058c4        0x0
- .iplt          0x00000000000058c4        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
+.iplt           0x0000000000005c28        0x0
+ .iplt          0x0000000000005c28        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
 
 .mem_section_dummy_rom
 
 .log_const_data
-                0x00000000000058c4       0x28
-                0x00000000000058c4                PROVIDE (__start_log_const_data, .)
+                0x0000000000005c28       0x28
+                0x0000000000005c28                PROVIDE (__start_log_const_data, .)
  *(SORT_BY_NAME(.log_const_data*))
  .log_const_data_app
-                0x00000000000058c4        0x8 _build/nrf52832_xxaa/nrf_log_frontend.c.o
-                0x00000000000058c4                m_nrf_log_app_logs_data_const
+                0x0000000000005c28        0x8 _build/nrf52832_xxaa/nrf_log_frontend.c.o
+                0x0000000000005c28                m_nrf_log_app_logs_data_const
  .log_const_data_balloc
-                0x00000000000058cc        0x8 _build/nrf52832_xxaa/nrf_balloc.c.o
-                0x00000000000058cc                m_nrf_log_balloc_logs_data_const
+                0x0000000000005c30        0x8 _build/nrf52832_xxaa/nrf_balloc.c.o
+                0x0000000000005c30                m_nrf_log_balloc_logs_data_const
  .log_const_data_gpiote
-                0x00000000000058d4        0x8 _build/nrf52832_xxaa/nrf_drv_gpiote.c.o
-                0x00000000000058d4                m_nrf_log_gpiote_logs_data_const
+                0x0000000000005c38        0x8 _build/nrf52832_xxaa/nrf_drv_gpiote.c.o
+                0x0000000000005c38                m_nrf_log_gpiote_logs_data_const
  .log_const_data_spi
-                0x00000000000058dc        0x8 _build/nrf52832_xxaa/nrf_drv_spi.c.o
-                0x00000000000058dc                m_nrf_log_spi_logs_data_const
+                0x0000000000005c40        0x8 _build/nrf52832_xxaa/nrf_drv_spi.c.o
+                0x0000000000005c40                m_nrf_log_spi_logs_data_const
  .log_const_data_uart
-                0x00000000000058e4        0x8 _build/nrf52832_xxaa/nrf_drv_uart.c.o
-                0x00000000000058e4                m_nrf_log_uart_logs_data_const
-                0x00000000000058ec                PROVIDE (__stop_log_const_data, .)
+                0x0000000000005c48        0x8 _build/nrf52832_xxaa/nrf_drv_uart.c.o
+                0x0000000000005c48                m_nrf_log_uart_logs_data_const
+                0x0000000000005c50                PROVIDE (__stop_log_const_data, .)
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x00000000000058ec                __exidx_start = .
+                0x0000000000005c50                __exidx_start = .
 
-.ARM.exidx      0x00000000000058ec        0x8
+.ARM.exidx      0x0000000000005c50        0x8
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
- .ARM.exidx     0x00000000000058ec        0x8 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/crt0.o
- .ARM.exidx     0x00000000000058f4        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_udivmoddi4.o)
+ .ARM.exidx     0x0000000000005c50        0x8 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/crt0.o
+ .ARM.exidx     0x0000000000005c58        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_udivmoddi4.o)
                                           0x8 (size before relaxing)
-                0x00000000000058f4                __exidx_end = .
-                0x00000000000058f4                __etext = .
+                0x0000000000005c58                __exidx_end = .
+                0x0000000000005c58                __etext = .
 
-.rel.dyn        0x00000000000058f4        0x0
- .rel.iplt      0x00000000000058f4        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
+.rel.dyn        0x0000000000005c58        0x0
+ .rel.iplt      0x0000000000005c58        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
 
-.data           0x0000000020000000      0x1f0 load address 0x00000000000058f4
+.data           0x0000000020000000      0x1f0 load address 0x0000000000005c58
                 0x0000000020000000                __data_start__ = .
  *(vtable)
  *(.data*)
@@ -3968,14 +3968,14 @@ LOAD /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-20
 LOAD /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libnosys.a
 END GROUP
 
-.igot.plt       0x00000000200001f0        0x0 load address 0x0000000000005ae4
+.igot.plt       0x00000000200001f0        0x0 load address 0x0000000000005e48
  .igot.plt      0x00000000200001f0        0x0 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/crtbegin.o
                 0x00000000200001f0                . = ALIGN (0x4)
 
 .mem_section_dummy_ram
 
 .log_dynamic_data
-                0x00000000200001f0       0x3c load address 0x0000000000005ae4
+                0x00000000200001f0       0x3c load address 0x0000000000005e48
                 0x00000000200001f0                PROVIDE (__start_log_dynamic_data, .)
  *(SORT_BY_NAME(.log_dynamic_data*))
  .log_dynamic_data_app
@@ -3995,7 +3995,7 @@ END GROUP
                 0x0000000020000220                m_nrf_log_uart_logs_data_dynamic
                 [!provide]                        PROVIDE (__stop_log_dynamic_data, .)
 
-.bss            0x000000002000022c      0xdec load address 0x0000000000005b20
+.bss            0x000000002000022c      0x84c load address 0x0000000000005e84
                 0x000000002000022c                . = ALIGN (0x4)
                 0x000000002000022c                __bss_start__ = .
  *(.bss*)
@@ -4091,34 +4091,34 @@ END GROUP
  *fill*         0x0000000020000a09        0x3 
  .bss.release_event_at_push.8553
                 0x0000000020000a0c        0x4 _build/nrf52832_xxaa/bsp.c.o
- .bss.APP_SCHED_BUF.9435
-                0x0000000020000a10      0x604 _build/nrf52832_xxaa/main.c.o
- .bss.rx_data   0x0000000020001014        0x1 _build/nrf52832_xxaa/main.c.o
+ .bss.APP_SCHED_BUF.9611
+                0x0000000020000a10       0x64 _build/nrf52832_xxaa/main.c.o
+ .bss.rx_data   0x0000000020000a74        0x1 _build/nrf52832_xxaa/main.c.o
  .bss.st7586_spi_xfer_done
-                0x0000000020001015        0x1 _build/nrf52832_xxaa/main.c.o
+                0x0000000020000a75        0x1 _build/nrf52832_xxaa/main.c.o
  *(COMMON)
-                0x0000000020001018                . = ALIGN (0x4)
- *fill*         0x0000000020001016        0x2 
-                0x0000000020001018                __bss_end__ = .
+                0x0000000020000a78                . = ALIGN (0x4)
+ *fill*         0x0000000020000a76        0x2 
+                0x0000000020000a78                __bss_end__ = .
 
-.heap           0x0000000020001018     0x2000
-                0x0000000020001018                __HeapBase = .
-                0x0000000020001018                __end__ = .
+.heap           0x0000000020000a78     0x2000
+                0x0000000020000a78                __HeapBase = .
+                0x0000000020000a78                __end__ = .
                 [!provide]                        PROVIDE (end, .)
  *(.heap*)
- .heap          0x0000000020001018     0x2000 _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
-                0x0000000020003018                __HeapLimit = .
+ .heap          0x0000000020000a78     0x2000 _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
+                0x0000000020002a78                __HeapLimit = .
 
-.stack_dummy    0x0000000020001018     0x2000
+.stack_dummy    0x0000000020000a78     0x2000
  *(.stack*)
- .stack         0x0000000020001018     0x2000 _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
+ .stack         0x0000000020000a78     0x2000 _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
                 0x0000000020010000                __StackTop = (ORIGIN (RAM) + LENGTH (RAM))
                 0x000000002000e000                __StackLimit = (__StackTop - SIZEOF (.stack_dummy))
                 0x0000000020010000                PROVIDE (__stack, __StackTop)
                 0x0000000000000001                ASSERT ((__StackLimit >= __HeapLimit), region RAM overflowed with stack)
                 0x000000000000022c                DataInitFlashUsed = (__bss_start__ - __data_start__)
-                0x00000000000058f4                CodeFlashUsed = (__etext - ORIGIN (FLASH))
-                0x0000000000005b20                TotalFlashUsed = (CodeFlashUsed + DataInitFlashUsed)
+                0x0000000000005c58                CodeFlashUsed = (__etext - ORIGIN (FLASH))
+                0x0000000000005e84                TotalFlashUsed = (CodeFlashUsed + DataInitFlashUsed)
                 0x0000000000000001                ASSERT ((TotalFlashUsed <= LENGTH (FLASH)), region FLASH overflowed with .data and user data)
 OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
 
@@ -4237,7 +4237,7 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .comment       0x000000000000007e       0x7f _build/nrf52832_xxaa/main.c.o
  .comment       0x000000000000007e       0x7f _build/nrf52832_xxaa/system_nrf52.c.o
 
-.debug_info     0x0000000000000000    0x25415
+.debug_info     0x0000000000000000    0x26a47
  .debug_info    0x0000000000000000     0x1006 _build/nrf52832_xxaa/nrf_log_backend_serial.c.o
  .debug_info    0x0000000000001006     0x1761 _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
  .debug_info    0x0000000000002767      0xb50 _build/nrf52832_xxaa/nrf_log_default_backends.c.o
@@ -4259,9 +4259,9 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_info    0x0000000000017162     0x2bea _build/nrf52832_xxaa/nrf_drv_spi.c.o
  .debug_info    0x0000000000019d4c     0x4c1a _build/nrf52832_xxaa/nrf_drv_uart.c.o
  .debug_info    0x000000000001e966     0x1fdf _build/nrf52832_xxaa/bsp.c.o
- .debug_info    0x0000000000020945     0x39ac _build/nrf52832_xxaa/main.c.o
- .debug_info    0x00000000000242f1       0x26 _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
- .debug_info    0x0000000000024317     0x10fe _build/nrf52832_xxaa/system_nrf52.c.o
+ .debug_info    0x0000000000020945     0x4fde _build/nrf52832_xxaa/main.c.o
+ .debug_info    0x0000000000025923       0x26 _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
+ .debug_info    0x0000000000025949     0x10fe _build/nrf52832_xxaa/system_nrf52.c.o
 
 .debug_abbrev   0x0000000000000000     0x4e5e
  .debug_abbrev  0x0000000000000000      0x27f _build/nrf52832_xxaa/nrf_log_backend_serial.c.o
@@ -4289,7 +4289,7 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_abbrev  0x0000000000004c68       0x14 _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
  .debug_abbrev  0x0000000000004c7c      0x1e2 _build/nrf52832_xxaa/system_nrf52.c.o
 
-.debug_loc      0x0000000000000000     0xea67
+.debug_loc      0x0000000000000000     0xed9c
  .debug_loc     0x0000000000000000      0x160 _build/nrf52832_xxaa/nrf_log_backend_serial.c.o
  .debug_loc     0x0000000000000160      0x153 _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
  .debug_loc     0x00000000000002b3       0x15 _build/nrf52832_xxaa/nrf_log_default_backends.c.o
@@ -4311,7 +4311,7 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_loc     0x0000000000009a00     0x10cd _build/nrf52832_xxaa/nrf_drv_spi.c.o
  .debug_loc     0x000000000000aacd     0x2889 _build/nrf52832_xxaa/nrf_drv_uart.c.o
  .debug_loc     0x000000000000d356      0xb5e _build/nrf52832_xxaa/bsp.c.o
- .debug_loc     0x000000000000deb4      0xbb3 _build/nrf52832_xxaa/main.c.o
+ .debug_loc     0x000000000000deb4      0xee8 _build/nrf52832_xxaa/main.c.o
 
 .debug_aranges  0x0000000000000000      0x758
  .debug_aranges
@@ -4363,7 +4363,7 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_aranges
                 0x0000000000000730       0x28 _build/nrf52832_xxaa/system_nrf52.c.o
 
-.debug_ranges   0x0000000000000000     0x3578
+.debug_ranges   0x0000000000000000     0x3328
  .debug_ranges  0x0000000000000000       0x28 _build/nrf52832_xxaa/nrf_log_backend_serial.c.o
  .debug_ranges  0x0000000000000028       0x80 _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
  .debug_ranges  0x00000000000000a8       0x10 _build/nrf52832_xxaa/nrf_log_default_backends.c.o
@@ -4385,8 +4385,8 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_ranges  0x0000000000001fa0      0x378 _build/nrf52832_xxaa/nrf_drv_spi.c.o
  .debug_ranges  0x0000000000002318      0x800 _build/nrf52832_xxaa/nrf_drv_uart.c.o
  .debug_ranges  0x0000000000002b18      0x378 _build/nrf52832_xxaa/bsp.c.o
- .debug_ranges  0x0000000000002e90      0x598 _build/nrf52832_xxaa/main.c.o
- .debug_ranges  0x0000000000003428      0x150 _build/nrf52832_xxaa/system_nrf52.c.o
+ .debug_ranges  0x0000000000002e90      0x348 _build/nrf52832_xxaa/main.c.o
+ .debug_ranges  0x00000000000031d8      0x150 _build/nrf52832_xxaa/system_nrf52.c.o
 
 .debug_macro    0x0000000000000000     0x6064
  .debug_macro   0x0000000000000000      0x332 _build/nrf52832_xxaa/nrf_log_backend_serial.c.o
@@ -4477,7 +4477,7 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_macro   0x0000000000005f41       0x2e _build/nrf52832_xxaa/main.c.o
  .debug_macro   0x0000000000005f6f       0xf5 _build/nrf52832_xxaa/system_nrf52.c.o
 
-.debug_line     0x0000000000000000     0xdce9
+.debug_line     0x0000000000000000     0xdcbd
  .debug_line    0x0000000000000000      0x82d _build/nrf52832_xxaa/nrf_log_backend_serial.c.o
  .debug_line    0x000000000000082d      0x8db _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
  .debug_line    0x0000000000001108      0x7a7 _build/nrf52832_xxaa/nrf_log_default_backends.c.o
@@ -4499,9 +4499,9 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_line    0x0000000000009e52      0xc51 _build/nrf52832_xxaa/nrf_drv_spi.c.o
  .debug_line    0x000000000000aaa3     0x1272 _build/nrf52832_xxaa/nrf_drv_uart.c.o
  .debug_line    0x000000000000bd15      0xa92 _build/nrf52832_xxaa/bsp.c.o
- .debug_line    0x000000000000c7a7      0xf9c _build/nrf52832_xxaa/main.c.o
- .debug_line    0x000000000000d743       0x8e _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
- .debug_line    0x000000000000d7d1      0x518 _build/nrf52832_xxaa/system_nrf52.c.o
+ .debug_line    0x000000000000c7a7      0xf70 _build/nrf52832_xxaa/main.c.o
+ .debug_line    0x000000000000d717       0x8e _build/nrf52832_xxaa/gcc_startup_nrf52.S.o
+ .debug_line    0x000000000000d7a5      0x518 _build/nrf52832_xxaa/system_nrf52.c.o
 
 .debug_str      0x0000000000000000    0x73b65
  .debug_str     0x0000000000000000    0x683ed _build/nrf52832_xxaa/nrf_log_backend_serial.c.o
@@ -4553,7 +4553,7 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_str     0x0000000000073837      0x32e _build/nrf52832_xxaa/system_nrf52.c.o
                                       0x5c38f (size before relaxing)
 
-.debug_frame    0x0000000000000000     0x1748
+.debug_frame    0x0000000000000000     0x1738
  .debug_frame   0x0000000000000000       0x40 _build/nrf52832_xxaa/nrf_log_backend_serial.c.o
  .debug_frame   0x0000000000000040       0xac _build/nrf52832_xxaa/nrf_log_backend_uart.c.o
  .debug_frame   0x00000000000000ec       0x28 _build/nrf52832_xxaa/nrf_log_default_backends.c.o
@@ -4575,15 +4575,15 @@ OUTPUT(_build/nrf52832_xxaa.out elf32-littlearm)
  .debug_frame   0x0000000000000e78      0x118 _build/nrf52832_xxaa/nrf_drv_spi.c.o
  .debug_frame   0x0000000000000f90      0x1d0 _build/nrf52832_xxaa/nrf_drv_uart.c.o
  .debug_frame   0x0000000000001160      0x1d8 _build/nrf52832_xxaa/bsp.c.o
- .debug_frame   0x0000000000001338      0x1c8 _build/nrf52832_xxaa/main.c.o
- .debug_frame   0x0000000000001500       0x40 _build/nrf52832_xxaa/system_nrf52.c.o
- .debug_frame   0x0000000000001540       0x28 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-exit.o)
- .debug_frame   0x0000000000001568       0x2c /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-init.o)
- .debug_frame   0x0000000000001594       0x68 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-locale.o)
- .debug_frame   0x00000000000015fc       0x48 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-mbtowc_r.o)
- .debug_frame   0x0000000000001644       0x28 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-memcpy-stub.o)
- .debug_frame   0x000000000000166c       0x20 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-memset.o)
- .debug_frame   0x000000000000168c       0x3c /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-wctomb_r.o)
- .debug_frame   0x00000000000016c8       0x20 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libnosys.a(_exit.o)
- .debug_frame   0x00000000000016e8       0x2c /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_aeabi_uldivmod.o)
- .debug_frame   0x0000000000001714       0x34 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_udivmoddi4.o)
+ .debug_frame   0x0000000000001338      0x1b8 _build/nrf52832_xxaa/main.c.o
+ .debug_frame   0x00000000000014f0       0x40 _build/nrf52832_xxaa/system_nrf52.c.o
+ .debug_frame   0x0000000000001530       0x28 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-exit.o)
+ .debug_frame   0x0000000000001558       0x2c /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-init.o)
+ .debug_frame   0x0000000000001584       0x68 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-locale.o)
+ .debug_frame   0x00000000000015ec       0x48 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-mbtowc_r.o)
+ .debug_frame   0x0000000000001634       0x28 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-memcpy-stub.o)
+ .debug_frame   0x000000000000165c       0x20 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-memset.o)
+ .debug_frame   0x000000000000167c       0x3c /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libc_nano.a(lib_a-wctomb_r.o)
+ .debug_frame   0x00000000000016b8       0x20 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/../../../../arm-none-eabi/lib/thumb/v7e-m/fpv4-sp/hard/libnosys.a(_exit.o)
+ .debug_frame   0x00000000000016d8       0x2c /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_aeabi_uldivmod.o)
+ .debug_frame   0x0000000000001704       0x34 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/bin/../lib/gcc/arm-none-eabi/7.2.1/thumb/v7e-m/fpv4-sp/hard/libgcc.a(_udivmoddi4.o)

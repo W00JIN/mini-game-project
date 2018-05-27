@@ -94,12 +94,10 @@ static const char * indications_list[] = BSP_INDICATIONS_LIST;
 
 void led0_invert(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(0);
-	nrf_delay_ms(500);
 }
 
 void led1_invert(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(1);
-	nrf_delay_ms(500);
 }
 
 /**@brief Function for handling bsp events.
@@ -304,28 +302,305 @@ void clear_noise(){
 	}
 }
 
-void plane(){
+void plane(){	
 
 	st7586_write(ST_COMMAND,  0x2A); 	        //set column
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x); 
+	st7586_write(ST_DATA, x+2); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+15); 
+	st7586_write(ST_DATA, x+2); 
 
 	st7586_write(ST_COMMAND,  0x2B); 	        //set row
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, y); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+22);
+	st7586_write(ST_DATA, y+3);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
-	for(int i = 0; i<= 15;i++){
-		for(int j = 0; j<= 22; j++){
-			st7586_write(ST_DATA,  0xff);
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=3 ; j++){
+			st7586_write(ST_DATA,  0x03);
 		}
 	}
 
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+3);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=3 ; j++){
+			st7586_write(ST_DATA,  0xe0);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+4); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+7);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=4 ; j++){
+			st7586_write(ST_DATA,  0x1f);
+		}
+	}
+
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+4); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+7);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=4 ; j++){
+			st7586_write(ST_DATA,  0xfc);
+		}
+	}
+
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+0); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+0); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+7); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+11);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=5 ; j++){
+			st7586_write(ST_DATA,  0xfc);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+5); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+5); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+7); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+11);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=5 ; j++){
+			st7586_write(ST_DATA,  0x1f);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+1); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+1); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+11); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+11);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=0 ; j++){
+			st7586_write(ST_DATA,  0x1f);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+1); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+1); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+10); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+10);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=0 ; j++){
+			st7586_write(ST_DATA,  0x03);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+8); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+9);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=2 ; j++){
+			st7586_write(ST_DATA,  0xfc);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+10); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+11);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=2 ; j++){
+			st7586_write(ST_DATA,  0xe0);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+8); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+9);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=2 ; j++){
+			st7586_write(ST_DATA,  0x1f);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+10); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+11);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=2 ; j++){
+			st7586_write(ST_DATA,  0x03);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+4); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+4); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+11); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+11);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=0 ; j++){
+			st7586_write(ST_DATA,  0xfc);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+4); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+4); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+10); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+10);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=0 ; j++){
+			st7586_write(ST_DATA,  0xe0);
+		}
+	}
+	
 	st7586_write(ST_COMMAND,  0x2A); 	        //set column
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, x); 
@@ -334,62 +609,251 @@ void plane(){
 
 	st7586_write(ST_COMMAND,  0x2B); 	        //set row
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y); 
+	st7586_write(ST_DATA, y+12); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+6);
+	st7586_write(ST_DATA, y+14);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
 
 	for(int i = 0; i<=5;i++){
-		for(int j = 0; j<=6 ; j++){
-			st7586_write(ST_DATA,  0x00);
+		for(int j = 0; j<=2 ; j++){
+			st7586_write(ST_DATA,  0xff);
+		}
+	}
+
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+14); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+17);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=3 ; j++){
+			st7586_write(ST_DATA,  0xff);
 		}
 	}
 
 	st7586_write(ST_COMMAND,  0x2A); 	        //set column
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+6); 
+	st7586_write(ST_DATA, x); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+6); 
+	st7586_write(ST_DATA, x); 
 
 	st7586_write(ST_COMMAND,  0x2B); 	        //set row
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y); 
+	st7586_write(ST_DATA, y+16); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+6);
+	st7586_write(ST_DATA, y+17);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
 
-	for(int i = 0; i<=5;i++){
-		for(int j = 0; j<=6 ; j++){
-			st7586_write(ST_DATA,  0x00);
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=1 ; j++){
+			st7586_write(ST_DATA,  0xfc);
 		}
 	}
 
 	st7586_write(ST_COMMAND,  0x2A); 	        //set column
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+9); 
+	st7586_write(ST_DATA, x+5); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+9); 
+	st7586_write(ST_DATA, x+5); 
 
 	st7586_write(ST_COMMAND,  0x2B); 	        //set row
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y); 
+	st7586_write(ST_DATA, y+14); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+6);
+	st7586_write(ST_DATA, y+17);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
 
-	for(int i = 0; i<=5;i++){
-		for(int j = 0; j<=6 ; j++){
-			st7586_write(ST_DATA,  0x00);
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=3 ; j++){
+			st7586_write(ST_DATA,  0xff);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+5); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+5); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+16); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+17);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=1 ; j++){
+			st7586_write(ST_DATA,  0x1f);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+1); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+1); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+15); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+15);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=0 ; j++){
+			st7586_write(ST_DATA,  0x03);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+1); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+1); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+16); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+17);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=1 ; j++){
+			st7586_write(ST_DATA,  0x1f);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+16); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+17);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=1 ; j++){
+			st7586_write(ST_DATA,  0xfc);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+4); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+4); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+15); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+15);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=0 ; j++){
+			st7586_write(ST_DATA,  0xe0);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+4); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+4); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+16); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+17);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=1 ; j++){
+			st7586_write(ST_DATA,  0xfc);
+		}
+	}
+
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+16); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+17);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=0;i++){
+		for(int j = 0; j<=1 ; j++){
+			st7586_write(ST_DATA,  0x1f);
 		}
 	}
 
 
+	st7586_write(ST_COMMAND,  0x2A); 	        //set column
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+2); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, x+3); 
+
+	st7586_write(ST_COMMAND,  0x2B); 	        //set row
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+15); 
+	st7586_write(ST_DATA, 0x00); 
+	st7586_write(ST_DATA, y+15);
+
+	st7586_write(ST_COMMAND,  0x2c);
+
+
+	for(int i = 0; i<=1;i++){
+		for(int j = 0; j<=0 ; j++){
+			st7586_write(ST_DATA,  0xff);
+		}
+	}
 }
 
 
@@ -427,7 +891,7 @@ int main(void)
     	APP_ERROR_CHECK(err_code);
     	APP_ERROR_CHECK(NRF_LOG_INIT(NULL));
 
-	APP_SCHED_INIT(20,54);
+	APP_SCHED_INIT(sizeof(bsp_event_t),10*sizeof(bsp_event_t));
     	bsp_configuration();
 	
 
