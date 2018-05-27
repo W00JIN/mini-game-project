@@ -77,7 +77,11 @@ _build/nrf52832_xxaa/main.c.o: ../../../main.c \
  ../../../../../../components/libraries/experimental_log/nrf_log_backend_interface.h \
  ../../../../../../components/libraries/experimental_memobj/nrf_memobj.h \
  ../../../../../../components/libraries/balloc/nrf_balloc.h \
- ../../../../../../components/libraries/experimental_log/nrf_log_default_backends.h
+ ../../../../../../components/libraries/experimental_log/nrf_log_default_backends.h \
+ ../../../../../../components/libraries/scheduler/app_scheduler.h \
+ ../../../../../../components/libraries/bsp/bsp.h \
+ ../../../../../../components/libraries/button/app_button.h \
+ ../../../../../../components/libraries/timer/app_timer.h
 
 ../../../../../../components/drivers_nrf/spi_master/nrf_drv_spi.h:
 
@@ -236,3 +240,11 @@ _build/nrf52832_xxaa/main.c.o: ../../../main.c \
 ../../../../../../components/libraries/balloc/nrf_balloc.h:
 
 ../../../../../../components/libraries/experimental_log/nrf_log_default_backends.h:
+
+../../../../../../components/libraries/scheduler/app_scheduler.h:
+
+../../../../../../components/libraries/bsp/bsp.h:
+
+../../../../../../components/libraries/button/app_button.h:
+
+../../../../../../components/libraries/timer/app_timer.h:
