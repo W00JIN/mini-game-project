@@ -133,7 +133,7 @@ void bullet()
 			st7586_write(ST_DATA, 0xff);
 		}
 
-		nrf_delay_ms(4);
+		nrf_delay_ms(6);
 
 		st7586_write(ST_COMMAND,  0x2A); 	        //set column
 		st7586_write(ST_DATA, 0x00);
@@ -164,9 +164,9 @@ void clear_gallag(){
 
 	st7586_write(ST_COMMAND,  0x2A); 	        //set column
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x-1); 
+	st7586_write(ST_DATA, x-2); 
 	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+6); 
+	st7586_write(ST_DATA, x+7); 
 
 	st7586_write(ST_COMMAND,  0x2B); 	        //set row
 	st7586_write(ST_DATA, 0x00); 
@@ -177,7 +177,7 @@ void clear_gallag(){
 	st7586_write(ST_COMMAND,  0x2c);
 
 
-	for(int i = 0; i<=7;i++){
+	for(int i = 0; i<=9;i++){
 		for(int j = 0; j<=25 ; j++){
 			st7586_write(ST_DATA,  0x00);
 		}
@@ -741,32 +741,32 @@ void plane(){
 
 void left(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(0);
-	x--;
+	x-=2;
 	clear_gallag();
 	plane();
-	bullet();
+	//bullet();
 }
 
 void right(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(0);
-	x++;
+	x+=2;
 	clear_gallag();
 	plane();
-	bullet();
+	//bullet();
 }
 
 void up(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(1);
-	y+=3;
-	clear_gallag();
-	plane();
+	//y+=3;
+	//clear_gallag();
+	//plane();
 	bullet();
 }
 void down(void * p_event_data, uint16_t event_size){
 	bsp_board_led_invert(1);
-	y-=3;
-	clear_gallag();
-	plane();
+	//y-=3;
+	//clear_gallag();
+	//plane();
 	bullet();
 }
 
@@ -941,7 +941,6 @@ void init(){
 
 	//Disp_Image();
 
-	st7586_write(ST_COMMAND,  0x29);		    // disp on
 }
 
 
@@ -985,8 +984,9 @@ int main(void)
     	NRF_LOG_DEFAULT_BACKENDS_INIT();
     	st7586_pinout_setup();
 
-    	st7586_write(ST_COMMAND,  0x28);
     	NRF_LOG_INFO("SPI example.");
+
+    	st7586_write(ST_COMMAND,  0x28);
 
 	//Reset_ms(10); 
 	
