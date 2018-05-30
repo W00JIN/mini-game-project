@@ -40,7 +40,7 @@ _build/nrf52832_xxaa/nrf_assert.c.o: \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/stdio.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdbool.h \
  ../../../../../../components/libraries/util/sdk_errors.h \
- ../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_error.h \
  ../config/sdk_config.h \
  ../../../../../../components/libraries/util/nordic_common.h \
  ../../../../../../components/libraries/util/app_error_weak.h
@@ -125,7 +125,7 @@ _build/nrf52832_xxaa/nrf_assert.c.o: \
 
 ../../../../../../components/libraries/util/sdk_errors.h:
 
-../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h:
+../../../../../../components/softdevice/s132/headers/nrf_error.h:
 
 ../config/sdk_config.h:
 

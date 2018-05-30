@@ -27,7 +27,7 @@ _build/nrf52832_xxaa/nrf_log_backend_rtt.c.o: \
  ../../../../../../components/device/compiler_abstraction.h \
  ../../../../../../components/libraries/util/sdk_os.h \
  ../../../../../../components/libraries/util/sdk_errors.h \
- ../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_error.h \
  ../../../../../../components/libraries/util/app_util.h \
  ../../../../../../components/device/nrf.h \
  ../../../../../../components/device/nrf52.h \
@@ -97,7 +97,7 @@ _build/nrf52832_xxaa/nrf_log_backend_rtt.c.o: \
 
 ../../../../../../components/libraries/util/sdk_errors.h:
 
-../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h:
+../../../../../../components/softdevice/s132/headers/nrf_error.h:
 
 ../../../../../../components/libraries/util/app_util.h:
 

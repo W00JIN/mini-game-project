@@ -12,7 +12,7 @@ _build/nrf52832_xxaa/main.c.o: ../../../main.c \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/_newlib_version.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_intsup.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h \
- ../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_error.h \
  ../../../../../../components/drivers_nrf/hal/nrf_spi.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stddef.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdbool.h \
@@ -32,6 +32,11 @@ _build/nrf52832_xxaa/main.c.o: ../../../main.c \
  ../../../../../../components/drivers_nrf/hal/nrf_spim.h \
  ../../../../../../components/libraries/util/app_util_platform.h \
  ../../../../../../components/device/compiler_abstraction.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_soc.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_svc.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_error_soc.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_error.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_nvic.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
  ../../../../../../components/libraries/util/app_error.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h \
@@ -81,7 +86,31 @@ _build/nrf52832_xxaa/main.c.o: ../../../main.c \
  ../../../../../../components/libraries/scheduler/app_scheduler.h \
  ../../../../../../components/libraries/bsp/bsp.h \
  ../../../../../../components/libraries/button/app_button.h \
- ../../../../../../components/libraries/timer/app_timer.h
+ ../../../../../../components/libraries/timer/app_timer.h \
+ ../../../../../../components/softdevice/s132/headers/ble.h \
+ ../../../../../../components/softdevice/s132/headers/ble_ranges.h \
+ ../../../../../../components/softdevice/s132/headers/ble_types.h \
+ ../../../../../../components/softdevice/s132/headers/ble_gap.h \
+ ../../../../../../components/softdevice/s132/headers/ble_l2cap.h \
+ ../../../../../../components/softdevice/s132/headers/ble_err.h \
+ ../../../../../../components/softdevice/s132/headers/ble_gatt.h \
+ ../../../../../../components/softdevice/s132/headers/ble_gattc.h \
+ ../../../../../../components/softdevice/s132/headers/ble_gatts.h \
+ ../../../../../../components/softdevice/s132/headers/ble_err.h \
+ ../../../../../../components/softdevice/s132/headers/ble_hci.h \
+ ../../../../../../components/ble/common/ble_srv_common.h \
+ ../../../ble_types.h \
+ ../../../../../../components/softdevice/s132/headers/ble_gap.h \
+ ../../../../../../components/softdevice/s132/headers/ble_gatt.h \
+ ../../../../../../components/ble/common/ble_advdata.h \
+ ../../../../../../components/ble/common/ble_conn_params.h \
+ ../../../../../../components/ble/common/ble_srv_common.h \
+ ../../../../../../components/softdevice/common/nrf_sdh.h \
+ ../../../../../../components/libraries/experimental_section_vars/nrf_section_iter.h \
+ ../../../../../../components/libraries/experimental_section_vars/nrf_section.h \
+ ../../../../../../components/softdevice/common/nrf_sdh_ble.h \
+ ../../../../../../components/ble/ble_services/ble_lbs/ble_lbs.h \
+ ../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.h
 
 ../../../../../../components/drivers_nrf/spi_master/nrf_drv_spi.h:
 
@@ -109,7 +138,7 @@ _build/nrf52832_xxaa/main.c.o: ../../../main.c \
 
 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_stdint.h:
 
-../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h:
+../../../../../../components/softdevice/s132/headers/nrf_error.h:
 
 ../../../../../../components/drivers_nrf/hal/nrf_spi.h:
 
@@ -148,6 +177,16 @@ _build/nrf52832_xxaa/main.c.o: ../../../main.c \
 ../../../../../../components/libraries/util/app_util_platform.h:
 
 ../../../../../../components/device/compiler_abstraction.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_soc.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_svc.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_error_soc.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_error.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_nvic.h:
 
 ../../../../../../components/libraries/util/nrf_assert.h:
 
@@ -248,3 +287,51 @@ _build/nrf52832_xxaa/main.c.o: ../../../main.c \
 ../../../../../../components/libraries/button/app_button.h:
 
 ../../../../../../components/libraries/timer/app_timer.h:
+
+../../../../../../components/softdevice/s132/headers/ble.h:
+
+../../../../../../components/softdevice/s132/headers/ble_ranges.h:
+
+../../../../../../components/softdevice/s132/headers/ble_types.h:
+
+../../../../../../components/softdevice/s132/headers/ble_gap.h:
+
+../../../../../../components/softdevice/s132/headers/ble_l2cap.h:
+
+../../../../../../components/softdevice/s132/headers/ble_err.h:
+
+../../../../../../components/softdevice/s132/headers/ble_gatt.h:
+
+../../../../../../components/softdevice/s132/headers/ble_gattc.h:
+
+../../../../../../components/softdevice/s132/headers/ble_gatts.h:
+
+../../../../../../components/softdevice/s132/headers/ble_err.h:
+
+../../../../../../components/softdevice/s132/headers/ble_hci.h:
+
+../../../../../../components/ble/common/ble_srv_common.h:
+
+../../../ble_types.h:
+
+../../../../../../components/softdevice/s132/headers/ble_gap.h:
+
+../../../../../../components/softdevice/s132/headers/ble_gatt.h:
+
+../../../../../../components/ble/common/ble_advdata.h:
+
+../../../../../../components/ble/common/ble_conn_params.h:
+
+../../../../../../components/ble/common/ble_srv_common.h:
+
+../../../../../../components/softdevice/common/nrf_sdh.h:
+
+../../../../../../components/libraries/experimental_section_vars/nrf_section_iter.h:
+
+../../../../../../components/libraries/experimental_section_vars/nrf_section.h:
+
+../../../../../../components/softdevice/common/nrf_sdh_ble.h:
+
+../../../../../../components/ble/ble_services/ble_lbs/ble_lbs.h:
+
+../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.h:

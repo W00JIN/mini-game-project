@@ -22,7 +22,7 @@ _build/nrf52832_xxaa/nrf_memobj.c.o: \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/cdefs.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/stdlib.h \
  ../../../../../../components/libraries/util/sdk_errors.h \
- ../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_error.h \
  ../config/sdk_config.h \
  ../../../../../../components/libraries/balloc/nrf_balloc.h \
  ../../../../../../components/libraries/util/app_util_platform.h \
@@ -39,6 +39,12 @@ _build/nrf52832_xxaa/nrf_memobj.c.o: \
  ../../../../../../components/device/nrf51_to_nrf52.h \
  ../../../../../../components/device/nrf52_name_change.h \
  ../../../../../../components/device/compiler_abstraction.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_soc.h \
+ /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdbool.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_svc.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_error_soc.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_error.h \
+ ../../../../../../components/softdevice/s132/headers/nrf_nvic.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
  ../../../../../../components/libraries/util/app_error.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/stdio.h \
@@ -47,7 +53,6 @@ _build/nrf52832_xxaa/nrf_memobj.c.o: \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/_pthreadtypes.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/types.h \
  /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/stdio.h \
- /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdbool.h \
  ../../../../../../components/libraries/util/sdk_errors.h \
  ../../../../../../components/libraries/util/nordic_common.h \
  ../../../../../../components/libraries/util/app_error_weak.h \
@@ -106,7 +111,7 @@ _build/nrf52832_xxaa/nrf_memobj.c.o: \
 
 ../../../../../../components/libraries/util/sdk_errors.h:
 
-../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h:
+../../../../../../components/softdevice/s132/headers/nrf_error.h:
 
 ../config/sdk_config.h:
 
@@ -140,6 +145,18 @@ _build/nrf52832_xxaa/nrf_memobj.c.o: \
 
 ../../../../../../components/device/compiler_abstraction.h:
 
+../../../../../../components/softdevice/s132/headers/nrf_soc.h:
+
+/usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdbool.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_svc.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_error_soc.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_error.h:
+
+../../../../../../components/softdevice/s132/headers/nrf_nvic.h:
+
 ../../../../../../components/libraries/util/nrf_assert.h:
 
 ../../../../../../components/libraries/util/app_error.h:
@@ -155,8 +172,6 @@ _build/nrf52832_xxaa/nrf_memobj.c.o: \
 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/machine/types.h:
 
 /usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/arm-none-eabi/include/sys/stdio.h:
-
-/usr/local/Caskroom/gcc-arm-embedded/7-2017-q4-major/gcc-arm-none-eabi-7-2017-q4-major/lib/gcc/arm-none-eabi/7.2.1/include/stdbool.h:
 
 ../../../../../../components/libraries/util/sdk_errors.h:
 
