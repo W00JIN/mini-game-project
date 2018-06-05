@@ -557,24 +557,28 @@ void st7586_write(const uint8_t category, const uint8_t data)
     nrf_delay_us(10);
 }
 
+void set_location(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize)
+{
+		st7586_write(ST_COMMAND,  0x2A); 	        //set column
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, cs);
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, cs + csize);
+
+		st7586_write(ST_COMMAND,  0x2B); 	        //set row
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, rs);
+		st7586_write(ST_DATA, 0x00);
+		st7586_write(ST_DATA, rs + rsize);
+}
+//using set_location
 void bullet()
 {
 	int st = y-3;
 	while(st>0)
 	{
 		//bsp_board_led_invert(1);
-
-		st7586_write(ST_COMMAND,  0x2A); 	        //set column
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, x+2);
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, x+2);
-
-		st7586_write(ST_COMMAND,  0x2B); 	        //set row
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, st-10);
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, st);
+		set_location(x+2, 0, st-10, 10);
 
 		st7586_write(ST_COMMAND, 0x2c);
 
@@ -585,17 +589,8 @@ void bullet()
 
 		nrf_delay_ms(6);
 
-		st7586_write(ST_COMMAND,  0x2A); 	        //set column
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, x+2);
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, x+2);
-
-		st7586_write(ST_COMMAND,  0x2B); 	        //set row
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, st-10);
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, st);
+		
+		set_location(x+2, 0, st-10, 10);
 
 		st7586_write(ST_COMMAND, 0x2c);
 
@@ -610,19 +605,13 @@ void bullet()
 }
 
 
+
+
+//using set_location
 void clear_gallag(){
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x-2); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+7); 
+	set_location(x-2, 9, y-4, 25);
 
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y-4); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+21);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -634,20 +623,10 @@ void clear_gallag(){
 	}
 }
 
-
+//using set_location
 void plane(){	
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+3);
+	set_location(x+2, 0, y, 3);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -658,18 +637,7 @@ void plane(){
 		}
 	}
 
-
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+3);
+	set_location(x+3, 0, y, 3);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -679,18 +647,7 @@ void plane(){
 			st7586_write(ST_DATA,  0xe0);
 		}
 	}
-
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+4); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+7);
+	set_location(x+2, 0, y+4, 3);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -702,17 +659,7 @@ void plane(){
 	}
 
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+4); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+7);
+	set_location(x+3, 0, y+4, 3);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -724,17 +671,7 @@ void plane(){
 	}
 
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+0); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+0); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+7); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+11);
+	set_location(x, 0, y+7, 4);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -745,17 +682,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+5); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+5); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+7); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+11);
+	set_location(x+5, 0, y+7, 4);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -766,17 +693,8 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+1); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+1); 
 
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+11); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+11);
+	set_location(x+1, 0, y+11, 0);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -787,17 +705,9 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+1); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+1); 
+	set_location(x+1, 0, y+10, 0);
 
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+10); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+10);
+
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -808,17 +718,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+8); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+9);
+	set_location(x+2, 0, y+8, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -829,17 +729,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+10); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+11);
+	set_location(x+2, 0, y+10, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -850,17 +740,8 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
 
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+8); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+9);
+	set_location(x+3, 0, y+8, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -871,17 +752,8 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
 
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+10); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+11);
+	set_location(x+3, 0, y+10, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -892,17 +764,8 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+4); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+4); 
 
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+11); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+11);
+	set_location(x+4, 0, y+11, 0);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -913,17 +776,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+4); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+4); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+10); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+10);
+	set_location(x+4, 0, y+10, 0);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -934,17 +787,7 @@ void plane(){
 		}
 	}
 	
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+5); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+12); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+14);
+	set_location(x, 5, y+12, 2);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -956,17 +799,7 @@ void plane(){
 	}
 
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+14); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	set_location(x, 0, y+14, 3);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -977,17 +810,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+16); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	set_location(x, 0, y+16, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -998,17 +821,8 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+5); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+5); 
 
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+14); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	set_location(x+5, 0, y+14, 3);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -1019,17 +833,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+5); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+5); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+16); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	set_location(x+5, 0, y+16, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -1040,17 +844,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+1); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+1); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+15); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+15);
+	set_location(x+1, 0, y+15, 0);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -1061,17 +855,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+1); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+1); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+16); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	set_location(x+1, 0, y+16, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -1082,17 +866,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+16); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	set_location(x+2, 0, y+16, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -1103,17 +877,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+4); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+4); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+15); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+15);
+	set_location(x+4, 0, y+15, 0);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -1124,17 +888,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+4); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+4); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+16); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	set_location(x+4, 0, y+16, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -1145,17 +899,7 @@ void plane(){
 		}
 	}
 
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+16); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+17);
+	set_location(x+3, 0, y+16, 1);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
@@ -1166,18 +910,7 @@ void plane(){
 		}
 	}
 
-
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+2); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, x+3); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+15); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, y+15);
+	set_location(x+2, 1, y+15, 0);
 
 	st7586_write(ST_COMMAND,  0x2c);
 
