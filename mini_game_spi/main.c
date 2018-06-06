@@ -111,6 +111,7 @@ int game_num = 1;
 int ble_available = 1;
 static unsigned char rx_data;
 nrf_drv_spi_evt_t const * p;
+bsp_event_t const * a;
 
 #define BUTTON_PREV_ID           0                           /**< Button used to switch the state. */
 #define BUTTON_NEXT_ID           1                           /**< Button used to switch the state. */
@@ -852,28 +853,32 @@ void down(void * p_event_data, uint16_t event_size){
 void bsp_evt_handler(bsp_event_t evt)
 {
     uint32_t err_code;
-    switch (evt)
-    {
-        case BSP_EVENT_KEY_0:
-	     app_sched_event_put (&evt, sizeof(evt),left);
-		
-            break;
+    if(!ble_available){
+        switch (evt)
+        {
+            case BSP_EVENT_KEY_0:
+                if(game_num == 1)
+                    app_sched_event_put (&evt, sizeof(evt),left);
+                break;
+                
+            case BSP_EVENT_KEY_1:
+                if(game_num == 1)
+                    app_sched_event_put (&evt, sizeof(evt),right);
+                break;
 
-        case BSP_EVENT_KEY_1:
-	     app_sched_event_put (&evt, sizeof(evt),right);
-            break;
+            case BSP_EVENT_KEY_2:
+                if(game_num == 1)
+                    app_sched_event_put (&evt, sizeof(evt),up);
+                break;
 
-	  case BSP_EVENT_KEY_2:
+            case BSP_EVENT_KEY_3:
+                if(game_num == 1)
+                    app_sched_event_put (&evt, sizeof(evt),down);
+                break;
 
-	     app_sched_event_put (&evt, sizeof(evt),up);
-            break;
-
-	  case BSP_EVENT_KEY_3:
-	     app_sched_event_put (&evt, sizeof(evt),down);
-            break;
-
-        default:
-            return; // no implementation needed
+            default:
+                return; // no implementation needed
+        }
     }
     err_code = bsp_indication_set(actual_state);
     NRF_LOG_INFO("%s", (uint32_t)indications_list[actual_state]);
@@ -1161,7 +1166,7 @@ static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, uint8_t l
 
 	case 1:
         bsp_board_led_on(LEDBUTTON_LED);
-        app_sched_event_put ( &p,sizeof(p) , start_gallag);
+        app_sched_event_put ( NULL,0, start_gallag);
 		break;
 
 	default:
@@ -1404,7 +1409,7 @@ static void ble_stack_init(void)
  *
  * @param[in] pin_no        The pin that the event applies to.
  * @param[in] button_action The button action (press/release).
- */
+ *//*
 static void button_event_handler(uint8_t pin_no, uint8_t button_action)
 {
     ret_code_t err_code;
@@ -1428,11 +1433,11 @@ static void button_event_handler(uint8_t pin_no, uint8_t button_action)
             break;
     }
 }
-
+*/
 /**@brief Function for initializing the button handler module.
  */
 static void buttons_init(void)
-{
+{/*
     ret_code_t err_code;
 
     //The array must be static because a pointer to it will be saved in the button handler module.
@@ -1443,6 +1448,12 @@ static void buttons_init(void)
 
     err_code = app_button_init(buttons, sizeof(buttons) / sizeof(buttons[0]),
                                BUTTON_DETECTION_DELAY);
+    APP_ERROR_CHECK(err_code);
+    */
+    
+    uint32_t err_code;
+    
+    err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, bsp_evt_handler);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -1482,9 +1493,7 @@ int main(void)
     st7586_pinout_setup();
     init();
     clear_noise();
-    APP_SCHED_INIT(sizeof(p),3*sizeof(p));
-  //  plane();
-   // st7586_write(ST_COMMAND,  0x29);            //disp on
+    APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
     
     while (1)
     {
