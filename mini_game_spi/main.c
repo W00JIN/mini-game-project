@@ -107,18 +107,21 @@ static volatile bool st7586_spi_xfer_done = false;  						            /**< Flag 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
 int x = 17;
 int y = 120;
-int game_num = 1;
-int ble_available = 1;
+int game_num = 2;
+int ble_available = 0;
 int x_enemy1 = 15;
 int y_enemy1 = 40;
 
 int x_kau = 5;
 int y_kau = 0;
 
+int x_block=0;
+int y_block=18;
+
 int bullet_x;
 int bullet_y;
 
-bool fire = false; //variable that became true when bullet flying.
+bool fire = true; //variable that became true when bullet flying.
 
 static unsigned char rx_data;
 nrf_drv_spi_evt_t const * p;
@@ -142,7 +145,7 @@ static const char * indications_list[] = BSP_INDICATIONS_LIST;
 #define LEDBUTTON_LED                   BSP_BOARD_LED_2                         /**< LED to be toggled with the help of the LED Button Service. */
 #define LEDBUTTON_BUTTON                BSP_BUTTON_0                            /**< Button that will trigger the notification event with the LED Button Service */
 
-#define DEVICE_NAME                     "wwwwwwww"                         /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "Mini Game Project"                     /**< Name of device. Will be included in the advertising data. */
 
 #define APP_BLE_OBSERVER_PRIO           3                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
@@ -181,7 +184,6 @@ static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        
  * @param[in] line_num    Line number of the failing ASSERT call.
  * @param[in] p_file_name File name of the failing ASSERT call.
  */
-
 void st7586_write(const uint8_t category, const uint8_t data)
 {
 	int err_code;
@@ -195,431 +197,175 @@ void st7586_write(const uint8_t category, const uint8_t data)
     }
     nrf_delay_us(10);
 }
-
-void set_location(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize)
+void set_location(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize, uint8_t dot_num_and_color)
 {
-		st7586_write(ST_COMMAND,  0x2A); 	        //set column
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, cs);
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, cs + csize);
-
-		st7586_write(ST_COMMAND,  0x2B); 	        //set row
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, rs);
-		st7586_write(ST_DATA, 0x00);
-		st7586_write(ST_DATA, rs + rsize);
+    st7586_write(ST_COMMAND,  0x2A); 	        //set column
+    st7586_write(ST_DATA, 0x00);
+    st7586_write(ST_DATA, cs);
+    st7586_write(ST_DATA, 0x00);
+    st7586_write(ST_DATA, cs + csize);
+    
+    st7586_write(ST_COMMAND,  0x2B); 	        //set row
+    st7586_write(ST_DATA, 0x00);
+    st7586_write(ST_DATA, rs);
+    st7586_write(ST_DATA, 0x00);
+    st7586_write(ST_DATA, rs + rsize);
+    
+    st7586_write(ST_COMMAND,  0x2c);
+    
+    for(int i = 0; i<=csize;i++){
+        for(int j = 0; j<=rsize ; j++){
+            st7586_write(ST_DATA, dot_num_and_color);
+        }
+    }
 }
-
 //using set_location
 void bullet()
 {
-	if(fire = false)
-	bullet_y = y-3;
-	bullet_x = x+2;
-	set_location(bullet_x, 0, bullet_y-10, 10);
-
-	st7586_write(ST_COMMAND, 0x2c);
-
-	for(int i = 0; i < 30; i++)
-	{
-		st7586_write(ST_DATA, 0xff);
-	}
-
-	nrf_delay_ms(6);
-
-		
-	set_location(x+2, 1, bullet_y-10, 10);
-
-	st7586_write(ST_COMMAND, 0x2c);
-
-	for(int i = 0; i < 30; i++)
-	{
-		st7586_write(ST_DATA, 0x00);
-	}
-
-	bullet_y -= 3;
-
-	if(bullet_y <= 0)
-		fire = false;
-
+    int st = y-3;
+    while(st>0)
+    {
+        set_location(x+2,0,st-10,10,0xff);
+        nrf_delay_ms(6);
+        set_location(x+2,0,st-10,10,0x00);
+        st -= 3;
+    }
 }
-
-
 //using set_location
 void clear_gallag(){
-
-	set_location(x-2, 9, y-4, 25);
-
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=9;i++){
-		for(int j = 0; j<=25 ; j++){
-			st7586_write(ST_DATA,  0x00);
-		}
-	}
+	set_location(x-2, 9, y-4, 25, 0x00);
 }
 
 //using set_location
 void plane(){	
 	clear_gallag();
-
-	set_location(x+2, 0, y, 3);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=3 ; j++){
-			st7586_write(ST_DATA,  0x03);
-		}
-	}
-
-	set_location(x+3, 0, y, 3);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=3 ; j++){
-			st7586_write(ST_DATA,  0xe0);
-		}
-	}
-	set_location(x+2, 0, y+4, 3);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=4 ; j++){
-			st7586_write(ST_DATA,  0x1f);
-		}
-	}
-
-
-	set_location(x+3, 0, y+4, 3);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=4 ; j++){
-			st7586_write(ST_DATA,  0xfc);
-		}
-	}
-
-
-	set_location(x, 0, y+7, 4);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=5 ; j++){
-			st7586_write(ST_DATA,  0xfc);
-		}
-	}
-
-	set_location(x+5, 0, y+7, 4);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=5 ; j++){
-			st7586_write(ST_DATA,  0x1f);
-		}
-	}
-
-
-	set_location(x+1, 0, y+11, 0);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=0 ; j++){
-			st7586_write(ST_DATA,  0x1f);
-		}
-	}
-
-	set_location(x+1, 0, y+10, 0);
-
-
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=0 ; j++){
-			st7586_write(ST_DATA,  0x03);
-		}
-	}
-
-	set_location(x+2, 0, y+8, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=2 ; j++){
-			st7586_write(ST_DATA,  0xfc);
-		}
-	}
-
-	set_location(x+2, 0, y+10, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=2 ; j++){
-			st7586_write(ST_DATA,  0xe0);
-		}
-	}
-
-
-	set_location(x+3, 0, y+8, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=2 ; j++){
-			st7586_write(ST_DATA,  0x1f);
-		}
-	}
-
-
-	set_location(x+3, 0, y+10, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=2 ; j++){
-			st7586_write(ST_DATA,  0x03);
-		}
-	}
-
-
-	set_location(x+4, 0, y+11, 0);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=0 ; j++){
-			st7586_write(ST_DATA,  0xfc);
-		}
-	}
-
-	set_location(x+4, 0, y+10, 0);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=0 ; j++){
-			st7586_write(ST_DATA,  0xe0);
-		}
-	}
-	
-	set_location(x, 5, y+12, 2);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=5;i++){
-		for(int j = 0; j<=2 ; j++){
-			st7586_write(ST_DATA,  0xff);
-		}
-	}
-
-
-	set_location(x, 0, y+14, 3);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=3 ; j++){
-			st7586_write(ST_DATA,  0xff);
-		}
-	}
-
-	set_location(x, 0, y+16, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=1 ; j++){
-			st7586_write(ST_DATA,  0xfc);
-		}
-	}
-
-
-	set_location(x+5, 0, y+14, 3);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=3 ; j++){
-			st7586_write(ST_DATA,  0xff);
-		}
-	}
-
-	set_location(x+5, 0, y+16, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=1 ; j++){
-			st7586_write(ST_DATA,  0x1f);
-		}
-	}
-
-	set_location(x+1, 0, y+15, 0);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=0 ; j++){
-			st7586_write(ST_DATA,  0x03);
-		}
-	}
-
-	set_location(x+1, 0, y+16, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=1 ; j++){
-			st7586_write(ST_DATA,  0x1f);
-		}
-	}
-
-	set_location(x+2, 0, y+16, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=1 ; j++){
-			st7586_write(ST_DATA,  0xfc);
-		}
-	}
-
-	set_location(x+4, 0, y+15, 0);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=0 ; j++){
-			st7586_write(ST_DATA,  0xe0);
-		}
-	}
-
-	set_location(x+4, 0, y+16, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=1 ; j++){
-			st7586_write(ST_DATA,  0xfc);
-		}
-	}
-
-	set_location(x+3, 0, y+16, 1);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=0;i++){
-		for(int j = 0; j<=1 ; j++){
-			st7586_write(ST_DATA,  0x1f);
-		}
-	}
-
-	set_location(x+2, 1, y+15, 0);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<=1;i++){
-		for(int j = 0; j<=0 ; j++){
-			st7586_write(ST_DATA,  0xff);
-		}
-	}
+    
+	set_location(x+2, 0, y, 3, 0x03);
+	set_location(x+3, 0, y, 3, 0xe0);
+	set_location(x+2, 0, y+4, 3, 0x1f);
+	set_location(x+3, 0, y+4, 3, 0xfc);
+	set_location(x, 0, y+7, 4, 0xfc);
+	set_location(x+5, 0, y+7, 4, 0x1f);
+	set_location(x+1, 0, y+11, 0, 0x1f);
+	set_location(x+1, 0, y+10, 0, 0x03);
+	set_location(x+2, 0, y+8, 1, 0xfc);
+	set_location(x+2, 0, y+10, 1, 0xe0);
+	set_location(x+3, 0, y+8, 1, 0x1f);
+	set_location(x+3, 0, y+10, 1, 0x03);
+	set_location(x+4, 0, y+11, 0, 0xfc);
+	set_location(x+4, 0, y+10, 0, 0xe0);
+	set_location(x, 5, y+12, 2, 0xff);
+	set_location(x, 0, y+14, 3, 0xff);
+	set_location(x, 0, y+16, 1, 0xfc);
+	set_location(x+5, 0, y+14, 3, 0xff);
+	set_location(x+5, 0, y+16, 1, 0x1f);
+	set_location(x+1, 0, y+15, 0, 0x03);
+	set_location(x+1, 0, y+16, 1, 0x1f);
+	set_location(x+2, 0, y+16, 1, 0xfc);
+	set_location(x+4, 0, y+15, 0, 0xe0);
+	set_location(x+4, 0, y+16, 1, 0xfc);
+	set_location(x+3, 0, y+16, 1, 0x1f);
+	set_location(x+2, 1, y+15, 0, 0xff);
+}
+void clear_block1()
+{
+    int block_height = 7;
+    //Enter by block pixel
+    set_location(x_block-3, 12, y_block, block_height*2+2, 0x00);
+}
+void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
+{
+    clear_block1();
+    
+    int block_height = 7;
+    //Enter by block pixel
+    set_location(x_block, 1, y_block, block_height, dot_111);
+    set_location(x_block+2, 0, y_block, block_height, dot_110);
+    
+    set_location(x_block+3, 1, y_block,block_height, dot_111);
+    set_location(x_block+5, 0, y_block,block_height, dot_110);
+    
+    set_location(x_block, 1, y_block + block_height +2, block_height, dot_111);
+    set_location(x_block+2, 0, y_block + block_height +2, block_height, dot_110);
+    
+    set_location(x_block+3, 1, y_block + block_height +2, block_height, dot_111);
+    set_location(x_block+5, 0, y_block + block_height +2, block_height, dot_110);
 }
 
-void left(void * p_event_data, uint16_t event_size){
+/**@brief Function for btn event to send scheduler
+ */
+void move_gallag_left(void * p_event_data, uint16_t event_size)
+{
 	bsp_board_led_invert(0);
 	x-=2;
-	clear_gallag();
 	plane();
-	//bullet();
 }
-
-void right(void * p_event_data, uint16_t event_size){
+void move_gallag_right(void * p_event_data, uint16_t event_size)
+{
 	bsp_board_led_invert(0);
 	x+=2;
-	clear_gallag();
 	plane();
-	//bullet();
 }
-
-void up(void * p_event_data, uint16_t event_size){
+void shoot_bullet(void * p_event_data, uint16_t event_size)
+{
 	bsp_board_led_invert(1);
-	//y+=3;
-	//clear_gallag();
-	//plane();
 	bullet();
 }
-
-void down(void * p_event_data, uint16_t event_size){
-	bsp_board_led_invert(1);
-	//y-=3;
-	//clear_gallag();
-	//plane();
-	bullet();
+void move_block_left(void * p_event_data, uint16_t event_size)
+{
+    bsp_board_led_invert(0);
+    x_block-=3;
+    block1(0xff,0xfc,0xe0,0x03,0x1f);
 }
-
+void move_block_right(void * p_event_data, uint16_t event_size)
+{
+    bsp_board_led_invert(0);
+    x_block+=3;
+    block1(0xff,0xfc,0xe0,0x03,0x1f);
+}
+void spin_block(void * p_event_data, uint16_t event_size)
+{
+    
+}
+void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
+{
+    
+}
 /**@brief Function for handling bsp events.
  */
 void bsp_evt_handler(bsp_event_t evt)
 {
     uint32_t err_code;
-    if(!ble_available){
+    if(!ble_available)
+    {
         switch (evt)
         {
             case BSP_EVENT_KEY_0:
                 if(game_num == 1)
-                    app_sched_event_put (&evt, sizeof(evt),left);
+                    app_sched_event_put (&evt, sizeof(evt),move_gallag_left);
+                if(game_num == 2)
+                    app_sched_event_put (&evt, sizeof(evt),move_block_left);
                 break;
                 
             case BSP_EVENT_KEY_1:
                 if(game_num == 1)
-                    app_sched_event_put (&evt, sizeof(evt),right);
+                    app_sched_event_put (&evt, sizeof(evt),move_gallag_right);
+                if(game_num == 2)
+                    app_sched_event_put (&evt, sizeof(evt),move_block_right);
                 break;
 
             case BSP_EVENT_KEY_2:
                 if(game_num == 1)
-                    app_sched_event_put (&evt, sizeof(evt),up);
+                    app_sched_event_put (&evt, sizeof(evt),shoot_bullet);
+                if(game_num == 2)
+                    app_sched_event_put (&evt, sizeof(evt),spin_block);
                 break;
 
             case BSP_EVENT_KEY_3:
                 if(game_num == 1)
-                    app_sched_event_put (&evt, sizeof(evt),down);
+                    app_sched_event_put (&evt, sizeof(evt),shoot_bullet);
+                if(game_num == 2)
+                    app_sched_event_put (&evt, sizeof(evt),accelerate_block_velocity);
                 break;
 
             default:
@@ -655,24 +401,21 @@ void bsp_configuration()
     APP_ERROR_CHECK(err_code);
 }
 
-//finish button code
-
 void spi_event_handler(nrf_drv_spi_evt_t const * p_event, void * p_context)
 {
 	st7586_spi_xfer_done = true;
 }
-
 static inline void st7586_pinout_setup()
 {
     // spi setup
 	int err_code;
 	nrf_drv_spi_config_t spi_config = NRF_DRV_SPI_DEFAULT_CONFIG;
 	spi_config.ss_pin   = RATIO_SPI0_LCD_CS;
-    	spi_config.miso_pin = NRF_DRV_SPI_PIN_NOT_USED;
-    	spi_config.mosi_pin = RATIO_SPI0_LCD_MOSI;
-    	spi_config.sck_pin  = RATIO_SPI0_LCD_SCK;
-    	spi_config.frequency = NRF_SPI_FREQ_1M;
-    	spi_config.mode = NRF_DRV_SPI_MODE_3;
+    spi_config.miso_pin = NRF_DRV_SPI_PIN_NOT_USED;
+    spi_config.mosi_pin = RATIO_SPI0_LCD_MOSI;
+    spi_config.sck_pin  = RATIO_SPI0_LCD_SCK;
+    spi_config.frequency = NRF_SPI_FREQ_1M;
+    spi_config.mode = NRF_DRV_SPI_MODE_3;
 	err_code = nrf_drv_spi_init(&st7586_spi, &spi_config, spi_event_handler, NULL);
 	APP_ERROR_CHECK(err_code);
 
@@ -682,16 +425,13 @@ static inline void st7586_pinout_setup()
     nrf_gpio_pin_clear(RATIO_SPI0_LCD_BSTB);
     nrf_gpio_cfg_output(RATIO_SPI0_LCD_BSTB);
 }
-
-void init(){
-	
-    	nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 0);
+void init()
+{
+    nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 0);
 	LCD_INIT_DELAY(10);
 	nrf_gpio_pin_write(RATIO_SPI0_LCD_BSTB, 1);
 
-
 	LCD_INIT_DELAY(120);
-
 
 	st7586_write(ST_COMMAND,  0xD7); 
 	st7586_write(ST_DATA, 0x9F); 
@@ -710,47 +450,37 @@ void init(){
 	st7586_write(ST_COMMAND,  0xC3);
 	st7586_write(ST_DATA, 0x02);
 	st7586_write(ST_COMMAND,  0xC4);
-	st7586_write(ST_DATA, 0x06);	
-
+	st7586_write(ST_DATA, 0x06);
 	st7586_write(ST_COMMAND,  0xD0); 
 	st7586_write(ST_DATA, 0x1D); 
 	st7586_write(ST_COMMAND,  0xB5); 
-	st7586_write(ST_DATA, 0x00); 
-
+	st7586_write(ST_DATA, 0x00);
 	st7586_write(ST_COMMAND,  0x39); 
 	st7586_write(ST_COMMAND,  0x3A); 
 	st7586_write(ST_DATA, 0x02); 
 	st7586_write(ST_COMMAND,  0x36); 
-	st7586_write(ST_DATA, 0x00); 
-
+	st7586_write(ST_DATA, 0x00);
 	st7586_write(ST_COMMAND,  0xB0); 
 	st7586_write(ST_DATA, 0x9F); 
 	st7586_write(ST_COMMAND,  0xB4); 
-	st7586_write(ST_DATA, 0xA0); 
-
+	st7586_write(ST_DATA, 0xA0);
 	st7586_write(ST_COMMAND,  0x30); 
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x77); 
 	st7586_write(ST_COMMAND,  0x20);
-	st7586_write(ST_COMMAND,  0x2A); 
-	
-
+	st7586_write(ST_COMMAND,  0x2A);
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x7F);
-	st7586_write(ST_COMMAND,  0x2B); 
-	
+	st7586_write(ST_COMMAND,  0x2B);
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x9F);
-
 	//Clear_DDRAM();
-
-
 	st7586_write(ST_COMMAND,  0x2A); 	
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x00); 
@@ -761,47 +491,23 @@ void init(){
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x00); 
 	st7586_write(ST_DATA, 0x78);
-
 	//Disp_Image();
-
 }
-
-void clear_noise(){
-
-	st7586_write(ST_COMMAND,  0x2A); 	        //set column
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x7f); 
-
-	st7586_write(ST_COMMAND,  0x2B); 	        //set row
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x00); 
-	st7586_write(ST_DATA, 0x9f);
-
-	st7586_write(ST_COMMAND,  0x2c);
-
-
-	for(int i = 0; i<0x0000007f*3;i++){
-		for(int j = 0; j<0x0000009f ; j++){
-			st7586_write(ST_DATA,  0x00);
-		}
-	}
+void clear_noise()
+{
+    set_location(0,0x7f,0x00,0x9f,0x00);
 }
-
-void led_invert(){
+void led_invert()
+{
 	for (int i = 0; i < 4; i++){
             bsp_board_led_invert(i);
             nrf_delay_ms(500);
         }
 }
-
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 {
     app_error_handler(DEAD_BEEF, line_num, p_file_name);
 }
-
 /**@brief Function for the LEDs initialization.
  *
  * @details Initializes all LEDs used by the application.
@@ -810,7 +516,6 @@ static void leds_init(void)
 {
     bsp_board_leds_init();
 }
-
 /**@brief Function for the Timer initialization.
  *
  * @details Initializes the timer module.
@@ -888,28 +593,26 @@ static void advertising_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
-/**@brief Function for handling write events to the LED characteristic.
- *
- * @param[in] p_lbs     Instance of LED Button Service to which the write applies.
- * @param[in] led_state Written/desired state of the LED.
- */
 void start_gallag(void * p_event_data, uint16_t event_size)
 {
     plane();
     st7586_write(ST_COMMAND,  0x29);            //disp on
 }
 
-
+/**@brief Function for handling write events to the LED characteristic.
+ *
+ * @param[in] p_lbs     Instance of LED Button Service to which the write applies.
+ * @param[in] led_state Written/desired state of the LED.
+ */
 static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, uint8_t led_state)
 {
-	if(ble_available)
+	if(ble_available)   //For init first time
     {
 	}
     ble_available = 0;
     
 	switch(game_num)
     {
-
 	case 1:
         bsp_board_led_on(LEDBUTTON_LED);
         app_sched_event_put ( NULL,0, start_gallag);
@@ -918,11 +621,8 @@ static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, uint8_t l
 	default:
 		break;
 	}
-    
-    NRF_LOG_INFO("Received LED ON!");
-
+    NRF_LOG_INFO("Received BLE data!");
 }
-
 /**@brief Function for initializing services that will be used by the application.
  */
 static void services_init(void)
@@ -935,7 +635,6 @@ static void services_init(void)
     err_code = ble_lbs_init(&m_lbs, &init);
     APP_ERROR_CHECK(err_code);
 }
-
 /**@brief Function for handling the Connection Parameters Module.
  *
  * @details This function will be called for all events in the Connection Parameters Module that
@@ -957,7 +656,6 @@ static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
         APP_ERROR_CHECK(err_code);
     }
 }
-
 /**@brief Function for handling a Connection Parameters error.
  *
  * @param[in] nrf_error  Error code containing information about what went wrong.
@@ -966,7 +664,6 @@ static void conn_params_error_handler(uint32_t nrf_error)
 {
     APP_ERROR_HANDLER(nrf_error);
 }
-
 /**@brief Function for initializing the Connection Parameters module.
  */
 static void conn_params_init(void)
@@ -988,7 +685,6 @@ static void conn_params_init(void)
     err_code = ble_conn_params_init(&cp_init);
     APP_ERROR_CHECK(err_code);
 }
-
 /**@brief Function for starting advertising.
  */
 static void advertising_start(void)
@@ -1009,8 +705,6 @@ static void advertising_start(void)
     APP_ERROR_CHECK(err_code);
     bsp_board_led_on(ADVERTISING_LED);
 }
-
-
 /**@brief Function for handling BLE events.
  *
  * @param[in]   p_ble_evt   Bluetooth stack event.
@@ -1125,7 +819,6 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             break;
     }
 }
-
 /**@brief Function for initializing the BLE stack.
  *
  * @details Initializes the SoftDevice and the BLE event interrupt.
@@ -1150,12 +843,14 @@ static void ble_stack_init(void)
     // Register a handler for BLE events.
     NRF_SDH_BLE_OBSERVER(m_ble_observer, APP_BLE_OBSERVER_PRIO, ble_evt_handler, NULL);
 }
-
 /**@brief Function for handling events from the button handler module.
  *
  * @param[in] pin_no        The pin that the event applies to.
  * @param[in] button_action The button action (press/release).
- *//*
+ */
+
+/*
+//button event for ble
 static void button_event_handler(uint8_t pin_no, uint8_t button_action)
 {
     ret_code_t err_code;
@@ -1178,27 +873,16 @@ static void button_event_handler(uint8_t pin_no, uint8_t button_action)
     }
 }
 */
+
 /**@brief Function for initializing the button handler module.
  */
 static void buttons_init(void)
-{/*
-    ret_code_t err_code;
-    //The array must be static because a pointer to it will be saved in the button handler module.
-    static app_button_cfg_t buttons[] =
-    {
-        {LEDBUTTON_BUTTON, false, BUTTON_PULL, button_event_handler}
-    };
-    err_code = app_button_init(buttons, sizeof(buttons) / sizeof(buttons[0]),
-                               BUTTON_DETECTION_DELAY);
-    APP_ERROR_CHECK(err_code);
-    */
-    
+{
     uint32_t err_code;
     
     err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, bsp_evt_handler);
     APP_ERROR_CHECK(err_code);
 }
-
 static void log_init(void)
 {
     ret_code_t err_code = NRF_LOG_INIT(NULL);
@@ -1206,7 +890,6 @@ static void log_init(void)
 
     NRF_LOG_DEFAULT_BACKENDS_INIT();
 }
-
 /**@brief Function for the Power Manager.
  */
 static void power_manage(void)
@@ -1214,7 +897,6 @@ static void power_manage(void)
     ret_code_t err_code = sd_app_evt_wait();
     APP_ERROR_CHECK(err_code);
 }
-
 /**@brief Function for application main entry.
  */
 int main(void)
@@ -1235,14 +917,32 @@ int main(void)
     st7586_pinout_setup();
     init();
     clear_noise();
+    st7586_write(ST_COMMAND,  0x38);
+    //plane();
+    block1(0xff,0xfc,0xe0,0x03,0x1f);
+    st7586_write(ST_COMMAND,  0x29);
     APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
     
+
     while (1)
     {
         app_sched_execute();
-        //bullet();
         NRF_LOG_FLUSH();
         __WFE();
+        
+        if(game_num == 1)   //Condition for operating Gallag
+        {
+            
+        }
+        
+        if(game_num ==2)   //Condition for operating Tetris
+        {
+            
+            //if(current_block_fixed) app_sched_event_put(NULL,0,new_block_down);
+            //if(blocks_make_lines) app_sched_event_put(NULL,0,remove_lines);
+            //if(blocks_to_ceilling) app_sched_event_put(NULL,0,game_over);
+        }
+        
         if (NRF_LOG_PROCESS() == false && ble_available)
         {
             power_manage();
