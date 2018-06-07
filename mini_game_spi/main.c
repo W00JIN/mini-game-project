@@ -273,11 +273,10 @@ void clear_block1()
 {
     int block_height = 7;
     //Enter by block pixel
-    set_location(x_block-3, 12, y_block - (block_height*2+2) -2, block_height*2+2 +2, 0x00);
+    set_location(x_block, 5, y_block - (block_height*2+2), block_height*2+2, 0x00);
 }
 void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
 {
-    clear_block1();
     
     int block_height = 7;
     //Enter by block pixel
@@ -316,13 +315,14 @@ void shoot_bullet(void * p_event_data, uint16_t event_size)
 void move_block_left(void * p_event_data, uint16_t event_size)
 {
     bsp_board_led_invert(0);
-    //x_block-=3;
-    y_block++;
+    clear_block1();
+    x_block-=3;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
 }
 void move_block_right(void * p_event_data, uint16_t event_size)
 {
     bsp_board_led_invert(0);
+    clear_block1();
     x_block+=3;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
 }
@@ -332,28 +332,35 @@ void spin_block(void * p_event_data, uint16_t event_size)
 }
 void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 {
-    
+    clear_block1();
+    if(y_block < 155 - ((section[x_block/3]*9) + 2) && y_block < 155 - ((section[(x_block/3)+1]*9) + 2))
+    {
+    y_block+=3;
+    }
+    block1(0xff,0xfc,0xe0,0x03,0x1f);
 }
 void drop_block(void * p_event_data, uint16_t event_size){
     clear_block1();
+    y_block++;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
-    nrf_delay_ms(30);
+    nrf_delay_ms(50);
 }
 int current_block_fixed()
 {
-    y_block++;
     app_sched_event_put (NULL, 0 ,drop_block);
     
-    if(y_block == 158 - ((section[x/3]*9) + 2) || y_block == 158 - ((section[x/3+1]*9) + 2))
+    if(y_block >= 158 - ((section[x_block/3]*9) + 2) || y_block >= 158 - ((section[(x_block/3)+1]*9) + 2))
     {
+        if(section[x_block/3]>section[(x_block/3)+1]) section[(x_block/3)+1] = section[x_block/3];
+        else section[x_block/3] = section[(x_block/3)+1];
         return 1;
     }
     else return 0;
 }
 void new_block_down(void * p_event_data, uint16_t event_size)
 {
-    section[x/3] += 2;
-    section[x/3+1] += 2;
+    section[x_block/3] += 2;
+    section[(x_block/3)+1] += 2;
     x_block = 0;
     y_block = 18;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
