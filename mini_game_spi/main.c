@@ -105,7 +105,7 @@ static volatile bool st7586_spi_xfer_done = false;                              
 #define RATIO_SPI0_LCD_CS                   31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
-int x = 17;
+int x = 18;
 int y = 120;
 int game_num = 2;
 int ble_available = 0;
@@ -115,8 +115,8 @@ int y_enemy1 = 40;
 int x_kau = 5;
 int y_kau = 0;
 
-int x_block=0;
-int y_block=18; //18 + 140 is end of screen
+int x_block=7;
+int y_block=18+30; //18 + 140 is end of screen
 
 int bullet_x;
 int bullet_y;
@@ -269,11 +269,128 @@ void plane(){
 	set_location(x+3, 0, y+16, 1, 0x1f);
 	set_location(x+2, 1, y+15, 0, 0xff);
 }
+void tetris_background()
+{
+    set_location(0,0x7f,0x00,0x9f,0xff);
+    
+    set_location(3,0,19,12,0x00);
+    set_location(3,0,32,127,0x92);
+    set_location(4,0,19,12,0x00);
+    set_location(4,0,32,127,0x49);
+    set_location(5,0,19,140,0x00);
+    set_location(37,0,19,140,0x00);
+    set_location(38,0,19,12,0x00);
+    set_location(38,0,32,127,0x49);
+    set_location(39,0,19,12,0x00);
+    set_location(39,0,32,127,0x52);
+    
+    set_location(6,0,32,127,0x11);
+    
+    set_location(7,29,32,127,0x49);
+    set_location(37,0,32,127,0x80);
+    
+    set_location(40,0,32,127,0x9f);
+    
+    
+    set_location(0,0x7f,159,0,0xff);
+    
+    set_location(2,0,31,0,0xfc);
+    set_location(6,0,31,0,0x1f);
+    set_location(36,0,31,0,0xfc);
+    set_location(40,0,31,0,0x1f);
+    
+    set_location(2,0,30,0,0xe0);
+    set_location(6,0,30,0,0x03);
+    set_location(36,0,30,0,0xe0);
+    set_location(40,0,30,0,0x03);
+    
+    set_location(2,0,29,0,0x00);
+    set_location(6,0,29,0,0x00);
+    set_location(36,0,29,0,0x00);
+    set_location(40,0,29,0,0x00);
+
+    set_location(1,0,28,0,0xfc);
+    set_location(2,0,28,0,0x00);
+    set_location(6,0,28,0,0x00);
+    set_location(7,0,28,0,0x1f);
+    set_location(35,0,28,0,0xfc);
+    set_location(36,0,28,0,0x00);
+    set_location(40,0,28,0,0x00);
+    set_location(41,0,28,0,0x1f);
+    
+    set_location(1,0,27,0,0xe0);
+    set_location(2,0,27,0,0x00);
+    set_location(6,0,27,0,0x00);
+    set_location(7,0,27,0,0x03);
+    set_location(35,0,27,0,0xe0);
+    set_location(36,0,27,0,0x00);
+    set_location(40,0,27,0,0x00);
+    set_location(41,0,27,0,0x03);
+    
+    set_location(1,0,23,3,0x00);
+    set_location(2,0,23,3,0x00);
+    set_location(6,0,23,3,0x00);
+    set_location(7,0,23,3,0x00);
+    set_location(35,0,23,3,0x00);
+    set_location(36,0,23,3,0x00);
+    set_location(40,0,23,3,0x00);
+    set_location(41,0,23,3,0x00);
+    
+    set_location(1,0,22,0,0xe0);
+    set_location(2,0,22,0,0x00);
+    set_location(6,0,22,0,0x00);
+    set_location(7,0,22,0,0x03);
+    set_location(35,0,22,0,0xe0);
+    set_location(36,0,22,0,0x00);
+    set_location(40,0,22,0,0x00);
+    set_location(41,0,22,0,0x03);
+    
+    set_location(1,0,21,0,0xfc);
+    set_location(2,0,21,0,0x00);
+    set_location(6,0,21,0,0x00);
+    set_location(7,0,21,0,0x1f);
+    set_location(35,0,21,0,0xfc);
+    set_location(36,0,21,0,0x00);
+    set_location(40,0,21,0,0x00);
+    set_location(41,0,21,0,0x1f);
+    
+    set_location(2,0,20,0,0x00);
+    set_location(6,0,20,0,0x00);
+    set_location(36,0,20,0,0x00);
+    set_location(40,0,20,0,0x00);
+    
+    set_location(2,0,19,0,0xfc);
+    set_location(6,0,19,0,0x1f);
+    set_location(36,0,19,0,0xfc);
+    set_location(40,0,19,0,0x1f);
+    
+    set_location(3,0,18,0,0x00);
+    set_location(4,0,18,0,0x00);
+    set_location(5,0,18,0,0x00);
+    set_location(37,0,18,0,0x00);
+    set_location(38,0,18,0,0x00);
+    set_location(39,0,18,0,0x00);
+    
+    
+    set_location(3,0,17,0,0xfc);
+    set_location(4,0,17,0,0x00);
+    set_location(5,0,17,0,0x1f);
+    set_location(37,0,17,0,0xfc);
+    set_location(38,0,17,0,0x00);
+    set_location(39,0,17,0,0x1f);
+    
+    set_location(4,0,16,0,0x00);
+    set_location(38,0,16,0,0x00);
+    
+    set_location(4,0,15,0,0xe3);
+    set_location(38,0,15,0,0xe3);
+    
+}
 void clear_block1()
 {
     int block_height = 7;
     //Enter by block pixel
-    set_location(x_block, 5, y_block - (block_height*2+2), block_height*2+2, 0x00);
+    set_location(x_block, 5, y_block - (block_height*2+2), block_height*2+2, 0x49);
 }
 void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
 {
@@ -298,13 +415,13 @@ void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
 void move_gallag_left(void * p_event_data, uint16_t event_size)
 {
 	bsp_board_led_invert(0);
-	x-=2;
+    if(x>0) x-=2;
 	plane();
 }
 void move_gallag_right(void * p_event_data, uint16_t event_size)
 {
 	bsp_board_led_invert(0);
-	x+=2;
+	if(x<43) x+=2;
 	plane();
 }
 void shoot_bullet(void * p_event_data, uint16_t event_size)
@@ -315,16 +432,22 @@ void shoot_bullet(void * p_event_data, uint16_t event_size)
 void move_block_left(void * p_event_data, uint16_t event_size)
 {
     bsp_board_led_invert(0);
-    clear_block1();
-    x_block-=3;
-    block1(0xff,0xfc,0xe0,0x03,0x1f);
+    if(x_block > 7)
+    {
+        clear_block1();
+        x_block-=3;
+        block1(0xff,0xfc,0xe0,0x03,0x1f);
+    }
 }
 void move_block_right(void * p_event_data, uint16_t event_size)
 {
     bsp_board_led_invert(0);
-    clear_block1();
-    x_block+=3;
-    block1(0xff,0xfc,0xe0,0x03,0x1f);
+    if(x_block < 30)
+    {
+        clear_block1();
+        x_block+=3;
+        block1(0xff,0xfc,0xe0,0x03,0x1f);
+    }
 }
 void spin_block(void * p_event_data, uint16_t event_size)
 {
@@ -343,7 +466,7 @@ void drop_block(void * p_event_data, uint16_t event_size){
     clear_block1();
     y_block++;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
-    nrf_delay_ms(50);
+    nrf_delay_ms(100);
 }
 int current_block_fixed()
 {
@@ -361,8 +484,8 @@ void new_block_down(void * p_event_data, uint16_t event_size)
 {
     section[x_block/3] += 2;
     section[(x_block/3)+1] += 2;
-    x_block = 0;
-    y_block = 18;
+    x_block = 19;
+    y_block = 18+30;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
 }
 /**@brief Function for handling bsp events.
@@ -953,6 +1076,9 @@ int main(void)
     clear_noise();
     st7586_write(ST_COMMAND,  0x38);
     //plane();
+    
+    //block1(0xff,0xfc,0xe0,0x03,0x1f);
+    tetris_background();
     block1(0xff,0xfc,0xe0,0x03,0x1f);
     st7586_write(ST_COMMAND,  0x29);
     APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
