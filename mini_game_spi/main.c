@@ -91,18 +91,18 @@
 #include "nordic_common.h"
 #include "nrf_error.h"
 
-#define ST7586_SPI_INSTANCE  0										                    /**< SPI instance index. */
+#define ST7586_SPI_INSTANCE  0                                                          /**< SPI instance index. */
 static const nrf_drv_spi_t st7586_spi = NRF_DRV_SPI_INSTANCE(ST7586_SPI_INSTANCE);  	/**< SPI instance. */
-static volatile bool st7586_spi_xfer_done = false;  						            /**< Flag used to indicate that SPI instance completed the transfer. */
+static volatile bool st7586_spi_xfer_done = false;                                      /**< Flag used to indicate that SPI instance completed the transfer. */
 
-#define ST_COMMAND			0
-#define ST_DATA			    1
+#define ST_COMMAND          0
+#define ST_DATA             1
 
-#define RATIO_SPI0_LCD_SCK          		4
-#define RATIO_SPI0_LCD_A0		    	    28
-#define RATIO_SPI0_LCD_MOSI		    	    29
-#define RATIO_SPI0_LCD_BSTB		    	    30
-#define RATIO_SPI0_LCD_CS			        31
+#define RATIO_SPI0_LCD_SCK                  4
+#define RATIO_SPI0_LCD_A0                   28
+#define RATIO_SPI0_LCD_MOSI                 29
+#define RATIO_SPI0_LCD_BSTB                 30
+#define RATIO_SPI0_LCD_CS                   31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
 int x = 17;
@@ -116,10 +116,12 @@ int x_kau = 5;
 int y_kau = 0;
 
 int x_block=0;
-int y_block=18;
+int y_block=18; //18 + 140 is end of screen
 
 int bullet_x;
 int bullet_y;
+
+int section[16] = {0};
 
 bool fire = true; //variable that became true when bullet flying.
 
@@ -271,7 +273,7 @@ void clear_block1()
 {
     int block_height = 7;
     //Enter by block pixel
-    set_location(x_block-3, 12, y_block, block_height*2+2, 0x00);
+    set_location(x_block-3, 12, y_block - (block_height*2+2) -2, block_height*2+2 +2, 0x00);
 }
 void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
 {
@@ -279,17 +281,17 @@ void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
     
     int block_height = 7;
     //Enter by block pixel
-    set_location(x_block, 1, y_block, block_height, dot_111);
-    set_location(x_block+2, 0, y_block, block_height, dot_110);
+    set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+    set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
     
-    set_location(x_block+3, 1, y_block,block_height, dot_111);
-    set_location(x_block+5, 0, y_block,block_height, dot_110);
+    set_location(x_block+3, 1, y_block - (block_height*2+2),block_height, dot_111);
+    set_location(x_block+5, 0, y_block - (block_height*2+2),block_height, dot_110);
     
-    set_location(x_block, 1, y_block + block_height +2, block_height, dot_111);
-    set_location(x_block+2, 0, y_block + block_height +2, block_height, dot_110);
+    set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+    set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
     
-    set_location(x_block+3, 1, y_block + block_height +2, block_height, dot_111);
-    set_location(x_block+5, 0, y_block + block_height +2, block_height, dot_110);
+    set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+    set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
 }
 
 /**@brief Function for btn event to send scheduler
@@ -314,7 +316,8 @@ void shoot_bullet(void * p_event_data, uint16_t event_size)
 void move_block_left(void * p_event_data, uint16_t event_size)
 {
     bsp_board_led_invert(0);
-    x_block-=3;
+    //x_block-=3;
+    y_block++;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
 }
 void move_block_right(void * p_event_data, uint16_t event_size)
@@ -330,6 +333,30 @@ void spin_block(void * p_event_data, uint16_t event_size)
 void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 {
     
+}
+void drop_block(void * p_event_data, uint16_t event_size){
+    clear_block1();
+    block1(0xff,0xfc,0xe0,0x03,0x1f);
+    nrf_delay_ms(30);
+}
+int current_block_fixed()
+{
+    y_block++;
+    app_sched_event_put (NULL, 0 ,drop_block);
+    
+    if(y_block == 158 - ((section[x/3]*9) + 2) || y_block == 158 - ((section[x/3+1]*9) + 2))
+    {
+        return 1;
+    }
+    else return 0;
+}
+void new_block_down(void * p_event_data, uint16_t event_size)
+{
+    section[x/3] += 2;
+    section[x/3+1] += 2;
+    x_block = 0;
+    y_block = 18;
+    block1(0xff,0xfc,0xe0,0x03,0x1f);
 }
 /**@brief Function for handling bsp events.
  */
@@ -934,11 +961,9 @@ int main(void)
         {
             
         }
-        
         if(game_num ==2)   //Condition for operating Tetris
         {
-            
-            //if(current_block_fixed) app_sched_event_put(NULL,0,new_block_down);
+            if(current_block_fixed()) app_sched_event_put(NULL,0,new_block_down);
             //if(blocks_make_lines) app_sched_event_put(NULL,0,remove_lines);
             //if(blocks_to_ceilling) app_sched_event_put(NULL,0,game_over);
         }
