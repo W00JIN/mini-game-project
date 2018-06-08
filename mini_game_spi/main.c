@@ -107,23 +107,27 @@ static volatile bool st7586_spi_xfer_done = false;                              
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
 int x = 18;
 int y = 120;
-int game_num = 2;
+int game_num = 1;
 int ble_available = 0;
 int x_enemy1 = 15;
 int y_enemy1 = 40;
 
-int x_kau = 5;
+int x_kau = 0;
 int y_kau = 0;
+int hp_k = 6;
+int hp_a = 6;
+int hp_u = 6;
+
 
 int x_block=7;
 int y_block=18+30; //18 + 140 is end of screen
 
-int bullet_x;
-int bullet_y;
+int x_bullet = 0;
+int y_bullet = 200;
 
 int section[16] = {0};
 
-bool fire = true; //variable that became true when bullet flying.
+bool fire = false; //variable that became true when bullet flying.
 
 static unsigned char rx_data;
 nrf_drv_spi_evt_t const * p;
@@ -186,6 +190,228 @@ static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        
  * @param[in] line_num    Line number of the failing ASSERT call.
  * @param[in] p_file_name File name of the failing ASSERT call.
  */
+void st7586_write(const uint8_t category, const uint8_t data);
+void set_location(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize, uint8_t dot_num_and_color);
+
+void set_location2(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize);
+
+//using set_location
+void bullet();
+//using set_location
+void clear_gallag();
+
+//using set_location
+void plane();
+
+void kau();
+void is_k_alive();
+void clear_k();
+
+void is_a_alive();
+
+void is_u_alive();
+
+
+void gallag_background();
+
+void tetris_background();
+void clear_block1();
+void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
+
+/**@brief Function for btn event to send scheduler
+ */
+void move_gallag_left(void * p_event_data, uint16_t event_size);
+void move_gallag_right(void * p_event_data, uint16_t event_size);
+void shoot_bullet(void * p_event_data, uint16_t event_size);
+void move_block_left(void * p_event_data, uint16_t event_size);
+void move_block_right(void * p_event_data, uint16_t event_size);
+void spin_block(void * p_event_data, uint16_t event_size);
+void accelerate_block_velocity(void * p_event_data, uint16_t event_size);
+void drop_block(void * p_event_data, uint16_t event_size);
+int current_block_fixed();
+void new_block_down(void * p_event_data, uint16_t event_size);
+/**@brief Function for handling bsp events.
+ */
+void bsp_evt_handler(bsp_event_t evt);
+
+/**@brief Function for initializing low frequency clock.
+ */
+void clock_initialization();
+
+/**@brief Function for initializing bsp module.
+ */
+void bsp_configuration();
+void spi_event_handler(nrf_drv_spi_evt_t const * p_event, void * p_context);
+static inline void st7586_pinout_setup();
+void init();
+void clear_noise();
+void led_invert();
+void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name);
+/**@brief Function for the LEDs initialization.
+ *
+ * @details Initializes all LEDs used by the application.
+ */
+static void leds_init(void);
+/**@brief Function for the Timer initialization.
+ *
+ * @details Initializes the timer module.
+ */
+static void timers_init(void);
+
+/**@brief Function for the GAP initialization.
+ *
+ * @details This function sets up all the necessary GAP (Generic Access Profile) parameters of the
+ *          device including the device name, appearance, and the preferred connection parameters.
+ */
+static void gap_params_init(void);
+/**@brief Function for initializing the GATT module.
+ */
+static void gatt_init(void);
+
+/**@brief Function for initializing the Advertising functionality.
+ *
+ * @details Encodes the required advertising data and passes it to the stack.
+ *          Also builds a structure to be passed to the stack when starting advertising.
+ */
+static void advertising_init(void);
+void start_gallag(void * p_event_data, uint16_t event_size);
+
+/**@brief Function for handling write events to the LED characteristic.
+ *
+ * @param[in] p_lbs     Instance of LED Button Service to which the write applies.
+ * @param[in] led_state Written/desired state of the LED.
+ */
+static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, uint8_t led_state);
+/**@brief Function for initializing services that will be used by the application.
+ */
+static void services_init(void);
+/**@brief Function for handling the Connection Parameters Module.
+ *
+ * @details This function will be called for all events in the Connection Parameters Module that
+ *          are passed to the application.
+ *
+ * @note All this function does is to disconnect. This could have been done by simply
+ *       setting the disconnect_on_fail config parameter, but instead we use the event
+ *       handler mechanism to demonstrate its use.
+ *
+ * @param[in] p_evt  Event received from the Connection Parameters Module.
+ */
+static void on_conn_params_evt(ble_conn_params_evt_t * p_evt);
+/**@brief Function for handling a Connection Parameters error.
+ *
+ * @param[in] nrf_error  Error code containing information about what went wrong.
+ */
+static void conn_params_error_handler(uint32_t nrf_error);
+/**@brief Function for initializing the Connection Parameters module.
+ */
+static void conn_params_init(void);
+/**@brief Function for starting advertising.
+ */
+static void advertising_start(void);
+/**@brief Function for handling BLE events.
+ *
+ * @param[in]   p_ble_evt   Bluetooth stack event.
+ * @param[in]   p_context   Unused.
+ */
+static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context);
+/**@brief Function for initializing the BLE stack.
+ *
+ * @details Initializes the SoftDevice and the BLE event interrupt.
+ */
+static void ble_stack_init(void);
+
+
+/**@brief Function for initializing the button handler module.
+ */
+static void buttons_init(void);
+static void log_init(void);
+/**@brief Function for the Power Manager.
+ */
+static void power_manage(void);
+/**@brief Function for application main entry.
+ */
+int main(void)
+{
+    // Initialize.
+    leds_init();
+    timers_init();
+    log_init();
+    buttons_init();
+    ble_stack_init();
+    gap_params_init();
+    gatt_init();
+    services_init();
+    advertising_init();
+    conn_params_init();
+    
+    advertising_start();
+    st7586_pinout_setup();
+    init();
+    clear_noise();
+    st7586_write(ST_COMMAND,  0x38);
+    //plane();
+    
+    //block1(0xff,0xfc,0xe0,0x03,0x1f);
+    if(game_num == 2)
+    {
+        tetris_background();
+        block1(0xff,0xfc,0xe0,0x03,0x1f);
+    }
+    else if(game_num == 1)
+    {
+        gallag_background();
+        kau();
+        plane();
+    }
+
+
+
+    st7586_write(ST_COMMAND,  0x29);
+    APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
+    
+
+    while (1)
+    {
+        app_sched_execute(); //이벤트큐 실행
+        NRF_LOG_FLUSH();
+        __WFE();
+        
+        if(game_num == 1)   //Condition for operating Gallag
+        {
+            if(fire)
+            {
+                led_invert();
+                bullet();
+            }
+            if(hp_k) is_k_alive();
+            if(hp_a) is_a_alive();
+            if(hp_u) is_u_alive();
+        }
+        if(game_num ==2)   //Condition for operating Tetris
+        {
+            if(current_block_fixed()) app_sched_event_put(NULL,0,new_block_down);
+            //if(blocks_make_lines) app_sched_event_put(NULL,0,remove_lines);
+            //if(blocks_to_ceilling) app_sched_event_put(NULL,0,game_over);
+        }
+        
+        if (NRF_LOG_PROCESS() == false && ble_available)
+        {
+            power_manage();
+        }
+    }
+}
+
+/**@brief Function for assert macro callback.
+ *
+ * @details This function will be called in case of an assert in the SoftDevice.
+ *
+ * @warning This handler is an example only and does not fit a final product. You need to analyze
+ *          how your product is supposed to react in case of Assert.
+ * @warning On assert from the SoftDevice, the system can only recover on reset.
+ *
+ * @param[in] line_num    Line number of the failing ASSERT call.
+ * @param[in] p_file_name File name of the failing ASSERT call.
+ */
 void st7586_write(const uint8_t category, const uint8_t data)
 {
 	int err_code;
@@ -221,25 +447,43 @@ void set_location(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize, uint8_t 
         }
     }
 }
-//using set_location
-void bullet()
+
+void set_location2(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize)
 {
-    int st = y-3;
-    while(st>0)
-    {
-        set_location(x+2,0,st-10,10,0xff);
-        nrf_delay_ms(6);
-        set_location(x+2,0,st-10,10,0x00);
-        st -= 3;
-    }
-}
-//using set_location
-void clear_gallag(){
-	set_location(x-2, 9, y-4, 25, 0x00);
+    st7586_write(ST_COMMAND,  0x2A); 	        //set column
+    st7586_write(ST_DATA, 0x00);
+    st7586_write(ST_DATA, cs);
+    st7586_write(ST_DATA, 0x00);
+    st7586_write(ST_DATA, cs + csize);
+    
+    st7586_write(ST_COMMAND,  0x2B); 	        //set row
+    st7586_write(ST_DATA, 0x00);
+    st7586_write(ST_DATA, rs);
+    st7586_write(ST_DATA, 0x00);
+    st7586_write(ST_DATA, rs + rsize);
+    
+    st7586_write(ST_COMMAND,  0x2c);
 }
 
 //using set_location
-void plane(){	
+void bullet()
+{
+    set_location(x_bullet+2,0,y_bullet-10,10,0xff);
+    set_location(x_bullet+2,0,y_bullet-10,10,0x00);
+    
+    y_bullet -= 1;
+    if(y_bullet < 0)
+        fire = false;
+    
+}
+//using set_location
+void clear_gallag(){
+	set_location(x-2, 9, 116, 25, 0x00);
+}
+
+//using set_location
+void plane()
+{	
 	clear_gallag();
     
 	set_location(x+2, 0, y, 3, 0x03);
@@ -269,6 +513,105 @@ void plane(){
 	set_location(x+3, 0, y+16, 1, 0x1f);
 	set_location(x+2, 1, y+15, 0, 0xff);
 }
+
+void kau()
+{
+    int a,b;
+    a = x_kau;
+    b = y_kau;
+    hp_a = 6;
+    hp_k = 6;
+    hp_u = 6;
+    //K
+    set_location(a, 3, b, 70, 0xff);
+    for(int i = 0; i < 45; i++)
+    {
+        set_location((a+10) - (i/4), 2, b+i, 9, 0xff);
+    }
+    b += 22;
+    for(int i = 0; i < 40; i++)
+    {
+        set_location(a + (i/4), 2, b+i, 9, 0xff);
+    }
+    //A
+    b = 0;
+    a += 14;
+    for(int i = 0; i < 70; i++)
+    {
+        set_location(a+5-(i/10), 2, b+i,1,0xff);
+    }
+
+    for(int i = 0; i < 70; i++)
+    {
+        set_location(a+5+(i/10), 2, b+i,1,0xff);
+    }
+
+    set_location(a+2, 6, b + 40, 7, 0xff);
+
+    //U
+    a += 15;
+    set_location(a,2,b,65,0xff);
+    set_location(39,2,b,65,0xff);
+    set_location(a+2,8,b+60,8,0xff);
+
+}
+
+void is_k_alive()
+{
+    if((y_bullet < 79) && (x_bullet < 13))
+    {
+        hp_k--;
+        fire = false;
+        y_bullet = 200;
+        if(hp_k == 0)    
+            set_location(0,12,0,70,0x00);
+
+    }
+}
+
+void is_a_alive()
+{
+    if((y_bullet < 79)&& (13<x_bullet) && (x_bullet < 25))
+    {
+        hp_a--;
+        fire = false;
+        y_bullet = 200;
+        if(hp_a == 0)
+            set_location(13,14,0,70,0x00);
+    }
+}
+
+void is_u_alive()
+{
+    if((y_bullet < 79)&& (25<x_bullet))
+    {
+        hp_u--;
+        fire = false;
+        y_bullet = 200;
+        if(hp_u == 0)
+            set_location(24,17,0,70,0x00);
+    }
+}
+
+void gallag_background()
+{
+    for(int i = 0; i < 5; i++)
+    {
+        set_location2(3+i*4,0,145+i,2);
+        st7586_write(ST_DATA,0x1c);
+        st7586_write(ST_DATA,0xff);
+        st7586_write(ST_DATA,0x1c);
+    }
+
+    for(int i = 0; i < 5; i++)
+    {
+        set_location2(39-i*4,0,150+i,2);
+        st7586_write(ST_DATA,0x1c);
+        st7586_write(ST_DATA,0xff);
+        st7586_write(ST_DATA,0x1c);
+    }
+}
+
 void tetris_background()
 {
     set_location(0,0x7f,0x00,0x9f,0xff);
@@ -427,7 +770,9 @@ void move_gallag_right(void * p_event_data, uint16_t event_size)
 void shoot_bullet(void * p_event_data, uint16_t event_size)
 {
 	bsp_board_led_invert(1);
-	bullet();
+    x_bullet = x;
+    y_bullet = y-3;
+    fire = true;
 }
 void move_block_left(void * p_event_data, uint16_t event_size)
 {
@@ -462,7 +807,8 @@ void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
     }
     block1(0xff,0xfc,0xe0,0x03,0x1f);
 }
-void drop_block(void * p_event_data, uint16_t event_size){
+void drop_block(void * p_event_data, uint16_t event_size)
+{
     clear_block1();
     y_block++;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
@@ -658,7 +1004,7 @@ void led_invert()
 {
 	for (int i = 0; i < 4; i++){
             bsp_board_led_invert(i);
-            nrf_delay_ms(500);
+            //nrf_delay_ms(500);
         }
 }
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
@@ -1053,57 +1399,4 @@ static void power_manage(void)
 {
     ret_code_t err_code = sd_app_evt_wait();
     APP_ERROR_CHECK(err_code);
-}
-/**@brief Function for application main entry.
- */
-int main(void)
-{
-    // Initialize.
-    leds_init();
-    timers_init();
-    log_init();
-    buttons_init();
-    ble_stack_init();
-    gap_params_init();
-    gatt_init();
-    services_init();
-    advertising_init();
-    conn_params_init();
-    
-    advertising_start();
-    st7586_pinout_setup();
-    init();
-    clear_noise();
-    st7586_write(ST_COMMAND,  0x38);
-    //plane();
-    
-    //block1(0xff,0xfc,0xe0,0x03,0x1f);
-    tetris_background();
-    block1(0xff,0xfc,0xe0,0x03,0x1f);
-    st7586_write(ST_COMMAND,  0x29);
-    APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
-    
-
-    while (1)
-    {
-        app_sched_execute();
-        NRF_LOG_FLUSH();
-        __WFE();
-        
-        if(game_num == 1)   //Condition for operating Gallag
-        {
-            
-        }
-        if(game_num ==2)   //Condition for operating Tetris
-        {
-            if(current_block_fixed()) app_sched_event_put(NULL,0,new_block_down);
-            //if(blocks_make_lines) app_sched_event_put(NULL,0,remove_lines);
-            //if(blocks_to_ceilling) app_sched_event_put(NULL,0,game_over);
-        }
-        
-        if (NRF_LOG_PROCESS() == false && ble_available)
-        {
-            power_manage();
-        }
-    }
 }
