@@ -105,12 +105,25 @@ static volatile bool st7586_spi_xfer_done = false;                              
 #define RATIO_SPI0_LCD_CS                   31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
+#define TIME    20
 int x = 18;
 int y = 120;
+int hp_gallag = 5;
 int game_num = 1;
 int ble_available = 0;
+
+
 int x_enemy1 = 15;
 int y_enemy1 = 40;
+int enemy_bullet_end = 0;
+int enemy_bullet_start = 0;
+int x_bullet_enemy[10];
+int y_bullet_enemy[10];
+int bullet_des_enemy[10];
+int hp_enemy1 = 3;
+bool move_enemy1 = true;
+int fire_enemy = 0;
+
 
 int x_kau = 0;
 int y_kau = 0;
@@ -128,6 +141,8 @@ int y_bullet = 200;
 int section[16] = {0};
 
 bool fire = false; //variable that became true when bullet flying.
+
+unsigned long long frame = 0;
 
 static unsigned char rx_data;
 nrf_drv_spi_evt_t const * p;
@@ -179,47 +194,27 @@ NRF_BLE_GATT_DEF(m_gatt);                                                       
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
 
-/**@brief Function for assert macro callback.
- *
- * @details This function will be called in case of an assert in the SoftDevice.
- *
- * @warning This handler is an example only and does not fit a final product. You need to analyze
- *          how your product is supposed to react in case of Assert.
- * @warning On assert from the SoftDevice, the system can only recover on reset.
- *
- * @param[in] line_num    Line number of the failing ASSERT call.
- * @param[in] p_file_name File name of the failing ASSERT call.
- */
 void st7586_write(const uint8_t category, const uint8_t data);
 void set_location(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize, uint8_t dot_num_and_color);
-
 void set_location2(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize);
-
-//using set_location
 void bullet();
-//using set_location
 void clear_gallag();
-
-//using set_location
 void plane();
-
+void enemy1();
+void is_enemy1_alive();
+void shoot_enemy();
+void bullet_enemy();
+bool got_shot(int x_, int y_);
+void end_game();
 void kau();
 void is_k_alive();
 void clear_k();
-
 void is_a_alive();
-
 void is_u_alive();
-
-
 void gallag_background();
-
 void tetris_background();
 void clear_block1();
 void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
-
-/**@brief Function for btn event to send scheduler
- */
 void move_gallag_left(void * p_event_data, uint16_t event_size);
 void move_gallag_right(void * p_event_data, uint16_t event_size);
 void shoot_bullet(void * p_event_data, uint16_t event_size);
@@ -230,16 +225,8 @@ void accelerate_block_velocity(void * p_event_data, uint16_t event_size);
 void drop_block(void * p_event_data, uint16_t event_size);
 int current_block_fixed();
 void new_block_down(void * p_event_data, uint16_t event_size);
-/**@brief Function for handling bsp events.
- */
 void bsp_evt_handler(bsp_event_t evt);
-
-/**@brief Function for initializing low frequency clock.
- */
 void clock_initialization();
-
-/**@brief Function for initializing bsp module.
- */
 void bsp_configuration();
 void spi_event_handler(nrf_drv_spi_evt_t const * p_event, void * p_context);
 static inline void st7586_pinout_setup();
@@ -247,89 +234,23 @@ void init();
 void clear_noise();
 void led_invert();
 void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name);
-/**@brief Function for the LEDs initialization.
- *
- * @details Initializes all LEDs used by the application.
- */
 static void leds_init(void);
-/**@brief Function for the Timer initialization.
- *
- * @details Initializes the timer module.
- */
 static void timers_init(void);
-
-/**@brief Function for the GAP initialization.
- *
- * @details This function sets up all the necessary GAP (Generic Access Profile) parameters of the
- *          device including the device name, appearance, and the preferred connection parameters.
- */
 static void gap_params_init(void);
-/**@brief Function for initializing the GATT module.
- */
 static void gatt_init(void);
-
-/**@brief Function for initializing the Advertising functionality.
- *
- * @details Encodes the required advertising data and passes it to the stack.
- *          Also builds a structure to be passed to the stack when starting advertising.
- */
 static void advertising_init(void);
 void start_gallag(void * p_event_data, uint16_t event_size);
-
-/**@brief Function for handling write events to the LED characteristic.
- *
- * @param[in] p_lbs     Instance of LED Button Service to which the write applies.
- * @param[in] led_state Written/desired state of the LED.
- */
 static void led_write_handler(uint16_t conn_handle, ble_lbs_t * p_lbs, uint8_t led_state);
-/**@brief Function for initializing services that will be used by the application.
- */
 static void services_init(void);
-/**@brief Function for handling the Connection Parameters Module.
- *
- * @details This function will be called for all events in the Connection Parameters Module that
- *          are passed to the application.
- *
- * @note All this function does is to disconnect. This could have been done by simply
- *       setting the disconnect_on_fail config parameter, but instead we use the event
- *       handler mechanism to demonstrate its use.
- *
- * @param[in] p_evt  Event received from the Connection Parameters Module.
- */
 static void on_conn_params_evt(ble_conn_params_evt_t * p_evt);
-/**@brief Function for handling a Connection Parameters error.
- *
- * @param[in] nrf_error  Error code containing information about what went wrong.
- */
 static void conn_params_error_handler(uint32_t nrf_error);
-/**@brief Function for initializing the Connection Parameters module.
- */
 static void conn_params_init(void);
-/**@brief Function for starting advertising.
- */
 static void advertising_start(void);
-/**@brief Function for handling BLE events.
- *
- * @param[in]   p_ble_evt   Bluetooth stack event.
- * @param[in]   p_context   Unused.
- */
 static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context);
-/**@brief Function for initializing the BLE stack.
- *
- * @details Initializes the SoftDevice and the BLE event interrupt.
- */
 static void ble_stack_init(void);
-
-
-/**@brief Function for initializing the button handler module.
- */
 static void buttons_init(void);
 static void log_init(void);
-/**@brief Function for the Power Manager.
- */
 static void power_manage(void);
-/**@brief Function for application main entry.
- */
 int main(void)
 {
     // Initialize.
@@ -360,19 +281,19 @@ int main(void)
     else if(game_num == 1)
     {
         gallag_background();
-        kau();
+        //kau();
         plane();
     }
-
 
 
     st7586_write(ST_COMMAND,  0x29);
     APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
     
+    hp_a = 0;    hp_k = 0;    hp_u = 0;  //for fast debug
 
     while (1)
     {
-        app_sched_execute(); //이벤트큐 실행
+        app_sched_execute(); 
         NRF_LOG_FLUSH();
         __WFE();
         
@@ -386,6 +307,33 @@ int main(void)
             if(hp_k) is_k_alive();
             if(hp_a) is_a_alive();
             if(hp_u) is_u_alive();
+            if(!hp_k && !hp_a && !hp_u)
+            {
+                if(frame % (TIME*50) == 0)
+                {                    
+                    if(fire_enemy)
+                    {
+                        //bullet_enemy();
+                    }
+                }
+                if(frame % (TIME*10) == 0)  //excuted about every 0.2sec. 
+                {
+                    if(hp_enemy1 >= 0)  //if enemy1 alive
+                    {
+                        is_enemy1_alive();
+                    }
+                }
+                if(frame % (TIME*5000)) //executed about every 10sec
+                {
+                    if(hp_enemy1 >= 0)   //enemy1 shoot
+                    {
+                        shoot_enemy();
+                    }
+                }
+                
+
+
+            }
         }
         if(game_num ==2)   //Condition for operating Tetris
         {
@@ -398,6 +346,7 @@ int main(void)
         {
             power_manage();
         }
+        frame += 1;
     }
 }
 
@@ -474,6 +423,17 @@ void bullet()
     y_bullet -= 1;
     if(y_bullet < 0)
         fire = false;
+    //
+    if((x_enemy1 <= x_bullet)&&(x_bullet <= (x_enemy1+3))&&((y_enemy1-9) < y_bullet)&&(y_bullet < y_enemy1))
+    {
+        hp_enemy1--;
+        if(hp_enemy1 <= 0)
+        {
+            set_location(0,0,0,3,0xff);     //for debug
+            set_location(x_enemy1,3,y_enemy1,9,0x00);
+        }
+        fire = false;
+    }
     
 }
 //using set_location
@@ -512,6 +472,73 @@ void plane()
 	set_location(x+4, 0, y+16, 1, 0xfc);
 	set_location(x+3, 0, y+16, 1, 0x1f);
 	set_location(x+2, 1, y+15, 0, 0xff);
+}
+
+void enemy1()
+{
+    set_location(x_enemy1,3,y_enemy1,9,0xff);
+}
+void is_enemy1_alive()
+{
+    set_location(x_enemy1, 3, y_enemy1, 9, 0x00); //erase previous enemy1
+    if(move_enemy1)
+        x_enemy1 += 1;                        
+    else
+        x_enemy1 -= 1;
+    enemy1();
+    if( x_enemy1 > 40)
+        move_enemy1 = false;
+    if( x_enemy1 < 1)
+        move_enemy1 = true;
+}
+void shoot_enemy()
+{
+    bullet_des_enemy[enemy_bullet_end%10] = (x-x_enemy1)/(y-y_enemy1);
+    x_bullet_enemy[enemy_bullet_end%10] = x_enemy1;
+    y_bullet_enemy[enemy_bullet_end%10] = y_enemy1+5;
+    enemy_bullet_end++;
+    fire_enemy++;
+}
+void bullet_enemy()
+{
+    for(int i = 0; i < fire_enemy; i++)
+    {
+        set_location(x_bullet_enemy[(enemy_bullet_end + i)%10],0,y_bullet_enemy[(enemy_bullet_end + i)%10],2,0x00);  //erase previous bullet_enemy_1
+        y_bullet_enemy[(enemy_bullet_end + i)%10]++;
+        if((y_bullet_enemy[(enemy_bullet_end + i)%10] % bullet_des_enemy[(enemy_bullet_end + i)%10]) == 0)
+            x_bullet_enemy[(enemy_bullet_end + i)%10]++;
+        set_location2(x_bullet_enemy[(enemy_bullet_end + i)%10],0,y_bullet_enemy[(enemy_bullet_end + i)%10],2);
+        st7586_write(ST_DATA,0x1c);
+        st7586_write(ST_DATA,0xff);
+        st7586_write(ST_DATA,0x1c);
+        if(got_shot(x_bullet_enemy[(enemy_bullet_end + i)%10], y_bullet_enemy[(enemy_bullet_end + i)%10]) || (y_bullet_enemy[(enemy_bullet_end + i)%10] >= 160))
+        {
+            fire_enemy--;
+            enemy_bullet_end++;
+        }
+
+    }
+}
+
+bool got_shot(int x_, int y_)
+{
+    if((x+1 < x_) && (x_ < x+5) && (y+4 < y_) && (y_ < y+10))
+    {
+        hp_gallag--;
+        if(hp_gallag <= 0)
+        {
+            end_game();
+        }
+        return true;
+    }
+    return false;
+
+}
+
+void end_game()
+{
+    //should be implimented
+    set_location(10,20,30,100,0xff);
 }
 
 void kau()
