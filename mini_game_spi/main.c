@@ -115,8 +115,6 @@ int ble_available = 0;
 
 int x_enemy1 = 15;
 int y_enemy1 = 40;
-int enemy_bullet_end = 0;
-int enemy_bullet_start = 0;
 int x_bullet_enemy[10];
 int y_bullet_enemy[10];
 int bullet_des_enemy[10];
@@ -202,7 +200,7 @@ void clear_gallag();
 void plane();
 void enemy1();
 void is_enemy1_alive();
-void shoot_enemy();
+void shoot_enemy(int num);
 void bullet_enemy();
 bool got_shot(int x_, int y_);
 void end_game();
@@ -313,7 +311,7 @@ int main(void)
                 {                    
                     if(fire_enemy)
                     {
-                        //bullet_enemy();
+                        bullet_enemy();
                     }
                 }
                 if(frame % (TIME*10) == 0)  //excuted about every 0.2sec. 
@@ -325,9 +323,9 @@ int main(void)
                 }
                 if(frame % (TIME*5000)) //executed about every 10sec
                 {
-                    if(hp_enemy1 >= 0)   //enemy1 shoot
+                    if((hp_enemy1 >= 0)&&(fire_enemy < 2))   //enemy1 shoot
                     {
-                        shoot_enemy();
+                        shoot_enemy(fire_enemy-1);
                     }
                 }
                 
@@ -491,32 +489,29 @@ void is_enemy1_alive()
     if( x_enemy1 < 1)
         move_enemy1 = true;
 }
-void shoot_enemy()
+void shoot_enemy(int num)
 {
-    bullet_des_enemy[enemy_bullet_end%10] = (x-x_enemy1)/(y-y_enemy1);
-    x_bullet_enemy[enemy_bullet_end%10] = x_enemy1;
-    y_bullet_enemy[enemy_bullet_end%10] = y_enemy1+5;
-    enemy_bullet_end++;
+    bullet_des_enemy[num] = (x-x_enemy1)/(y-y_enemy1);
+    x_bullet_enemy[num] = x_enemy1;
+    y_bullet_enemy[num] = y_enemy1+5;
     fire_enemy++;
 }
 void bullet_enemy()
 {
     for(int i = 0; i < fire_enemy; i++)
     {
-        set_location(x_bullet_enemy[(enemy_bullet_end + i)%10],0,y_bullet_enemy[(enemy_bullet_end + i)%10],2,0x00);  //erase previous bullet_enemy_1
-        y_bullet_enemy[(enemy_bullet_end + i)%10]++;
-        if((y_bullet_enemy[(enemy_bullet_end + i)%10] % bullet_des_enemy[(enemy_bullet_end + i)%10]) == 0)
-            x_bullet_enemy[(enemy_bullet_end + i)%10]++;
-        set_location2(x_bullet_enemy[(enemy_bullet_end + i)%10],0,y_bullet_enemy[(enemy_bullet_end + i)%10],2);
+        set_location(x_bullet_enemy[i],0,y_bullet_enemy[i],2,0x00);  //erase previous bullet_enemy_1
+        y_bullet_enemy[i]++;
+        if((y_bullet_enemy[i] % bullet_des_enemy[i]) == 0)
+            x_bullet_enemy[i]++;
+        set_location2(x_bullet_enemy[i],0,y_bullet_enemy[i],2);
         st7586_write(ST_DATA,0x1c);
         st7586_write(ST_DATA,0xff);
         st7586_write(ST_DATA,0x1c);
-        if(got_shot(x_bullet_enemy[(enemy_bullet_end + i)%10], y_bullet_enemy[(enemy_bullet_end + i)%10]) || (y_bullet_enemy[(enemy_bullet_end + i)%10] >= 160))
+        if(got_shot(x_bullet_enemy[i], y_bullet_enemy[i]) || (y_bullet_enemy[i] >= 160))
         {
             fire_enemy--;
-            enemy_bullet_end++;
         }
-
     }
 }
 
