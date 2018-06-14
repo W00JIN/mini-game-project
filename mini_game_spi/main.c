@@ -105,11 +105,11 @@ static volatile bool st7586_spi_xfer_done = false;                              
 #define RATIO_SPI0_LCD_CS                   31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
-#define TIME    20
+#define TIME    10
 int x = 18;
 int y = 120;
 int hp_gallag = 5;
-int game_num = 2;
+int game_num = 1;
 int ble_available = 0;
 
 int x_enemy1 = 15;
@@ -118,8 +118,9 @@ int x_bullet_enemy[10];
 int y_bullet_enemy[10];
 int bullet_des_enemy[10];
 int hp_enemy1 = 3;
-bool move_enemy1 = true;
-int fire_enemy = 0;
+bool move_enemy1 = true;    //left,right
+bool fire_enemy[10] = {false,};
+int enemy_bullet_num = 1;
 
 int x_kau = 0;
 int y_kau = 0;
@@ -199,8 +200,8 @@ void clear_gallag();
 void plane();
 void enemy1();
 void is_enemy1_alive();
-void shoot_enemy(int num);
-void bullet_enemy();
+void shoot_enemy();
+void bullet_enemy(int num);
 bool got_shot(int x_, int y_);
 void end_game();
 void kau();
@@ -304,25 +305,28 @@ int main(void)
             if(hp_u) is_u_alive();
             if(!hp_k && !hp_a && !hp_u)
             {
-                if(frame % (TIME*50) == 0)
-                {                    
-                    if(fire_enemy)
+                if(frame % (TIME*1) == 0)
+                {
+                    for(int i = 0 ;i < enemy_bullet_num; i++)
                     {
-                        bullet_enemy();
+                        if(fire_enemy[i])
+                        {
+                            bullet_enemy(i);
+                        }
                     }
                 }
-                if(frame % (TIME*10) == 0)  //excuted about every 0.2sec. 
+                if(frame % (TIME*20) == 0)  //excuted about every 0.2sec. 
                 {
                     if(hp_enemy1 >= 0)  //if enemy1 alive
                     {
                         is_enemy1_alive();
                     }
                 }
-                if(frame % (TIME*5000)) //executed about every 10sec
+                if(frame % (TIME*50000)) //executed about every 10sec
                 {
-                    if((hp_enemy1 >= 0)&&(fire_enemy < 2))   //enemy1 shoot
+                    if((hp_enemy1 >= 0)&&(enemy_bullet_num < 2))   //enemy1 shoot
                     {
-                        shoot_enemy(fire_enemy-1);
+                        shoot_enemy();
                     }
                 }
             }
@@ -482,30 +486,38 @@ void is_enemy1_alive()
     if( x_enemy1 < 1)
         move_enemy1 = true;
 }
-void shoot_enemy(int num)
+void shoot_enemy()
 {
-    bullet_des_enemy[num] = (x-x_enemy1)/(y-y_enemy1);
-    x_bullet_enemy[num] = x_enemy1;
-    y_bullet_enemy[num] = y_enemy1+5;
-    fire_enemy++;
+    /*
+    bullet_des_enemy[enemy_bullet_num] = (y-y_enemy1)/(x-x_enemy1);
+    x_bullet_enemy[enemy_bullet_num] = x_enemy1;
+    y_bullet_enemy[enemy_bullet_num] = y_enemy1+5;
+    fire_enemy[enemy_bullet_num] = true;
+    enemy_bullet_num++;
+*/
+    
+    bullet_des_enemy[0] = (y-y_enemy1)/(x-x_enemy1);
+    x_bullet_enemy[0] = x_enemy1;
+    y_bullet_enemy[0] = y_enemy1+5;
+    fire_enemy[0] = true;
+//    enemy_bullet_num++;
 }
-void bullet_enemy()
+void bullet_enemy(int num)
 {
-    for(int i = 0; i < fire_enemy; i++)
+
+    set_location(x_bullet_enemy[num],0,y_bullet_enemy[num],2,0x00);  //erase previous bullet_enemy_1
+    y_bullet_enemy[num]++;
+    if((y_bullet_enemy[num] % bullet_des_enemy[num]) == 0)
+        x_bullet_enemy[num]++;
+    set_location2(x_bullet_enemy[num],0,y_bullet_enemy[num],2);
+    st7586_write(ST_DATA,0x1c);
+    st7586_write(ST_DATA,0xff);
+    st7586_write(ST_DATA,0x1c);
+    if(got_shot(x_bullet_enemy[num], y_bullet_enemy[num]) || (y_bullet_enemy[num] >= 125))
     {
-        set_location(x_bullet_enemy[i],0,y_bullet_enemy[i],2,0x00);  //erase previous bullet_enemy_1
-        y_bullet_enemy[i]++;
-        if((y_bullet_enemy[i] % bullet_des_enemy[i]) == 0)
-            x_bullet_enemy[i]++;
-        set_location2(x_bullet_enemy[i],0,y_bullet_enemy[i],2);
-        st7586_write(ST_DATA,0x1c);
-        st7586_write(ST_DATA,0xff);
-        st7586_write(ST_DATA,0x1c);
-        if(got_shot(x_bullet_enemy[i], y_bullet_enemy[i]) || (y_bullet_enemy[i] >= 160))
-        {
-            fire_enemy--;
-        }
+        fire_enemy[num] = false;
     }
+        
 }
 
 bool got_shot(int x_, int y_)
