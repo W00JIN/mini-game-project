@@ -109,9 +109,8 @@ static volatile bool st7586_spi_xfer_done = false;                              
 int x = 18;
 int y = 120;
 int hp_gallag = 5;
-int game_num = 1;
+int game_num = 2;
 int ble_available = 0;
-
 
 int x_enemy1 = 15;
 int y_enemy1 = 40;
@@ -122,13 +121,13 @@ int hp_enemy1 = 3;
 bool move_enemy1 = true;
 int fire_enemy = 0;
 
-
 int x_kau = 0;
 int y_kau = 0;
 int hp_k = 6;
 int hp_a = 6;
 int hp_u = 6;
 
+bool block_location[10][10] = {0};
 
 int x_block=7;
 int y_block=18+30; //18 + 140 is end of screen
@@ -249,6 +248,7 @@ static void ble_stack_init(void);
 static void buttons_init(void);
 static void log_init(void);
 static void power_manage(void);
+
 int main(void)
 {
     // Initialize.
@@ -268,21 +268,18 @@ int main(void)
     init();
     clear_noise();
     st7586_write(ST_COMMAND,  0x38);
-    //plane();
-    
-    //block1(0xff,0xfc,0xe0,0x03,0x1f);
-    if(game_num == 2)
-    {
-        tetris_background();
-        block1(0xff,0xfc,0xe0,0x03,0x1f);
-    }
-    else if(game_num == 1)
+   
+    if(game_num == 1)
     {
         gallag_background();
         //kau();
         plane();
-    }
+    }else if(game_num == 2)
+    {
+        tetris_background();
+        block1(0xff,0xfc,0xe0,0x03,0x1f);
 
+    }
 
     st7586_write(ST_COMMAND,  0x29);
     APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
@@ -328,12 +325,8 @@ int main(void)
                         shoot_enemy(fire_enemy-1);
                     }
                 }
-                
-
-
             }
-        }
-        if(game_num ==2)   //Condition for operating Tetris
+        }else if(game_num ==2)   //Condition for operating Tetris
         {
             if(current_block_fixed()) app_sched_event_put(NULL,0,new_block_down);
             //if(blocks_make_lines) app_sched_event_put(NULL,0,remove_lines);
@@ -823,7 +816,9 @@ void spin_block(void * p_event_data, uint16_t event_size)
 void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 {
     clear_block1();
-    if(y_block < 155 - ((section[x_block/3]*9) + 2) && y_block < 155 - ((section[(x_block/3)+1]*9) + 2))
+    int x_num = ((x_block - 1)/3)-2;
+    int y_num = (156 - y_block + 8)/9;
+    if(block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false)
     {
     y_block+=3;
     }
@@ -839,19 +834,23 @@ void drop_block(void * p_event_data, uint16_t event_size)
 int current_block_fixed()
 {
     app_sched_event_put (NULL, 0 ,drop_block);
-    
-    if(y_block >= 158 - ((section[x_block/3]*9) + 2) || y_block >= 158 - ((section[(x_block/3)+1]*9) + 2))
+
+    int x_num = ((x_block - 1)/3)-2;
+    int y_num = (156 - y_block + 8)/9;
+    if( y_num==0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true )
     {
-        if(section[x_block/3]>section[(x_block/3)+1]) section[(x_block/3)+1] = section[x_block/3];
-        else section[x_block/3] = section[(x_block/3)+1];
-        return 1;
+	block_location[x_num][y_num] = true;
+	block_location[x_num][y_num + 1] = true;
+	block_location[x_num + 1][y_num] = true;
+	block_location[x_num + 1][y_num + 1] = true;
+
+       return 1;	//fix current block and go to new_block_down
     }
-    else return 0;
+
+    else return 0;	//repeat current_block_fixed untill current block cant drop anymore
 }
 void new_block_down(void * p_event_data, uint16_t event_size)
 {
-    section[x_block/3] += 2;
-    section[(x_block/3)+1] += 2;
     x_block = 19;
     y_block = 18+30;
     block1(0xff,0xfc,0xe0,0x03,0x1f);
