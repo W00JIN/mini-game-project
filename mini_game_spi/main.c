@@ -91,18 +91,18 @@
 #include "nordic_common.h"
 #include "nrf_error.h"
 
-#define ST7586_SPI_INSTANCE  0														  /**< SPI instance index. */
+#define ST7586_SPI_INSTANCE  0									/**< SPI instance index. */
 static const nrf_drv_spi_t st7586_spi = NRF_DRV_SPI_INSTANCE(ST7586_SPI_INSTANCE);  	/**< SPI instance. */
-static volatile bool st7586_spi_xfer_done = false;									  /**< Flag used to indicate that SPI instance completed the transfer. */
+static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indicate that SPI instance completed the transfer. */
 
-#define ST_COMMAND		  0
-#define ST_DATA			 1
+#define ST_COMMAND			0
+#define ST_DATA			1
 
-#define RATIO_SPI0_LCD_SCK				  4
-#define RATIO_SPI0_LCD_A0				   28
-#define RATIO_SPI0_LCD_MOSI				 29
-#define RATIO_SPI0_LCD_BSTB				 30
-#define RATIO_SPI0_LCD_CS				   31
+#define RATIO_SPI0_LCD_SCK				4
+#define RATIO_SPI0_LCD_A0				28
+#define RATIO_SPI0_LCD_MOSI				29
+#define RATIO_SPI0_LCD_BSTB				30
+#define RATIO_SPI0_LCD_CS				31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
 #define TIME	10
@@ -128,7 +128,7 @@ int hp_k = 6;
 int hp_a = 6;
 int hp_u = 6;
 
-bool block_location[10][10] = {0};
+bool block_location[10][14] = {0};
 
 int x_block=7;
 int y_block=18+30; //18 + 140 is end of screen
@@ -146,10 +146,10 @@ static unsigned char rx_data;
 nrf_drv_spi_evt_t const * p;
 bsp_event_t const * a;
 
-#define BUTTON_PREV_ID		   0						   /**< Button used to switch the state. */
-#define BUTTON_NEXT_ID		   1						   /**< Button used to switch the state. */
+#define BUTTON_PREV_ID		   0						   	/**< Button used to switch the state. */
+#define BUTTON_NEXT_ID		   1						   	/**< Button used to switch the state. */
 
-static bsp_indication_t actual_state =  BSP_INDICATE_FIRST;		 /**< Currently indicated state. */
+static bsp_indication_t actual_state =  BSP_INDICATE_FIRST;		 		/**< Currently indicated state. */
 
 static const char * indications_list[] = BSP_INDICATIONS_LIST;
 
@@ -159,37 +159,36 @@ static const char * indications_list[] = BSP_INDICATIONS_LIST;
 
 #define APP_FEATURE_NOT_SUPPORTED	   BLE_GATT_STATUS_ATTERR_APP_BEGIN + 2	/**< Reply when unsupported features are requested. */
 
-#define ADVERTISING_LED				 BSP_BOARD_LED_0						 /**< Is on when device is advertising. */
-#define CONNECTED_LED				   BSP_BOARD_LED_1						 /**< Is on when device has connected. */
-#define LEDBUTTON_LED				   BSP_BOARD_LED_2						 /**< LED to be toggled with the help of the LED Button Service. */
-#define LEDBUTTON_BUTTON				BSP_BUTTON_0							/**< Button that will trigger the notification event with the LED Button Service */
+#define ADVERTISING_LED			BSP_BOARD_LED_0			/**< Is on when device is advertising. */
+#define CONNECTED_LED			BSP_BOARD_LED_1			/**< Is on when device has connected. */
+#define LEDBUTTON_LED			BSP_BOARD_LED_2			/**< LED to be toggled with the help of the LED Button Service. */
+#define LEDBUTTON_BUTTON			BSP_BUTTON_0				/**< Button that will trigger the notification event with the LED Button Service */
 
-#define DEVICE_NAME					 "Mini Game Project"					 /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME				"Mini Game Project"			/**< Name of device. Will be included in the advertising data. */
 
-#define APP_BLE_OBSERVER_PRIO		   3									   /**< Application's BLE observer priority. You shouldn't need to modify this value. */
-#define APP_BLE_CONN_CFG_TAG			1									   /**< A tag identifying the SoftDevice BLE configuration. */
+#define APP_BLE_OBSERVER_PRIO		3					/**< Application's BLE observer priority. You shouldn't need to modify this value. */
+#define APP_BLE_CONN_CFG_TAG		1					/**< A tag identifying the SoftDevice BLE configuration. */
 
-#define APP_ADV_INTERVAL				64									  /**< The advertising interval (in units of 0.625 ms; this value corresponds to 40 ms). */
-#define APP_ADV_TIMEOUT_IN_SECONDS	  BLE_GAP_ADV_TIMEOUT_GENERAL_UNLIMITED   /**< The advertising time-out (in units of seconds). When set to 0, we will never time out. */
+#define APP_ADV_INTERVAL			64					/**< The advertising interval (in units of 0.625 ms; this value corresponds to 40 ms). */
+#define APP_ADV_TIMEOUT_IN_SECONDS	  BLE_GAP_ADV_TIMEOUT_GENERAL_UNLIMITED	/**< The advertising time-out (in units of seconds). When set to 0, we will never time out. */
 
-#define MIN_CONN_INTERVAL			   MSEC_TO_UNITS(100, UNIT_1_25_MS)		/**< Minimum acceptable connection interval (0.5 seconds). */
-#define MAX_CONN_INTERVAL			   MSEC_TO_UNITS(200, UNIT_1_25_MS)		/**< Maximum acceptable connection interval (1 second). */
-#define SLAVE_LATENCY				   0									   /**< Slave latency. */
-#define CONN_SUP_TIMEOUT				MSEC_TO_UNITS(4000, UNIT_10_MS)		 /**< Connection supervisory time-out (4 seconds). */
+#define MIN_CONN_INTERVAL			MSEC_TO_UNITS(100, UNIT_1_25_MS)	/**< Minimum acceptable connection interval (0.5 seconds). */
+#define MAX_CONN_INTERVAL			MSEC_TO_UNITS(200, UNIT_1_25_MS)	/**< Maximum acceptable connection interval (1 second). */
+#define SLAVE_LATENCY			0					/**< Slave latency. */
+#define CONN_SUP_TIMEOUT			MSEC_TO_UNITS(4000, UNIT_10_MS)	/**< Connection supervisory time-out (4 seconds). */
 
-#define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(20000)				  /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (15 seconds). */
-#define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(5000)				   /**< Time between each call to sd_ble_gap_conn_param_update after the first call (5 seconds). */
-#define MAX_CONN_PARAMS_UPDATE_COUNT	3									   /**< Number of attempts before giving up the connection parameter negotiation. */
+#define FIRST_CONN_PARAMS_UPDATE_DELAY  	APP_TIMER_TICKS(20000)		/**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (15 seconds). */
+#define NEXT_CONN_PARAMS_UPDATE_DELAY	APP_TIMER_TICKS(5000)		/**< Time between each call to sd_ble_gap_conn_param_update after the first call (5 seconds). */
+#define MAX_CONN_PARAMS_UPDATE_COUNT	3					/**< Number of attempts before giving up the connection parameter negotiation. */
 
-#define BUTTON_DETECTION_DELAY		  APP_TIMER_TICKS(50)					 /**< Delay from a GPIOTE event until a button is reported as pushed (in number of timer ticks). */
+#define BUTTON_DETECTION_DELAY		APP_TIMER_TICKS(50)			/**< Delay from a GPIOTE event until a button is reported as pushed (in number of timer ticks). */
 
-#define DEAD_BEEF					   0xDEADBEEF							  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
+#define DEAD_BEEF				0xDEADBEEF				/**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
 
-BLE_LBS_DEF(m_lbs);															 /**< LED Button Service instance. */
-NRF_BLE_GATT_DEF(m_gatt);													   /**< GATT module instance. */
-
-static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;						/**< Handle of the current connection. */
+BLE_LBS_DEF(m_lbs);									/**< LED Button Service instance. */
+NRF_BLE_GATT_DEF(m_gatt);								/**< GATT module instance. */
+static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;			/**< Handle of the current connection. */
 
 
 void st7586_write(const uint8_t category, const uint8_t data);
@@ -803,8 +802,11 @@ void shoot_bullet(void * p_event_data, uint16_t event_size)
 }
 void move_block_left(void * p_event_data, uint16_t event_size)
 {
+	int x_num = ((x_block - 1)/3)-2;
+	int y_num = (156 - y_block + 8)/9;
+
 	bsp_board_led_invert(0);
-	if(x_block > 7)
+	if(x_block > 7 && block_location[x_num - 1][y_num] == false && block_location[x_num-1][y_num + 1] == false && block_location[x_num-1][y_num-1] == false)
 	{
 		clear_block1();
 		x_block-=3;
@@ -813,8 +815,11 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 }
 void move_block_right(void * p_event_data, uint16_t event_size)
 {
+	int x_num = ((x_block - 1)/3)-2;
+	int y_num = (156 - y_block + 8)/9;
+
 	bsp_board_led_invert(0);
-	if(x_block < 30)
+	if(x_block > 7 && block_location[x_num +2 ][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num-1] == false)
 	{
 		clear_block1();
 		x_block+=3;
@@ -830,7 +835,7 @@ void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 	clear_block1();
 	int x_num = ((x_block - 1)/3)-2;
 	int y_num = (156 - y_block + 8)/9;
-	if(block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false)
+	if( (block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false) && y_num < 149)
 	{
 		y_block+=3;
 	}
@@ -849,7 +854,7 @@ int current_block_fixed()
 
 	int x_num = ((x_block - 1)/3)-2;
 	int y_num = (156 - y_block + 8)/9;
-	if( y_num==0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true )
+	if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
 	{
 		block_location[x_num][y_num] = true;
 		block_location[x_num][y_num + 1] = true;
