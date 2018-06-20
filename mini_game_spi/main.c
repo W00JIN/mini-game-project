@@ -149,7 +149,7 @@ bool block_location[10][14] = {0};
 int x_block=7;
 int y_block=18+30; //18 + 140 is end of screen
 
-int current_block;
+int current_block = 2;
 int current_color;
 
 
@@ -224,7 +224,9 @@ void is_u_alive();
 void gallag_background();
 void tetris_background();
 void clear_block1();
+void clear_block2();
 void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
+void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
 void move_gallag_left(void * p_event_data, uint16_t event_size);
 void move_gallag_right(void * p_event_data, uint16_t event_size);
 void shoot_bullet(void * p_event_data, uint16_t event_size);
@@ -290,7 +292,17 @@ int main(void)
 	}else if(game_num == 2)
 	{
 		tetris_background();
-		block1(0xff,0xfc,0xe0,0x03,0x1f);
+		switch(current_block)
+		{
+			case 1:
+				block1(0xff,0xfc,0xe0,0x03,0x1f);
+				break;
+			case 2:
+				block2(0xff,0xfc,0xe0,0x03,0x1f);
+				break;
+			default:
+				break;
+		}
 
 	}
 
@@ -795,7 +807,18 @@ void clear_block2()
 {
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block, 5, y_block - (block_height*2+2), block_height*2+2, 0x49);
+	set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+	
+	set_location(x_block+3, 1, y_block + (block_height),block_height, 0x49);
+	set_location(x_block+5, 0, y_block + (block_height),block_height, 0x49);
+	
+	set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+	set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+	
+	set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+	set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+
 }
 void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
 {
@@ -805,8 +828,8 @@ void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
 	set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
 	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block + (block_height),block_height, dot_111);
-	set_location(x_block+5, 0, y_block + (block_height),block_height, dot_110);
+	set_location(x_block+3, 1, y_block, block_height, dot_111);
+	set_location(x_block+5, 0, y_block, block_height, dot_110);
 	
 	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
 	set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
@@ -845,9 +868,29 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 	bsp_board_led_invert(0);
 	if(x_block > 7 && block_location[x_num - 1][y_num] == false && block_location[x_num-1][y_num + 1] == false && block_location[x_num-1][y_num-1] == false)
 	{
-		clear_block1();
+		switch(current_block)
+		{
+			case 1:
+				clear_block1();
+				break;
+			case 2:
+				clear_block2();
+				break;
+			default:
+				break;
+		}
 		x_block-=3;
-		block1(0xff,0xfc,0xe0,0x03,0x1f);
+		switch(current_block)
+		{
+			case 1:
+				block1(0xff,0xfc,0xe0,0x03,0x1f);
+				break;
+			case 2:
+				block2(0xff,0xfc,0xe0,0x03,0x1f);
+				break;
+			default:
+				break;
+		}
 	}
 }
 void move_block_right(void * p_event_data, uint16_t event_size)
@@ -858,9 +901,29 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 	bsp_board_led_invert(0);
 	if(x_block > 7 && block_location[x_num +2 ][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num-1] == false)
 	{
-		clear_block1();
+		switch(current_block)
+		{
+			case 1:
+				clear_block1();
+				break;
+			case 2:
+				clear_block2();
+				break;
+			default:
+				break;
+		}
 		x_block+=3;
-		block1(0xff,0xfc,0xe0,0x03,0x1f);
+		switch(current_block)
+		{
+			case 1:
+				block1(0xff,0xfc,0xe0,0x03,0x1f);
+				break;
+			case 2:
+				block2(0xff,0xfc,0xe0,0x03,0x1f);
+				break;
+			default:
+				break;
+		}
 	}
 }
 void spin_block(void * p_event_data, uint16_t event_size)
@@ -869,45 +932,118 @@ void spin_block(void * p_event_data, uint16_t event_size)
 }
 void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 {
-	clear_block1();
+	switch(current_block)
+	{
+		case 1:
+			clear_block1();
+			break;
+		case 2:
+			clear_block2();
+			break;
+		default:
+			break;
+	}
 	int x_num = ((x_block - 1)/3)-2;
 	int y_num = (156 - y_block + 8)/9;
 	if( (block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false) && y_num < 149)
 	{
 		y_block+=3;
 	}
-	block1(0xff,0xfc,0xe0,0x03,0x1f);
+	switch(current_block)
+	{
+		case 1:
+			block1(0xff,0xfc,0xe0,0x03,0x1f);
+			break;
+		case 2:
+			block2(0xff,0xfc,0xe0,0x03,0x1f);
+			break;
+		default:
+			break;
+	}
 }
 void drop_block(void * p_event_data, uint16_t event_size)
 {
-	clear_block1();
+	switch(current_block)
+	{
+		case 1:
+			clear_block1();
+			break;
+		case 2:
+			clear_block2();
+			break;
+		default:
+			break;
+	}
 	y_block++;
-	block1(0xff,0xfc,0xe0,0x03,0x1f);
+	switch(current_block)
+	{
+		case 1:
+			block1(0xff,0xfc,0xe0,0x03,0x1f);
+			break;
+		case 2:
+			block2(0xff,0xfc,0xe0,0x03,0x1f);
+			break;
+		default:
+			break;
+	}
 	nrf_delay_ms(100);
+
 }
 int current_block_fixed()
 {
 	app_sched_event_put (NULL, 0 ,drop_block);
-
 	int x_num = ((x_block - 1)/3)-2;
 	int y_num = (156 - y_block + 8)/9;
-	if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
-	{
-		block_location[x_num][y_num] = true;
-		block_location[x_num][y_num + 1] = true;
-		block_location[x_num + 1][y_num] = true;
-		block_location[x_num + 1][y_num + 1] = true;
 
-		return 1;	//fix current block and go to new_block_down
+	if(current_block == 1)
+	{
+		if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
+		{
+			block_location[x_num][y_num] = true;
+			block_location[x_num][y_num + 1] = true;
+			block_location[x_num + 1][y_num] = true;
+			block_location[x_num + 1][y_num + 1] = true;
+	
+			return 1;	//fix current block and go to new_block_down
+		}
+
+		else return 0;	//repeat current_block_fixed untill current block cant drop anymore
 	}
 
-	else return 0;	//repeat current_block_fixed untill current block cant drop anymore
+	if(current_block == 2)
+	{
+		if(y_block ==147 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-2] == true)
+		{
+			block_location[x_num][y_num] = true;
+			block_location[x_num][y_num + 1] = true;
+			block_location[x_num + 1][y_num] = true;
+			block_location[x_num + 1][y_num - 1] = true;
+	
+			return 1;	//fix current block and go to new_block_down
+		}
+
+		else return 0;	//repeat current_block_fixed untill current block cant drop anymore
+	}
+	return 0;
 }
+
 void new_block_down(void * p_event_data, uint16_t event_size)
 {
 	x_block = 19;
 	y_block = 18+30;
-	block1(0xff,0xfc,0xe0,0x03,0x1f);
+	
+	
+	switch(current_block)
+	{
+		case 1:
+			block1(0xff,0xfc,0xe0,0x03,0x1f);
+			break;
+		case 2:
+			block2(0xff,0xfc,0xe0,0x03,0x1f);
+			break;
+		default:
+			break;
+	}
 
 }
 /**@brief Function for handling bsp events.
@@ -1178,8 +1314,19 @@ void start_gallag(void * p_event_data, uint16_t event_size)
 
 void start_tatris(void * p_event_data, uint16_t event_size)
 {
-	plane();
-	st7586_write(ST_COMMAND,  0x29);			//disp on
+	tetris_background();
+
+	switch(current_block)
+	{
+		case 1:
+			block1(0xff,0xfc,0xe0,0x03,0x1f);
+			break;
+		case 2:
+			block2(0xff,0xfc,0xe0,0x03,0x1f);
+			break;
+		default:
+			break;
+	}
 }
 
 
