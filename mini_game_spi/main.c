@@ -106,11 +106,16 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
 #define TIME	10
+
+
+
+// gallag
+
 int x = 18;
 int y = 120;
 int hp_gallag = 5;
-int game_num = 2;
-int ble_available = 0;
+int game_num = 2;			//game num : 1 == gallag / 2 == tatris
+int ble_available = 0;		//if you want use ble, change to 1 else 0
 
 int x_enemy1 = 15;
 int y_enemy1 = 40;
@@ -118,9 +123,16 @@ int x_bullet_enemy[10];
 int y_bullet_enemy[10];
 int bullet_des_enemy[10];
 int hp_enemy1 = 3;
-bool move_enemy1 = true;	//left,right
+bool move_enemy1 = true;		//left,right
 bool fire_enemy[10] = {false,};
 int enemy_bullet_num = 1;
+
+int x_bullet = 0;
+int y_bullet = 200;
+
+bool fire = false; //variable that became true when bullet flying.
+
+unsigned long long frame = 0;
 
 int x_kau = 0;
 int y_kau = 0;
@@ -128,20 +140,21 @@ int hp_k = 6;
 int hp_a = 6;
 int hp_u = 6;
 
-bool block_location[10][14] = {0};
 
+
+
+//tatris 
+
+bool block_location[10][14] = {0};
 int x_block=7;
 int y_block=18+30; //18 + 140 is end of screen
 
-int x_bullet = 0;
-int y_bullet = 200;
+int current_block;
+int current_color;
 
-int section[16] = {0};
 
-bool fire = false; //variable that became true when bullet flying.
 
-unsigned long long frame = 0;
-
+ 
 static unsigned char rx_data;
 nrf_drv_spi_evt_t const * p;
 bsp_event_t const * a;
@@ -778,6 +791,30 @@ void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
 	set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
 	set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
 }
+void clear_block2()
+{
+	int block_height = 7;
+	//Enter by block pixel
+	set_location(x_block, 5, y_block - (block_height*2+2), block_height*2+2, 0x49);
+}
+void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
+{
+	
+	int block_height = 7;
+	//Enter by block pixel
+	set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+	
+	set_location(x_block+3, 1, y_block + (block_height),block_height, dot_111);
+	set_location(x_block+5, 0, y_block + (block_height),block_height, dot_110);
+	
+	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+	set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+	
+	set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+	set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+}
+
 
 /**@brief Function for btn event to send scheduler
  */
@@ -871,6 +908,7 @@ void new_block_down(void * p_event_data, uint16_t event_size)
 	x_block = 19;
 	y_block = 18+30;
 	block1(0xff,0xfc,0xe0,0x03,0x1f);
+
 }
 /**@brief Function for handling bsp events.
  */
