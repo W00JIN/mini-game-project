@@ -146,7 +146,7 @@ int hp_u = 6;
 //tatris 
 
 bool block_location[10][14] = {0};
-int x_block=7;
+int x_block=19;
 int y_block=18+30; //18 + 140 is end of screen
 
 int current_block = 2;
@@ -307,6 +307,7 @@ int main(void)
 	}
 
 	st7586_write(ST_COMMAND,  0x29);					//실제 블루투스 연결시 삭제
+
 	APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
 	
 	hp_a = 0;	hp_k = 0;	hp_u = 0;  //for fast debug
@@ -810,8 +811,8 @@ void clear_block2()
 	set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
 	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
 	
-	set_location(x_block+3, 1, y_block + (block_height),block_height, 0x49);
-	set_location(x_block+5, 0, y_block + (block_height),block_height, 0x49);
+	set_location(x_block+3, 1, y_block+2, block_height, 0x49);
+	set_location(x_block+5, 0, y_block+2, block_height, 0x49);
 	
 	set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
 	set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
@@ -828,8 +829,8 @@ void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
 	set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
 	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block, block_height, dot_111);
-	set_location(x_block+5, 0, y_block, block_height, dot_110);
+	set_location(x_block+3, 1, y_block+2, block_height, dot_111);
+	set_location(x_block+5, 0, y_block+2, block_height, dot_110);
 	
 	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
 	set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
@@ -837,7 +838,6 @@ void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
 	set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
 	set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
 }
-
 
 /**@brief Function for btn event to send scheduler
  */
@@ -866,32 +866,30 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 	int y_num = (156 - y_block + 8)/9;
 
 	bsp_board_led_invert(0);
-	if(x_block > 7 && block_location[x_num - 1][y_num] == false && block_location[x_num-1][y_num + 1] == false && block_location[x_num-1][y_num-1] == false)
+
+	switch(current_block)
 	{
-		switch(current_block)
-		{
-			case 1:
+		case 1:
+			if(x_block > 7 && block_location[x_num - 1][y_num] == false && block_location[x_num-1][y_num + 1] == false && block_location[x_num-1][y_num-1] == false)
+			{
 				clear_block1();
-				break;
-			case 2:
-				clear_block2();
-				break;
-			default:
-				break;
-		}
-		x_block-=3;
-		switch(current_block)
-		{
-			case 1:
+				x_block-=3;
 				block1(0xff,0xfc,0xe0,0x03,0x1f);
-				break;
-			case 2:
+			}
+			break;
+
+		case 2:
+			if(x_block > 7 && block_location[x_num - 1][y_num-1] == false && block_location[x_num-1][y_num ] == false && block_location[x_num][y_num-2] == false)
+			{
+				clear_block2();
+				x_block-=3;
 				block2(0xff,0xfc,0xe0,0x03,0x1f);
-				break;
-			default:
-				break;
-		}
+			}
+			break;
+		default:
+			break;
 	}
+
 }
 void move_block_right(void * p_event_data, uint16_t event_size)
 {
@@ -899,39 +897,41 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 	int y_num = (156 - y_block + 8)/9;
 
 	bsp_board_led_invert(0);
-	if(x_block > 7 && block_location[x_num +2 ][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num-1] == false)
+	
+	switch(current_block)
 	{
-		switch(current_block)
-		{
-			case 1:
+		case 1:
+			if(x_block < 30 && block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num-1] == false)
+			{
 				clear_block1();
-				break;
-			case 2:
-				clear_block2();
-				break;
-			default:
-				break;
-		}
-		x_block+=3;
-		switch(current_block)
-		{
-			case 1:
+				x_block+=3;
 				block1(0xff,0xfc,0xe0,0x03,0x1f);
-				break;
-			case 2:
+			}
+			break;
+
+		case 2:
+			if(x_block < 30 && block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num - 2] == false && block_location[x_num +2][y_num] == false)
+			{
+				clear_block2();
+				x_block+=3;
 				block2(0xff,0xfc,0xe0,0x03,0x1f);
-				break;
-			default:
-				break;
-		}
+			}
+			break;
+		default:
+			break;
 	}
 }
+
 void spin_block(void * p_event_data, uint16_t event_size)
 {
 	
 }
 void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 {
+
+	int x_num = ((x_block - 1)/3)-2;
+	int y_num = (156 - y_block + 8)/9;
+
 	switch(current_block)
 	{
 		case 1:
@@ -943,8 +943,7 @@ void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 		default:
 			break;
 	}
-	int x_num = ((x_block - 1)/3)-2;
-	int y_num = (156 - y_block + 8)/9;
+
 	if( (block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false) && y_num < 149)
 	{
 		y_block+=3;
@@ -1599,7 +1598,6 @@ static void button_event_handler(uint8_t pin_no, uint8_t button_action)
 				APP_ERROR_CHECK(err_code);
 			}
 			break;
-
 		default:
 			APP_ERROR_HANDLER(pin_no);
 			break;
