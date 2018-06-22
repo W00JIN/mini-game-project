@@ -879,7 +879,10 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 2:
-			if(x_block > 7 && block_location[x_num - 1][y_num-1] == false && block_location[x_num-1][y_num ] == false && block_location[x_num][y_num-2] == false)
+			if(x_block > 7 && ((block_location[x_num - 1][y_num-1] == false && block_location[x_num ][y_num-1] == false
+					 && block_location[x_num - 1][y_num+1] == false && block_location[x_num-1][y_num] == false && block_location[x_num][y_num-2] == false)
+					|| (block_location[x_num - 1][y_num+1] == false && block_location[x_num-1][y_num] == false && block_location[x_num][y_num-1] == false &&  (y_block == 156 - y_num*9))))
+					
 			{
 				clear_block2();
 				x_block-=3;
@@ -910,7 +913,8 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 2:
-			if(x_block < 30 && block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num - 2] == false && block_location[x_num +2][y_num] == false)
+			if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num - 2] == false && block_location[x_num +2][y_num] == false)
+					|| (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num - 1] == false && block_location[x_num +1][y_num+1] == false && (y_block == 156 - y_num*9))))
 			{
 				clear_block2();
 				x_block+=3;
