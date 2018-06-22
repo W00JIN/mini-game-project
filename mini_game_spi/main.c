@@ -114,7 +114,7 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 int x = 18;
 int y = 120;
 int hp_gallag = 5;
-int game_num = 2;			//game num : 1 == gallag / 2 == tatris
+int game_num = 1;			//game num : 1 == gallag / 2 == tatris
 int ble_available = 0;		//if you want use ble, change to 1 else 0
 
 int x_enemy1 = 15;
@@ -210,9 +210,10 @@ void set_location2(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize);
 void bullet();
 void clear_gallag();
 void plane();
-void enemy1();
-void is_enemy1_alive();
-void shoot_enemy();
+void enemy1_clear();
+void enemy1_disp();
+void enemy1_move();
+void shoot_enemy1();
 void bullet_enemy(int num);
 bool got_shot(int x_, int y_);
 void end_game();
@@ -320,38 +321,39 @@ int main(void)
 		
 		if(game_num == 1)   //Condition for operating Gallag
 		{
-			if(fire)
+			if(fire) // 총알 이동
 			{
-				led_invert();
-				bullet();
+				bullet(); //내 총알 이동과 적 히트 확인
 			}
+			/*
 			if(hp_k) is_k_alive();
 			if(hp_a) is_a_alive();
 			if(hp_u) is_u_alive();
 			if(!hp_k && !hp_a && !hp_u)
+			*/
 			{
 				if(frame % (TIME*1) == 0)
 				{
-					for(int i = 0 ;i < enemy_bullet_num; i++)
+					//for(int i = 0 ;i < enemy_bullet_num; i++)
+					if(fire_enemy[0])
 					{
-						if(fire_enemy[i])
-						{
-							bullet_enemy(i);
-						}
-					}
+						bullet_enemy(0); //적 총알 erase, move, disp
+					}					
 				}
 				if(frame % (TIME*20) == 0)  //excuted about every 0.2sec. 
 				{
 					if(hp_enemy1 >= 0)  //if enemy1 alive
 					{
-						is_enemy1_alive();
+						enemy1_clear();
+						enemy1_move();
+						enemy1_disp();
 					}
 				}
-				if(frame % (TIME*50000)) //executed about every 10sec
+				if(frame % (TIME*500)) //executed about every 10sec
 				{
 					if((hp_enemy1 >= 0)&&(enemy_bullet_num < 2))   //enemy1 shoot
 					{
-						shoot_enemy();
+						shoot_enemy1();
 					}
 				}
 			}
@@ -416,7 +418,6 @@ void set_location(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize, uint8_t 
 		}
 	}
 }
-
 void set_location2(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize)
 {
 	st7586_write(ST_COMMAND,  0x2A); 			//set column
@@ -433,9 +434,8 @@ void set_location2(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize)
 	
 	st7586_write(ST_COMMAND,  0x2c);
 }
-
 //using set_location
-void bullet()
+void bullet() //내 총알 이동과 적 히트 확인
 {
 	set_location(x_bullet+2,0,y_bullet-10,10,0xff);
 	set_location(x_bullet+2,0,y_bullet-10,10,0x00);
@@ -449,7 +449,6 @@ void bullet()
 		hp_enemy1--;
 		if(hp_enemy1 <= 0)
 		{
-			set_location(0,0,0,3,0xff);	 //for debug
 			set_location(x_enemy1,3,y_enemy1,9,0x00);
 		}
 		fire = false;
@@ -460,7 +459,6 @@ void bullet()
 void clear_gallag(){
 	set_location(x-2, 9, 116, 25, 0x00);
 }
-
 //using set_location
 void plane()
 {	
@@ -493,43 +491,37 @@ void plane()
 	set_location(x+3, 0, y+16, 1, 0x1f);
 	set_location(x+2, 1, y+15, 0, 0xff);
 }
-
-void enemy1()
+void enemy1_disp()
 {
 	set_location(x_enemy1,3,y_enemy1,9,0xff);
 }
-void is_enemy1_alive()
+void enemy1_move()
 {
-	set_location(x_enemy1, 3, y_enemy1, 9, 0x00); //erase previous enemy1
 	if(move_enemy1)
 		x_enemy1 += 1;						
 	else
 		x_enemy1 -= 1;
-	enemy1();
 	if( x_enemy1 > 40)
 		move_enemy1 = false;
 	if( x_enemy1 < 1)
 		move_enemy1 = true;
 }
-void shoot_enemy()
+void enemy1_clear()
 {
-	/*
-	bullet_des_enemy[enemy_bullet_num] = (y-y_enemy1)/(x-x_enemy1);
-	x_bullet_enemy[enemy_bullet_num] = x_enemy1;
-	y_bullet_enemy[enemy_bullet_num] = y_enemy1+5;
-	fire_enemy[enemy_bullet_num] = true;
-	enemy_bullet_num++;
-*/
-	
-	bullet_des_enemy[0] = (y-y_enemy1)/(x-x_enemy1);
-	x_bullet_enemy[0] = x_enemy1;
-	y_bullet_enemy[0] = y_enemy1+5;
-	fire_enemy[0] = true;
-//	enemy_bullet_num++;
+	set_location(x_enemy1, 3, y_enemy1, 9, 0x00); //erase previous enemy1_disp
+}
+void shoot_enemy1()
+{
+	if(!fire_enemy[0])
+	{
+		bullet_des_enemy[0] = (y-y_enemy1)/(x-x_enemy1);
+		x_bullet_enemy[0] = x_enemy1;
+		y_bullet_enemy[0] = y_enemy1+5;
+		fire_enemy[0] = true;
+	}
 }
 void bullet_enemy(int num)
 {
-
 	set_location(x_bullet_enemy[num],0,y_bullet_enemy[num],2,0x00);  //erase previous bullet_enemy_1
 	y_bullet_enemy[num]++;
 	if((y_bullet_enemy[num] % bullet_des_enemy[num]) == 0)
@@ -557,7 +549,6 @@ bool got_shot(int x_, int y_)
 		return true;
 	}
 	return false;
-
 }
 
 void end_game()
@@ -1331,7 +1322,6 @@ void start_tatris(void * p_event_data, uint16_t event_size)
 			break;
 	}
 }
-
 
 /**@brief Function for handling write events to the LED characteristic.
  *
