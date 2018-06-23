@@ -114,7 +114,7 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 int x = 18;
 int y = 120;
 int hp_gallag = 5;
-int game_num = 1;			//game num : 1 == gallag / 2 == tatris
+int game_num = 0;			//game num : 1 == gallag / 2 == tatris
 int ble_available = 0;		//if you want use ble, change to 1 else 0
 
 int x_enemy1 = 15;
