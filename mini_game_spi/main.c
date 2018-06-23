@@ -107,7 +107,7 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 #define RATIO_SPI0_LCD_CS				31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
-#define TIME	5
+#define TIME	2
 #define ENEMY_NUM	7	//max 7
 
 
@@ -116,13 +116,13 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 
 int x = 18;
 int y = 120;
-int hp_gallag = 3;
+int hp_gallag = 30;
 int game_num = 0;			//game n : 1 == gallag / 2 == tatris
 int ble_available = 1;		//if you want use ble, change to 1 else 0
 
-int x_enemy[7] = {0,5,10,20,4,30,6};			//지금만드는중
-int y_enemy[7] = {0,10,20,30,40,50,60};			//지금만드는중
-int x_bullet_enemy[7] = {0,};
+int x_enemy[7] = {0,5,10,20,4,30,6};			
+int y_enemy[7] = {0,10,20,30,40,50,60};			
+int x_bullet_enemy[7];
 int y_bullet_enemy[7] = {0,10,20,30,40,50,60};
 int bullet_des_enemy[7];
 int hp_enemy[7] = {3,};	
@@ -318,7 +318,7 @@ int main(void)
 					bullet_enemy(i);
 				}					
 			}
-			if(frame % (TIME*20) == 0)  //excuted about every 0.2sec. 
+			if(frame % (TIME*20) == 0)  
 			{
 				for(int i = 0; i < ENEMY_NUM; i++)
 				{
@@ -330,7 +330,7 @@ int main(void)
 					}
 				}
 			}
-			if(frame % (TIME*500)) //executed about every 10sec
+			if(frame % (TIME*100)) 
 			{
 				for(int i = 0; i < ENEMY_NUM; i++)
 				{
@@ -428,14 +428,18 @@ void bullet() //내 총알 이동과 적 히트 확인
 	if(y_bullet < 0)
 		fire = false;
 	//
-	if((x_enemy[0] <= x_bullet)&&(x_bullet <= (x_enemy[0]+3))&&((y_enemy[0]-9) < y_bullet)&&(y_bullet < y_enemy[0]))
+	for(int i = 0; i < ENEMY_NUM; i++)
 	{
-		hp_enemy[0]--;
-		if(hp_enemy[0] <= 0)
+		if((x_enemy[i] <= x_bullet)&&(x_bullet <= (x_enemy[i]+5))&&((y_enemy[i]) < y_bullet)&&(y_bullet < y_enemy[i]+6))
 		{
-			set_location(x_enemy[0],3,y_enemy[0],9,0x00);
+			hp_enemy[i]--;
+			if(hp_enemy[i] <= i)
+			{
+				enemy_clear(i);
+			}
+			y_bullet = 1;
+			fire = false;
 		}
-		fire = false;
 	}
 }
 //using set_location
