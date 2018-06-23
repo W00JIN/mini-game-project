@@ -48,6 +48,8 @@
 #include "nordic_common.h"
 #include "nrf.h"
 #include "app_error.h"
+#include "nrf_drv_rng.h"
+#include "nrf_assert.h"
 #include "ble.h"
 #include "ble_err.h"
 #include "ble_hci.h"
@@ -115,12 +117,12 @@ int x = 18;
 int y = 120;
 int hp_gallag = 5;
 int game_num = 0;			//game n : 1 == gallag / 2 == tatris
-int ble_available = 0;		//if you want use ble, change to 1 else 0
+int ble_available = 1;		//if you want use ble, change to 1 else 0
 
 int x_enemy[10];			//지금만드는중
 int y_enemy[10];			//지금만드는중
-int x_bullet_enemy[10];
-int y_bullet_enemy[10];
+int x_bullet_enemy[10] = {0,};
+int y_bullet_enemy[10] = {0,15,30,45,60,75,90,};
 int bullet_des_enemy[10];
 int hp_enemy[10] = {3,};	
 bool move_enemy[10] = {true, };	//left,right
@@ -128,7 +130,7 @@ bool fire_enemy[10] = {false, };
 int enemy_bullet_num = 1;
 
 int x_bullet = 0;
-int y_bullet = 200;
+int y_bullet = 0;
 
 bool fire = false; //variable that became true when bullet flying.
 
@@ -285,6 +287,7 @@ int main(void)
 	APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
 	
 	hp_a = 0;	hp_k = 0;	hp_u = 0;  //for fast debug
+	
 
 	while (1)
 	{
@@ -426,15 +429,14 @@ void bullet() //내 총알 이동과 적 히트 확인
 		}
 		fire = false;
 	}
-	
 }
 //using set_location
 void clear_gallag(){
-	set_location(x-2, 9, 116, 25, 0x00);
+	set_location(x-2, 9, 116, 24, 0x00);
 }
 //using set_location
 void plane()
-{	
+{
 	clear_gallag();
 	
 	set_location(x+2, 0, y, 3, 0x03);
@@ -487,7 +489,7 @@ void shoot_enemy(int n)
 {
 	if(!fire_enemy[n])
 	{
-		bullet_des_enemy[n] = (y-y_enemy[n])/(x-x_enemy[n]+3);
+		bullet_des_enemy[n] = (y-y_enemy[n])/(x-x_enemy[n]+((n+3)%4));
 		x_bullet_enemy[n] = x_enemy[n];
 		y_bullet_enemy[n] = y_enemy[n]+5;
 		fire_enemy[n] = true;
@@ -617,21 +619,124 @@ void is_u_alive()
 
 void gallag_background()
 {
-	for(int i = 0; i < 5; i++)
+	bool star[] = {	1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,
+					0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,
+					0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,
+					0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,
+					0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
+					0,1,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,0,0,1,0,0,0,1,
+					0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0
+				};
+
+	//set_location2(10, 29, 142, 39);
+	for(int i = 0; i < 300; i++)
 	{
-		set_location2(3+i*4,0,145+i,2);
-		st7586_write(ST_DATA,0x1c);
-		st7586_write(ST_DATA,0xff);
-		st7586_write(ST_DATA,0x1c);
+		if(star[i])
+		{
+			set_location2(10+(i/10), 0, 142+(i%30), 2);
+			st7586_write(ST_DATA,0x1c);
+			st7586_write(ST_DATA,0xff);
+			st7586_write(ST_DATA,0x1c);
+		}
 	}
 
-	for(int i = 0; i < 5; i++)
-	{
-		set_location2(39-i*4,0,150+i,2);
-		st7586_write(ST_DATA,0x1c);
-		st7586_write(ST_DATA,0xff);
-		st7586_write(ST_DATA,0x1c);
-	}
+	//heart shape for life
+//1
+//	st7586_write(ST_COMMAND,0x29);		//for debug
+	set_location2(1, 2, 150, 6);
+	st7586_write(ST_DATA,0x1b);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0x03);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xc0);
+	st7586_write(ST_DATA,0xff);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xff);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xd8);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xff);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xff);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xd8);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xff);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xff);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xd8);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0x1b);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xff);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xc0);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0x03);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xff);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0x00);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0x00);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0xd8);
+//	nrf_delay_ms(1000);
+	st7586_write(ST_DATA,0x00);
+
+//2
+	set_location2(4, 2, 150, 6);
+	st7586_write(ST_DATA,0x1b);
+	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0xc0);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0x1b);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xc0);
+	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0x00);
+
+
+//3
+	set_location2(7, 2, 150, 6);
+	st7586_write(ST_DATA,0x1b);
+	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0xc0);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0x1b);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xc0);
+	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0x00);
+
 }
 
 void tetris_background()
@@ -1281,6 +1386,7 @@ static void advertising_init(void)
 
 void start_gallag(void * p_event_data, uint16_t event_size)
 {
+	gallag_background();
 	plane();
 	st7586_write(ST_COMMAND,  0x29);			//disp on
 }
