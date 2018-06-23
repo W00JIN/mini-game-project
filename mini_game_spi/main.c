@@ -114,17 +114,17 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 int x = 18;
 int y = 120;
 int hp_gallag = 5;
-int game_num = 0;			//game num : 1 == gallag / 2 == tatris
+int game_num = 0;			//game n : 1 == gallag / 2 == tatris
 int ble_available = 0;		//if you want use ble, change to 1 else 0
 
-int x_enemy1 = 15;
-int y_enemy1 = 40;
+int x_enemy[10];			//지금만드는중
+int y_enemy[10];			//지금만드는중
 int x_bullet_enemy[10];
 int y_bullet_enemy[10];
 int bullet_des_enemy[10];
-int hp_enemy1 = 3;
-bool move_enemy1 = true;		//left,right
-bool fire_enemy[10] = {false,};
+int hp_enemy[10] = {3,};	
+bool move_enemy[10] = {true, };	//left,right
+bool fire_enemy[10] = {false, };
 int enemy_bullet_num = 1;
 
 int x_bullet = 0;
@@ -139,9 +139,6 @@ int y_kau = 0;
 int hp_k = 6;
 int hp_a = 6;
 int hp_u = 6;
-
-
-
 
 //tatris 
 
@@ -210,11 +207,11 @@ void set_location2(uint8_t cs, uint8_t csize, uint8_t rs, uint8_t rsize);
 void bullet();
 void clear_gallag();
 void plane();
-void enemy1_clear();
-void enemy1_disp();
-void enemy1_move();
-void shoot_enemy1();
-void bullet_enemy(int num);
+void enemy_clear(int n);
+void enemy_disp(int n);
+void enemy_move(int n);
+void shoot_enemy(int n);
+void bullet_enemy(int n);
 bool got_shot(int x_, int y_);
 void end_game();
 void kau();
@@ -285,30 +282,6 @@ int main(void)
 	clear_noise();
 	st7586_write(ST_COMMAND,  0x38);
    
-	if(game_num == 1)
-	{
-		gallag_background();
-		//kau();
-		plane();
-	}else if(game_num == 2)
-	{
-		tetris_background();
-		switch(current_block)
-		{
-			case 1:
-				block1(0xff,0xfc,0xe0,0x03,0x1f);
-				break;
-			case 2:
-				block2(0xff,0xfc,0xe0,0x03,0x1f);
-				break;
-			default:
-				break;
-		}
-
-	}
-
-	st7586_write(ST_COMMAND,  0x29);					//실제 블루투스 연결시 삭제
-
 	APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
 	
 	hp_a = 0;	hp_k = 0;	hp_u = 0;  //for fast debug
@@ -321,7 +294,7 @@ int main(void)
 		
 		if(game_num == 1)   //Condition for operating Gallag
 		{
-			if(fire) // 총알 이동
+			if(true) // 총알 이동
 			{
 				bullet(); //내 총알 이동과 적 히트 확인
 			}
@@ -331,33 +304,34 @@ int main(void)
 			if(hp_u) is_u_alive();
 			if(!hp_k && !hp_a && !hp_u)
 			*/
+			
+			if(frame % (TIME*1) == 0)
 			{
-				if(frame % (TIME*1) == 0)
+				//for(int i = 0 ;i < enemy_bullet_num; i++)
+				if(fire_enemy[0])
 				{
-					//for(int i = 0 ;i < enemy_bullet_num; i++)
-					if(fire_enemy[0])
-					{
-						bullet_enemy(0); //적 총알 erase, move, disp
-					}					
-				}
-				if(frame % (TIME*20) == 0)  //excuted about every 0.2sec. 
+					bullet_enemy(0); //적 총알 erase, move, disp
+				}					
+			}
+			if(frame % (TIME*20) == 0)  //excuted about every 0.2sec. 
+			{
+				if(hp_enemy[0] >= 0)  //if enemy1 alive
 				{
-					if(hp_enemy1 >= 0)  //if enemy1 alive
-					{
-						enemy1_clear();
-						enemy1_move();
-						enemy1_disp();
-					}
-				}
-				if(frame % (TIME*500)) //executed about every 10sec
-				{
-					if((hp_enemy1 >= 0)&&(enemy_bullet_num < 2))   //enemy1 shoot
-					{
-						shoot_enemy1();
-					}
+					enemy_clear(0);
+					enemy_move(0);
+					enemy_disp(0);
 				}
 			}
-		}else if(game_num ==2)   //Condition for operating Tetris
+			if(frame % (TIME*500)) //executed about every 10sec
+			{
+				if((hp_enemy[0] >= 0)&&(enemy_bullet_num < 2))   //enemy1 shoot
+				{
+					shoot_enemy(0);
+				}
+			}
+			frame += 1;
+		}
+		else if(game_num ==2)   //Condition for operating Tetris
 		{
 			if(current_block_fixed()) app_sched_event_put(NULL,0,new_block_down);
 			//if(blocks_make_lines) app_sched_event_put(NULL,0,remove_lines);
@@ -368,7 +342,6 @@ int main(void)
 		{
 			power_manage();
 		}
-		frame += 1;
 	}
 }
 
@@ -439,17 +412,17 @@ void bullet() //내 총알 이동과 적 히트 확인
 {
 	set_location(x_bullet+2,0,y_bullet-10,10,0xff);
 	set_location(x_bullet+2,0,y_bullet-10,10,0x00);
-	
-	y_bullet -= 1;
+	if(y_bullet > 0)
+		y_bullet -= 1;
 	if(y_bullet < 0)
 		fire = false;
 	//
-	if((x_enemy1 <= x_bullet)&&(x_bullet <= (x_enemy1+3))&&((y_enemy1-9) < y_bullet)&&(y_bullet < y_enemy1))
+	if((x_enemy[0] <= x_bullet)&&(x_bullet <= (x_enemy[0]+3))&&((y_enemy[0]-9) < y_bullet)&&(y_bullet < y_enemy[0]))
 	{
-		hp_enemy1--;
-		if(hp_enemy1 <= 0)
+		hp_enemy[0]--;
+		if(hp_enemy[0] <= 0)
 		{
-			set_location(x_enemy1,3,y_enemy1,9,0x00);
+			set_location(x_enemy[0],3,y_enemy[0],9,0x00);
 		}
 		fire = false;
 	}
@@ -491,48 +464,54 @@ void plane()
 	set_location(x+3, 0, y+16, 1, 0x1f);
 	set_location(x+2, 1, y+15, 0, 0xff);
 }
-void enemy1_disp()
+void enemy_disp(int n)
 {
-	set_location(x_enemy1,3,y_enemy1,9,0xff);
+	set_location(x_enemy[n],3,y_enemy[n],9,0xff);
 }
-void enemy1_move()
+void enemy_move(int n)
 {
-	if(move_enemy1)
-		x_enemy1 += 1;						
+	if(move_enemy[n])
+		x_enemy[n] += 1;						
 	else
-		x_enemy1 -= 1;
-	if( x_enemy1 > 40)
-		move_enemy1 = false;
-	if( x_enemy1 < 1)
-		move_enemy1 = true;
+		x_enemy[n] -= 1;
+	if( x_enemy[n] > 40)
+		move_enemy[n] = false;
+	if( x_enemy[n] < 1)
+		move_enemy[n] = true;
 }
-void enemy1_clear()
+void enemy_clear(int n)
 {
-	set_location(x_enemy1, 3, y_enemy1, 9, 0x00); //erase previous enemy1_disp
+	set_location(x_enemy[n], 3, y_enemy[n], 9, 0x00); //erase previous enemy1_disp
 }
-void shoot_enemy1()
+void shoot_enemy(int n)
 {
-	if(!fire_enemy[0])
+	if(!fire_enemy[n])
 	{
-		bullet_des_enemy[0] = (y-y_enemy1)/(x-x_enemy1);
-		x_bullet_enemy[0] = x_enemy1;
-		y_bullet_enemy[0] = y_enemy1+5;
-		fire_enemy[0] = true;
+		bullet_des_enemy[n] = (y-y_enemy[n])/(x-x_enemy[n]+3);
+		x_bullet_enemy[n] = x_enemy[n];
+		y_bullet_enemy[n] = y_enemy[n]+5;
+		fire_enemy[n] = true;
 	}
 }
-void bullet_enemy(int num)
+void bullet_enemy(int n)
 {
-	set_location(x_bullet_enemy[num],0,y_bullet_enemy[num],2,0x00);  //erase previous bullet_enemy_1
-	y_bullet_enemy[num]++;
-	if((y_bullet_enemy[num] % bullet_des_enemy[num]) == 0)
-		x_bullet_enemy[num]++;
-	set_location2(x_bullet_enemy[num],0,y_bullet_enemy[num],2);
+	set_location(x_bullet_enemy[n],0,y_bullet_enemy[n],2,0x00);  //erase previous bullet_enemy_1
+	y_bullet_enemy[n]++;
+	if((y_bullet_enemy[n] % bullet_des_enemy[n]) == 0)
+	{
+		if(bullet_des_enemy[n] > 0)
+			x_bullet_enemy[n]++;
+		else
+			x_bullet_enemy[n]--;
+	}
+	set_location2(x_bullet_enemy[n],0,y_bullet_enemy[n],2);
 	st7586_write(ST_DATA,0x1c);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0x1c);
-	if(got_shot(x_bullet_enemy[num], y_bullet_enemy[num]) || (y_bullet_enemy[num] >= 125))
+	if(got_shot(x_bullet_enemy[n], y_bullet_enemy[n]) || (y_bullet_enemy[n] >= 135))
 	{
-		fire_enemy[num] = false;
+		fire_enemy[n] = false;
+		set_location(x_bullet_enemy[n],0,y_bullet_enemy[n],2,0x00);
 	}
 		
 }
@@ -1321,6 +1300,7 @@ void start_tatris(void * p_event_data, uint16_t event_size)
 		default:
 			break;
 	}
+		st7586_write(ST_COMMAND,  0x29);
 }
 
 /**@brief Function for handling write events to the LED characteristic.
