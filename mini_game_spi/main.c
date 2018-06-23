@@ -107,7 +107,8 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 #define RATIO_SPI0_LCD_CS				31
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
-#define TIME	10
+#define TIME	5
+#define ENEMY_NUM	7	//max 7
 
 
 
@@ -119,14 +120,14 @@ int hp_gallag = 3;
 int game_num = 0;			//game n : 1 == gallag / 2 == tatris
 int ble_available = 1;		//if you want use ble, change to 1 else 0
 
-int x_enemy[10];			//지금만드는중
-int y_enemy[10];			//지금만드는중
-int x_bullet_enemy[10] = {0,};
-int y_bullet_enemy[10] = {0,15,30,45,60,75,90,};
-int bullet_des_enemy[10];
-int hp_enemy[10] = {3,};	
-bool move_enemy[10] = {true, };	//left,right
-bool fire_enemy[10] = {false, };
+int x_enemy[7] = {0,5,10,20,4,30,6};			//지금만드는중
+int y_enemy[7] = {0,10,20,30,40,50,60};			//지금만드는중
+int x_bullet_enemy[7] = {0,};
+int y_bullet_enemy[7] = {0,10,20,30,40,50,60};
+int bullet_des_enemy[7];
+int hp_enemy[7] = {3,};	
+bool move_enemy[7] = {1,0,0,1,0,1,0 };	//left,right
+bool fire_enemy[7] = {false, };
 int enemy_bullet_num = 1;
 
 int x_bullet = 0;
@@ -312,26 +313,31 @@ int main(void)
 			
 			if(frame % (TIME*1) == 0)
 			{
-				//for(int i = 0 ;i < enemy_bullet_num; i++)
-				if(fire_enemy[0])
+				for(int i = 0 ;i < ENEMY_NUM; i++)
 				{
-					bullet_enemy(0); //적 총알 erase, move, disp
+					bullet_enemy(i);
 				}					
 			}
 			if(frame % (TIME*20) == 0)  //excuted about every 0.2sec. 
 			{
-				if(hp_enemy[0] >= 0)  //if enemy1 alive
+				for(int i = 0; i < ENEMY_NUM; i++)
 				{
-					enemy_clear(0);
-					enemy_move(0);
-					enemy_disp(0);
+					if(hp_enemy[i] >= 0)  //if enemy1 alive
+					{
+						enemy_clear(i);
+						enemy_move(i);
+						enemy_disp(i);
+					}
 				}
 			}
 			if(frame % (TIME*500)) //executed about every 10sec
 			{
-				if((hp_enemy[0] >= 0)&&(enemy_bullet_num < 2))   //enemy1 shoot
+				for(int i = 0; i < ENEMY_NUM; i++)
 				{
-					shoot_enemy(0);
+					if(hp_enemy[i] >= i)   //enemy1 shoot
+					{
+						shoot_enemy(i);
+					}
 				}
 			}
 			frame += 1;
@@ -540,7 +546,7 @@ void enemy_move(int n)
 		x_enemy[n] += 1;						
 	else
 		x_enemy[n] -= 1;
-	if( x_enemy[n] > 40)
+	if( x_enemy[n] > 39)
 		move_enemy[n] = false;
 	if( x_enemy[n] < 1)
 		move_enemy[n] = true;
@@ -991,7 +997,7 @@ void move_gallag_left(void * p_event_data, uint16_t event_size)
 void move_gallag_right(void * p_event_data, uint16_t event_size)
 {
 	bsp_board_led_invert(0);
-	if(x<43) x+=2;
+	if(x<37) x+=2;
 	plane();
 }
 void shoot_bullet(void * p_event_data, uint16_t event_size)
