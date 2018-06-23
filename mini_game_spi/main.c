@@ -115,7 +115,7 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 
 int x = 18;
 int y = 120;
-int hp_gallag = 5;
+int hp_gallag = 3;
 int game_num = 0;			//game n : 1 == gallag / 2 == tatris
 int ble_available = 1;		//if you want use ble, change to 1 else 0
 
@@ -131,7 +131,7 @@ int enemy_bullet_num = 1;
 
 int x_bullet = 0;
 int y_bullet = 0;
-
+bool gallag_end = false;
 bool fire = false; //variable that became true when bullet flying.
 
 unsigned long long frame = 0;
@@ -297,6 +297,8 @@ int main(void)
 		
 		if(game_num == 1)   //Condition for operating Gallag
 		{
+			if(gallag_end)
+				continue;
 			if(true) // 총알 이동
 			{
 				bullet(); //내 총알 이동과 적 히트 확인
@@ -468,7 +470,69 @@ void plane()
 }
 void enemy_disp(int n)
 {
-	set_location(x_enemy[n],3,y_enemy[n],9,0xff);
+	set_location2(x_enemy[n],5,y_enemy[n],8);
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xc0);
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0x00);
+
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0x1b);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0x00);
+
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xc0);
+	st7586_write(ST_DATA, 0x00);
+
+	st7586_write(ST_DATA, 0x03);
+	st7586_write(ST_DATA, 0xd8);
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0x03);
+	st7586_write(ST_DATA, 0xd8);
+	st7586_write(ST_DATA, 0x00);
+
+	st7586_write(ST_DATA, 0x03);
+	st7586_write(ST_DATA, 0xd8);
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0x03);
+	st7586_write(ST_DATA, 0xd8);
+	st7586_write(ST_DATA, 0x00);
+
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xc0);
+
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0xc0);
+
+	st7586_write(ST_DATA, 0x03);
+	st7586_write(ST_DATA, 0xff);
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0x1b);
+	st7586_write(ST_DATA, 0xd8);
+	st7586_write(ST_DATA, 0x00);
+
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0xd8);
+	st7586_write(ST_DATA, 0x00);
+	st7586_write(ST_DATA, 0x03);
+	st7586_write(ST_DATA, 0xc0);
+	st7586_write(ST_DATA, 0x00);
 }
 void enemy_move(int n)
 {
@@ -483,7 +547,7 @@ void enemy_move(int n)
 }
 void enemy_clear(int n)
 {
-	set_location(x_enemy[n], 3, y_enemy[n], 9, 0x00); //erase previous enemy1_disp
+	set_location(x_enemy[n]-2, 8, y_enemy[n], 7, 0x00); //erase previous enemy1_disp
 }
 void shoot_enemy(int n)
 {
@@ -522,10 +586,12 @@ bool got_shot(int x_, int y_)
 {
 	if((x+1 < x_) && (x_ < x+5) && (y+4 < y_) && (y_ < y+10))
 	{
+		set_location((hp_gallag*3)-2,2,150,6,0x00);
 		hp_gallag--;
 		if(hp_gallag <= 0)
 		{
 			end_game();
+			gallag_end = true;
 		}
 		return true;
 	}
@@ -644,51 +710,51 @@ void gallag_background()
 	}
 
 	//heart shape for life
-//1
-//	st7586_write(ST_COMMAND,0x29);		//for debug
+	//1
+	//	st7586_write(ST_COMMAND,0x29);		//for debug
 	set_location2(1, 2, 150, 6);
 	st7586_write(ST_DATA,0x1b);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0x03);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xc0);
 	st7586_write(ST_DATA,0xff);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xff);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xd8);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xff);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xff);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xd8);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xff);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xff);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xd8);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0x1b);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xff);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xc0);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0x03);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xff);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0x00);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0x00);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0xd8);
-//	nrf_delay_ms(1000);
+	//	nrf_delay_ms(1000);
 	st7586_write(ST_DATA,0x00);
 
-//2
+	//2
 	set_location2(4, 2, 150, 6);
 	st7586_write(ST_DATA,0x1b);
 	st7586_write(ST_DATA,0x03);
@@ -713,7 +779,7 @@ void gallag_background()
 	st7586_write(ST_DATA,0x00);
 
 
-//3
+	//3
 	set_location2(7, 2, 150, 6);
 	st7586_write(ST_DATA,0x1b);
 	st7586_write(ST_DATA,0x03);
