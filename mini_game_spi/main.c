@@ -107,7 +107,7 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 
 #define LCD_INIT_DELAY(t) nrf_delay_ms(t)
 #define TIME	1
-#define ENEMY_NUM	3	//max 7
+#define ENEMY_NUM	7	//max 7
 
 
 
@@ -624,7 +624,7 @@ void shoot_enemy(int n)
 }
 void bullet_enemy(int n)
 {
-	set_location(x_bullet_enemy[n],0,y_bullet_enemy[n],2,0x00);  //erase previous bullet_enemy_1
+	set_location(x_bullet_enemy[n],1,y_bullet_enemy[n],3,0x00);  //erase previous bullet_enemy_1
 	y_bullet_enemy[n]++;
 	if((y_bullet_enemy[n] % bullet_des_enemy[n]) == 0)
 	{
@@ -633,14 +633,19 @@ void bullet_enemy(int n)
 		else
 			x_bullet_enemy[n]--;
 	}
-	set_location2(x_bullet_enemy[n],0,y_bullet_enemy[n],2);
-	st7586_write(ST_DATA,0x1c);
+	set_location2(x_bullet_enemy[n],1,y_bullet_enemy[n],3);
+	st7586_write(ST_DATA,0x1b);
+	st7586_write(ST_DATA,0xd8);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1c);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1b);
+	st7586_write(ST_DATA,0xd8);
+	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0xc0);
 	if(got_shot(x_bullet_enemy[n], y_bullet_enemy[n]) || (y_bullet_enemy[n] >= 135))
 	{
 		fire_enemy[n] = false;
-		set_location(x_bullet_enemy[n],0,y_bullet_enemy[n],2,0x00);
+		set_location(x_bullet_enemy[n],1,y_bullet_enemy[n],3,0x00);
 	}
 		
 }
@@ -21342,7 +21347,7 @@ void start_gallag(void * p_event_data, uint16_t event_size)
 		hp_enemy[i] = 3;
 
 	hp_gallag = 3;
-
+	clear_noise();
 	st7586_write(ST_COMMAND,  0x29);			//disp on
 	gallag_intro();
 	nrf_delay_ms(4000);
