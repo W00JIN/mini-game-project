@@ -45,6 +45,7 @@
 
 #include <stdint.h>
 #include <string.h>
+#include <stdlib.h>
 #include "nordic_common.h"
 #include "nrf.h"
 #include "app_error.h"
@@ -74,7 +75,6 @@
 #include "nrf_delay.h"
 #include "boards.h"
 #include "app_error.h"
-#include <string.h>
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
@@ -87,7 +87,6 @@
 
 //add for button
 #include <stdbool.h>
-#include <stdint.h>
 #include "bsp.h"
 #include "app_timer.h"
 #include "nordic_common.h"
@@ -149,7 +148,7 @@ bool block_location[10][14] = {0};
 int x_block=19;
 int y_block=18+30; //18 + 140 is end of screen
 
-int current_block = 6;
+int current_block = 1;
 int current_color;
 int current_spin;
 
@@ -1169,16 +1168,28 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 2:
-			if(x_block > 7 && ((block_location[x_num - 1][y_num-1] == false && block_location[x_num ][y_num-1] == false
-					&& block_location[x_num - 1][y_num+1] == false && block_location[x_num-1][y_num] == false && block_location[x_num][y_num-2] == false)
-					|| (block_location[x_num - 1][y_num+1] == false && block_location[x_num-1][y_num] == false && block_location[x_num][y_num-1] == false 
-					&&  (y_block == 156 - y_num*9))))
+            if(spin_block ==0 ||spin_block ==2){
+                if(x_block > 7 && ((block_location[x_num - 1][y_num-1] == false && block_location[x_num ][y_num-1] == false
+                                && block_location[x_num - 1][y_num+1] == false && block_location[x_num-1][y_num] == false && block_location[x_num][y_num-2] == false)
+                               || (block_location[x_num - 1][y_num+1] == false && block_location[x_num-1][y_num] == false && block_location[x_num][y_num-1] == false
+                                &&  (y_block == 156 - y_num*9))))
 					
-			{
-				clear_block2();
-				x_block-=3;
-				block2(0xff,0xfc,0xe0,0x03,0x1f);
-			}
+                {
+                    clear_block2();
+                    x_block-=3;
+                    block2(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block ==1 || spin_block ==3){
+                if(x_block > 7 && ((block_location[x_num - 1][y_num+1] == false && block_location[x_num-2][y_num] == false && block_location[x_num-2][y_num-1] == false)
+                                   || (block_location[x_num - 1][y_num+1] == false && block_location[x_num-2][y_num] == false &&  (y_block == 156 - y_num*9))))
+                    
+                {
+                    clear_block2();
+                    x_block-=3;
+                    block2(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
 			break;
 
 		case 3:
@@ -1244,7 +1255,9 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 	switch(current_block)
 	{
 		case 1:
-			if(x_block < 30 && block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num-1] == false)
+			if(x_block < 30 && ((block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num-1] == false)
+                                || (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num+1] == false && block_location[x_num+2][y_num+2] == false
+                                    && (y_block == 156 - y_num*9))))
 			{
 				clear_block1();
 				x_block+=3;
@@ -1253,62 +1266,186 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 2:
-			if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num - 2] == false && block_location[x_num +2][y_num] == false)
-					|| (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num - 1] == false && block_location[x_num +1][y_num+1] == false 
-					&& (y_block == 156 - y_num*9))))
-			{
-				clear_block2();
-				x_block+=3;
-				block2(0xff,0xfc,0xe0,0x03,0x1f);
-			}
+            if(spin_block == 0|| spin_block==2){
+                if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num - 2] == false && block_location[x_num +2][y_num] == false)
+                                    || (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num - 1] == false && block_location[x_num +1][y_num+1] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block2();
+                    x_block+=3;
+                    block2(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block == 1|| spin_block==3){
+                
+                if(x_block < 30 && ((block_location[x_num +1][y_num-1] == false && block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num] == false
+                                     && block_location[x_num +2][y_num+1] == false)
+                                    || (block_location[x_num +2][y_num+1] == false && block_location[x_num +1][y_num] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block2();
+                    x_block+=3;
+                    block2(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+                
+            }
 			break;
 
 		case 3:
-			if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +1][y_num-1] == false
-					&& block_location[x_num +2][y_num+1] == false && block_location[x_num+2][y_num] == false && block_location[x_num+1][y_num-2] == false)
-					|| (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +1][y_num-1] == false
-					&& (y_block == 156 - y_num*9))))
-			{
-				clear_block3();
-				x_block+=3;
-				block3(0xff,0xfc,0xe0,0x03,0x1f);
-			}
+            if(spin_block == 0 || spin_block==2)
+            {
+                if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +1][y_num-1] == false
+                                     && block_location[x_num +2][y_num+1] == false && block_location[x_num+2][y_num] == false && block_location[x_num+1][y_num-2] == false)
+                                    || (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +1][y_num-1] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block3();
+                    x_block+=3;
+                    block3(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block == 1|| spin_block==3)
+            {
+                
+                if(x_block < 30 && ((block_location[x_num +2][y_num+1] == false && block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num-1] == false)
+                                    || (block_location[x_num +2][y_num+1] == false && block_location[x_num +3][y_num] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block3();
+                    x_block+=3;
+                    block3(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
 			break;
 
 		case 4:
-			if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +1][y_num +1] == false && block_location[x_num +2][y_num] == false
-					&& block_location[x_num +1][y_num+2] == false)
-					|| (block_location[x_num +2][y_num] == false && block_location[x_num +1][y_num + 1] == false && block_location[x_num+1][y_num+2] == false 
-					&& (y_block == 156 - y_num*9))))
-			{
-				clear_block4();
-				x_block+=3;
-				block4(0xff,0xfc,0xe0,0x03,0x1f);
-			}
+            if(spin_block == 0)
+            {
+                if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +1][y_num +1] == false && block_location[x_num +2][y_num] == false
+                                     && block_location[x_num +1][y_num+2] == false)
+                                    || (block_location[x_num +2][y_num] == false && block_location[x_num +1][y_num + 1] == false && block_location[x_num+1][y_num+2] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block4();
+                    x_block+=3;
+                    block4(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }else if(spin_block == 1)
+            {
+                if(x_block < 30 && ((block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num] == false && block_location[x_num +3][y_num] == false
+                                    && block_location[x_num +3][y_num + 1] == false && block_location[x_num +1][y_num-1] == false)
+                                    || (block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num] == false && block_location[x_num+3][y_num] == false
+                                        && block_location[x_num+3][y_num+1] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block1();
+                    x_block+=3;
+                    block1(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block == 2)
+            {
+                if(x_block < 30 && ((block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num+2] == false
+                                     && block_location[x_num +2][y_num-1] == false)
+                                    || (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num+1] == false && block_location[x_num+2][y_num+2] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block1();
+                    x_block+=3;
+                    block1(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block == 3)
+            {
+                if(x_block < 30 && ((block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num + 1] == false && block_location[x_num +3][y_num-1] == false)
+                                    || (block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num+1] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block4();
+                    x_block+=3;
+                    block4(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+                
+                
 			break;
 
 		case 5:
-			if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num +1] == false && block_location[x_num+2][y_num] == false
-					&& block_location[x_num +2][y_num+2] == false)
-					|| (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num+2][y_num+2] == false 
-					&& (y_block == 156 - y_num*9))))
-			{
-				clear_block5();
-				x_block+=3;
-				block5(0xff,0xfc,0xe0,0x03,0x1f);
-			}
-			break;
+            if(spin_block == 0)
+            {
+                if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num +1] == false && block_location[x_num+2][y_num] == false
+                                     && block_location[x_num +2][y_num+2] == false)
+                                    || (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num+2][y_num+2] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block5();
+                    x_block+=3;
+                    block5(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block == 1)
+            {
+                if(x_block < 30 && ((block_location[x_num +1][y_num+1] == false && block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num-1] == false)
+                                    || (block_location[x_num +1][y_num+1] == false && block_location[x_num +3][y_num] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block5();
+                    x_block+=3;
+                    block5(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+                
+                
+            }
+            else if(spin_block == 2)
+            {
+                if(x_block < 30 && ((block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num+2] == false
+                                     && block_location[x_num +1][y_num-1] == false) && block_location[x_num +1][y_num+1] == false
+                                    || (block_location[x_num +2][y_num+2] == false && block_location[x_num +2][y_num+1] == false && block_location[x_num+1][y_num+1] == false
+                                        && block_location[x_num+1][y_num] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block5();
+                    x_block+=3;
+                    block5(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+                
+                
+            }
+            else if(spin_block == 3)
+            {
+                if(x_block < 30 && ((block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num + 1] == false && block_location[x_num +3][y_num-1] == false)
+                                    || (block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num+1] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block5();
+                    x_block+=3;
+                    block5(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            
+            break;
             
         case 6:
-            if(x_block < 30 && ((block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num +1] == false && block_location[x_num+1][y_num] == false
-                                && block_location[x_num+1][y_num+2] == false&& block_location[x_num+1][y_num-2] == false)
-                               || (block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num + 1] == false && block_location[x_num+1][y_num+2] == false
-                                   && block_location[x_num+1][y_num] == false
-                                   && (y_block == 156 - y_num*9))))
+            if(spin_block == 0||spin_block == 2)
             {
-                clear_block6();
-                x_block+=3;
-                block6(0xff,0xfc,0xe0,0x03,0x1f);
+                if(x_block < 33 && ((block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num +1] == false && block_location[x_num+1][y_num] == false
+                                     && block_location[x_num+1][y_num+2] == false&& block_location[x_num+1][y_num-2] == false)
+                                    || (block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num + 1] == false && block_location[x_num+1][y_num+2] == false
+                                        && block_location[x_num+1][y_num] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block6();
+                    x_block+=3;
+                    block6(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block == 1||spin_block == 3)
+            {
+                if(x_block < 33 && ((block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num +1] == false && block_location[x_num+1][y_num] == false
+                                  && block_location[x_num+1][y_num+2] == false&& block_location[x_num+1][y_num-2] == false)
+                                 || (block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num + 1] == false && block_location[x_num+1][y_num+2] == false
+                                     && block_location[x_num+1][y_num] == false
+                                     && (y_block == 156 - y_num*9))))
+                {
+                    clear_block6();
+                    x_block+=3;
+                    block6(0xff,0xfc,0xe0,0x03,0x1f);
+                }
             }
 
 		default:
@@ -1349,8 +1486,8 @@ void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 		default:
 			break;
 	}
-
-	if( (block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false) && y_num < 149)
+    
+	if( (block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false) && y_num < 149 && y_block < 156 - (y_num-1)*9 +4)
 	{
 		y_block+=3;
 	}
@@ -1453,72 +1590,207 @@ int current_block_fixed()
 
 	if(current_block == 2)
 	{
-		if(y_block ==147 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-2] == true)
-		{
-			block_location[x_num][y_num] = true;
-			block_location[x_num][y_num + 1] = true;
-			block_location[x_num + 1][y_num] = true;
-			block_location[x_num + 1][y_num - 1] = true;
+        if(spin_block ==0 ||spin_block ==2 )
+        {
+            if(y_block ==147 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-2] == true)
+            {
+                if(x_num>10)
+                {
+                    block_location[x_num][y_num] = true;
+                    block_location[x_num][y_num + 1] = true;
+                    block_location[x_num + 1][y_num] = true;
+                    block_location[x_num + 1][y_num - 1] = true;
 	
-			return 1;	//fix current block and go to new_block_down
-		}
-
-		else return 0;	//repeat current_block_fixed untill current block cant drop anymore
-	}
+                    return 1;	//fix current block and go to new_block_down
+                }
+            }
+        }
+        else if(spin_block ==1||spin_block ==3)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
+            {
+                block_location[x_num][y_num] = true;
+                block_location[x_num+2][y_num + 1] = true;
+                block_location[x_num + 1][y_num] = true;
+                block_location[x_num + 1][y_num + 1] = true;
+                
+                return 1;    //fix current block and go to new_block_down
+            }
+        }
+        
+        else return 0;    //repeat current_block_fixed untill current block cant drop anymore
+    }
 
 	if(current_block == 3)
 	{
-		if(y_block ==147 || block_location[x_num][y_num-2] == true || block_location[x_num + 1][y_num-1] == true)
-		{
-			block_location[x_num][y_num] = true;
-			block_location[x_num][y_num - 1] = true;
-			block_location[x_num + 1][y_num] = true;
-			block_location[x_num + 1][y_num + 1] = true;
+        if(spin_block ==0 ||spin_block ==2 ){
+            if(y_block ==147 || block_location[x_num][y_num-2] == true || block_location[x_num + 1][y_num-1] == true)
+            {
+                block_location[x_num][y_num] = true;
+                block_location[x_num][y_num - 1] = true;
+                block_location[x_num + 1][y_num] = true;
+                block_location[x_num + 1][y_num + 1] = true;
 	
-			return 1;	//fix current block and go to new_block_down
-		}
-
+                return 1;	//fix current block and go to new_block_down
+            }
+        }else if(spin_block ==1||spin_block ==3)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
+            {
+                block_location[x_num][y_num] = true;
+                block_location[x_num][y_num + 1] = true;
+                block_location[x_num + 1][y_num] = true;
+                block_location[x_num - 1][y_num + 1] = true;
+                
+                return 1;    //fix current block and go to new_block_down
+            }
+        }
 		else return 0;	//repeat current_block_fixed untill current block cant drop anymore
 	}
+    
 	if(current_block == 4)
 	{
-		if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
-		{
-
-			block_location[x_num][y_num +2] = true;
-			block_location[x_num][y_num + 1] = true;
-			block_location[x_num][y_num] = true;
-			block_location[x_num+1][y_num] = true;
-			return 1;	//fix current block and go to new_block_down
-		}
-
+        if(spin_block ==0)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
+            {
+                block_location[x_num][y_num +2] = true;
+                block_location[x_num][y_num + 1] = true;
+                block_location[x_num][y_num] = true;
+                block_location[x_num+1][y_num] = true;
+                return 1;	//fix current block and go to new_block_down
+            }
+        }
+        else if(spin_block ==1)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true || block_location[x_num+2][y_num-1] == true)
+            {
+                if(x_num<27)
+                {
+                block_location[x_num][y_num] = true;
+                block_location[x_num][y_num + 1] = true;
+                block_location[x_num +1][y_num + 1] = true;
+                block_location[x_num +2][y_num + 1] = true;
+                
+                return 1;    //fix current block and go to new_block_down
+                }
+            }
+        }
+        else if(spin_block ==2)
+        {
+            if(y_num == 0 || block_location[x_num+1][y_num-1] == true || block_location[x_num][y_num+1] == true)
+            {
+                block_location[x_num-1][y_num +2] = true;
+                block_location[x_num][y_num + 2] = true;
+                block_location[x_num][y_num +1] = true;
+                block_location[x_num][y_num] = true;
+                return 1;    //fix current block and go to new_block_down
+            }
+        }
+        else if(spin_block ==3)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true || block_location[x_num+2][y_num-1] == true)
+            {
+                if(x_num<27)
+                {
+                block_location[x_num][y_num+1] = true;
+                block_location[x_num][y_num] = true;
+                block_location[x_num +1][y_num] = true;
+                block_location[x_num +2][y_num] = true;
+                
+                return 1;    //fix current block and go to new_block_down
+  
+                }
+            }
+        }
 		else return 0;	//repeat current_block_fixed untill current block cant drop anymore
 	}
 
 	if(current_block == 5)
 	{
-		if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
-		{
+        if(spin_block ==0)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
+            {
 
-			block_location[x_num+1][y_num +2] = true;
-			block_location[x_num+1][y_num + 1] = true;
-			block_location[x_num][y_num] = true;
-			block_location[x_num+1][y_num] = true;
-			return 1;	//fix current block and go to new_block_down
-		}
-
+                block_location[x_num+1][y_num +2] = true;
+                block_location[x_num+1][y_num + 1] = true;
+                block_location[x_num][y_num] = true;
+                block_location[x_num+1][y_num] = true;
+                return 1;	//fix current block and go to new_block_down
+            }
+        }
+        else if(spin_block ==1)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true || block_location[x_num+2][y_num-1] == true)
+            {
+                if(x_num<27)
+                {
+                    block_location[x_num][y_num+1] = true;
+                    block_location[x_num][y_num] = true;
+                    block_location[x_num +1][y_num] = true;
+                    block_location[x_num +2][y_num] = true;
+                
+                    return 1;    //fix current block and go to new_block_down
+                }
+            }
+        }
+        else if(spin_block ==2)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num+1][y_num+1] == true)
+            {
+                block_location[x_num+1][y_num +2] = true;
+                block_location[x_num][y_num + 2] = true;
+                block_location[x_num][y_num +1] = true;
+                block_location[x_num][y_num] = true;
+                return 1;    //fix current block and go to new_block_down
+            }
+        }
+        else if(spin_block ==3)
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true || block_location[x_num+2][y_num-1] == true)
+            {
+                if(x_num<27)
+                {
+                    block_location[x_num+2][y_num] = true;
+                    block_location[x_num][y_num + 1] = true;
+                    block_location[x_num +1][y_num + 1] = true;
+                    block_location[x_num +2][y_num + 1] = true;
+                
+                    return 1;    //fix current block and go to new_block_down
+                }
+            }
+        }
 		else return 0;	//repeat current_block_fixed untill current block cant drop anymore
 	}
     
     if(current_block == 6)
     {
-        if(y_block ==147 || block_location[x_num][y_num-2] == true )
+        if(spin_block ==0 ||spin_block ==2 )
         {
-            block_location[x_num][y_num +2] = true;
-            block_location[x_num][y_num + 1] = true;
-            block_location[x_num][y_num] = true;
-            block_location[x_num][y_num-1] = true;
-            return 1;    //fix current block and go to new_block_down
+            if(y_block ==147 || block_location[x_num][y_num-2] == true )
+            {
+                block_location[x_num][y_num +2] = true;
+                block_location[x_num][y_num + 1] = true;
+                block_location[x_num][y_num] = true;
+                block_location[x_num][y_num-1] = true;
+                return 1;    //fix current block and go to new_block_down
+            }
+        }
+        else if(spin_block ==1 ||spin_block ==3 )
+        {
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
+            {
+                if(x_num>10&&x_num<30)
+                {
+                    block_location[x_num][y_num] = true;
+                    block_location[x_num-1][y_num] = true;
+                    block_location[x_num-2][y_num] = true;
+                    block_location[x_num + 1][y_num] = true;
+
+                    return 1;    //fix current block and go to new_block_down
+                }
+            }
         }
         
         else return 0;    //repeat current_block_fixed untill current block cant drop anymore
@@ -1528,6 +1800,7 @@ int current_block_fixed()
 
 void new_block_down(void * p_event_data, uint16_t event_size)
 {
+    current_block = rand()%6 +1;
 	x_block = 19;
 	y_block = 18+30;
 	
