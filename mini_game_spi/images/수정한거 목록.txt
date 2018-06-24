@@ -1,0 +1,13 @@
+
+gallag hp
+
+clear_noise() function
+
+gallag_intro() function
+
+start_gallag() function
+
+gallag_ending() function
+
+clear_enemy() function
+
