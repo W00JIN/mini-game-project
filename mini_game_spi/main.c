@@ -1193,53 +1193,155 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 3:
-			if(x_block > 7 && ((block_location[x_num -1][y_num-1] == false && block_location[x_num -1][y_num - 2] == false && block_location[x_num -1][y_num] == false)
-					|| (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num - 1] == false && block_location[x_num][y_num+1] == false 
-					&& (y_block == 156 - y_num*9))))
-			{
-				clear_block3();
-				x_block-=3;
-				block3(0xff,0xfc,0xe0,0x03,0x1f);
-			}
+            if(spin_block ==0 ||spin_block==2)
+            {
+                if(x_block > 7 && ((block_location[x_num -1][y_num-1] == false && block_location[x_num -1][y_num - 2] == false && block_location[x_num -1][y_num] == false)
+                                   || (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num - 1] == false && block_location[x_num][y_num+1] == false
+                                       && (y_block == 156 - y_num*9))))
+                {
+                    clear_block3();
+                    x_block-=3;
+                    block3(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block ==1 ||spin_block==3)
+            {
+                if(x_block > 7 && ((block_location[x_num ][y_num-1] == false && block_location[x_num ][y_num] == false && block_location[x_num -1][y_num] == false
+                                     && block_location[x_num -1][y_num+1] == false)
+                                    || (block_location[x_num -1][y_num+1] == false && block_location[x_num][y_num] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block3();
+                    x_block-=3;
+                    block3(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
 			break;
 
 		case 4:
-			if(x_block > 7 && ((block_location[x_num -1][y_num-1] == false && block_location[x_num -1][y_num +1] == false && block_location[x_num -1][y_num] == false
-					&& block_location[x_num -1][y_num+2] == false)
-					|| (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num + 1] == false && block_location[x_num-1][y_num+2] == false 
-					&& (y_block == 156 - y_num*9))))
-			{
-				clear_block4();
-				x_block-=3;
-				block4(0xff,0xfc,0xe0,0x03,0x1f);
-			}
+            if(spin_block==0)
+            {
+                if(x_block > 7 && ((block_location[x_num -1][y_num-1] == false && block_location[x_num -1][y_num +1] == false && block_location[x_num -1][y_num] == false
+                                    && block_location[x_num -1][y_num+2] == false)
+                                   || (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num + 1] == false && block_location[x_num-1][y_num+2] == false
+                                       && (y_block == 156 - y_num*9))))
+                {
+                    clear_block4();
+                    x_block-=3;
+                    block4(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block ==1)
+            {
+                if(x_block > 7 && ((block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num + 1] == false && block_location[x_num -1][y_num-1] == false)
+                                    || (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num+1] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block4();
+                    x_block-=3;
+                    block4(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block ==2)
+            {
+                if(x_block > 7 && ((block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num+2] == false
+                                     && block_location[x_num +1][y_num-1] == false) && block_location[x_num +1][y_num+1] == false
+                                    || (block_location[x_num +2][y_num+2] == false && block_location[x_num +2][y_num+1] == false && block_location[x_num+1][y_num+1] == false
+                                        && block_location[x_num+1][y_num] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block4();
+                    x_block-=3;
+                    block4(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block ==3)
+            {
+                if(x_block > 7 && ((block_location[x_num +1][y_num+1] == false && block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num-1] == false)
+                                    || (block_location[x_num +1][y_num+1] == false && block_location[x_num -1][y_num] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block4();
+                    x_block-=3;
+                    block4(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            
 			break;
 
 		case 5:
-			if(x_block > 7 && ((block_location[x_num-1][y_num-1] == false && block_location[x_num][y_num +1] == false && block_location[x_num-1][y_num] == false
-					&& block_location[x_num][y_num+2] == false)
-					|| (block_location[x_num -1][y_num] == false && block_location[x_num ][y_num + 1] == false && block_location[x_num][y_num+2] == false 
-					&& (y_block == 156 - y_num*9))))
-			{
-				clear_block5();
-				x_block-=3;
-				block5(0xff,0xfc,0xe0,0x03,0x1f);
-			}
+            if(spin_block==0)
+            {
+                if(x_block > 7 && ((block_location[x_num-1][y_num-1] == false && block_location[x_num][y_num +1] == false && block_location[x_num-1][y_num] == false
+                                    && block_location[x_num][y_num+2] == false)
+                                   || (block_location[x_num -1][y_num] == false && block_location[x_num ][y_num + 1] == false && block_location[x_num][y_num+2] == false
+                                       && (y_block == 156 - y_num*9))))
+                {
+                    clear_block5();
+                    x_block-=3;
+                    block5(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block==1)
+            {
+                if(x_block > 7 && ((block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num + 1] == false && block_location[x_num -1][y_num-1] == false)
+                                    || (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num+1] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block5();
+                    x_block-=3;
+                    block5(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block==2)
+            {
+                if(x_block > 7 && ((block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num + 1] == false && block_location[x_num -1][y_num+2] == false
+                                     && block_location[x_num -1][y_num-1] == false)
+                                    || (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num+1] == false && block_location[x_num-1][y_num+2] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block5();
+                    x_block-=3;
+                    block5(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            else if(spin_block==3)
+            {
+                if(x_block > 7 && ((block_location[x_num +1][y_num] == false && block_location[x_num ][y_num] == false && block_location[x_num -1][y_num] == false
+                                     && block_location[x_num -1][y_num + 1] == false && block_location[x_num +1][y_num-1] == false)
+                                    || (block_location[x_num +1][y_num] == false && block_location[x_num ][y_num] == false && block_location[x_num-1][y_num] == false
+                                        && block_location[x_num-1][y_num+1] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block5();
+                    x_block-=3;
+                    block5(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
 			break;
             
         case 6:
-            if(x_block > 7 && ((block_location[x_num-1][y_num-1] == false && block_location[x_num-1][y_num +1] == false && block_location[x_num-1][y_num] == false
-                                && block_location[x_num-1][y_num+2] == false&& block_location[x_num-1][y_num-2] == false)
-                               || (block_location[x_num-1][y_num-1] == false && block_location[x_num-1][y_num + 1] == false && block_location[x_num-1][y_num+2] == false
-                                   && block_location[x_num-1][y_num] == false
-                                   && (y_block == 156 - y_num*9))))
+            
+            if(spin_block==0 || spin_block == 2)
             {
-                clear_block6();
-                x_block-=3;
-                block6(0xff,0xfc,0xe0,0x03,0x1f);
+                if(x_block > 7 && ((block_location[x_num-1][y_num-1] == false && block_location[x_num-1][y_num +1] == false && block_location[x_num-1][y_num] == false
+                                     && block_location[x_num-1][y_num+2] == false&& block_location[x_num-1][y_num-2] == false)
+                                    || (block_location[x_num-1][y_num-1] == false && block_location[x_num-1][y_num + 1] == false && block_location[x_num-1][y_num+2] == false
+                                        && block_location[x_num-1][y_num] == false
+                                        && (y_block == 156 - y_num*9))))
+                {
+                    clear_block6();
+                    x_block-=3;
+                    block6(0xff,0xfc,0xe0,0x03,0x1f);
+                }
             }
-            break;
-
+            else if(spin_block == 1||spin_block == 3)
+            {
+                if(x_block  > 7 && ((block_location[x_num+2][y_num] == false && block_location[x_num+2][y_num] == false)
+                                    || (block_location[x_num+2][y_num] == false && (y_block == 156 - y_num*9))))
+                {
+                    clear_block6();
+                    x_block-=3;
+                    block6(0xff,0xfc,0xe0,0x03,0x1f);
+                }
+            }
+            
 		default:
 			break;
 	}
@@ -1336,9 +1438,9 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                                         && block_location[x_num+3][y_num+1] == false
                                         && (y_block == 156 - y_num*9))))
                 {
-                    clear_block1();
+                    clear_block4();
                     x_block+=3;
-                    block1(0xff,0xfc,0xe0,0x03,0x1f);
+                    block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
             else if(spin_block == 2)
@@ -1348,9 +1450,9 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                                     || (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num+1] == false && block_location[x_num+2][y_num+2] == false
                                         && (y_block == 156 - y_num*9))))
                 {
-                    clear_block1();
+                    clear_block4();
                     x_block+=3;
-                    block1(0xff,0xfc,0xe0,0x03,0x1f);
+                    block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
             else if(spin_block == 3)
@@ -1436,11 +1538,8 @@ void move_block_right(void * p_event_data, uint16_t event_size)
             }
             else if(spin_block == 1||spin_block == 3)
             {
-                if(x_block < 33 && ((block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num +1] == false && block_location[x_num+1][y_num] == false
-                                  && block_location[x_num+1][y_num+2] == false&& block_location[x_num+1][y_num-2] == false)
-                                 || (block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num + 1] == false && block_location[x_num+1][y_num+2] == false
-                                     && block_location[x_num+1][y_num] == false
-                                     && (y_block == 156 - y_num*9))))
+                if(x_block < 33 && ((block_location[x_num-3][y_num] == false && block_location[x_num-3][y_num] == false)
+                                    || (block_location[x_num-3][y_num] == false && (y_block == 156 - y_num*9))))
                 {
                     clear_block6();
                     x_block+=3;
