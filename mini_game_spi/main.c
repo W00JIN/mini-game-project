@@ -116,8 +116,8 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 int x = 18;
 int y = 120;
 int hp_gallag = 30;
-int game_num = 0;			//game n : 1 == gallag / 2 == tatris
-int ble_available = 1;		//if you want use ble, change to 1 else 0
+int game_num = 2;			//game n : 1 == gallag / 2 == tatris
+int ble_available = 0;		//if you want use ble, change to 1 else 0
 
 int x_enemy[7] = {0,5,10,20,4,30,6};			
 int y_enemy[7] = {0,10,20,30,40,50,60};			
@@ -148,9 +148,9 @@ bool block_location[10][14] = {0};
 int x_block=19;
 int y_block=18+30; //18 + 140 is end of screen
 
-int current_block = 1;
+int current_block = 2;
 int current_color;
-int current_spin;
+int current_spin=0;
 
  
 static unsigned char rx_data;
@@ -224,8 +224,16 @@ void gallag_background();
 void tetris_background();
 void clear_block1();
 void clear_block2();
+void clear_block3();
+void clear_block4();
+void clear_block5();
+void clear_block6();
 void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
 void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
+void block3(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
+void block4(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
+void block5(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
+void block6(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011);
 void move_gallag_left(void * p_event_data, uint16_t event_size);
 void move_gallag_right(void * p_event_data, uint16_t event_size);
 void shoot_bullet(void * p_event_data, uint16_t event_size);
@@ -283,6 +291,40 @@ int main(void)
 	clear_noise();
 	st7586_write(ST_COMMAND,  0x38);
    
+    clear_noise();
+    tetris_background();
+    
+    switch(current_block)
+    {
+        case 1:
+            block1(0xff,0xfc,0xe0,0x03,0x1f);
+            break;
+        case 2:
+            block2(0xff,0xfc,0xe0,0x03,0x1f);
+            break;
+        case 3:
+            block3(0xff,0xfc,0xe0,0x03,0x1f);
+            break;
+        case 4:
+            y_block+=9;
+            block4(0xff,0xfc,0xe0,0x03,0x1f);
+            break;
+        case 5:
+            y_block+=9;
+            block5(0xff,0xfc,0xe0,0x03,0x1f);
+            break;
+        case 6:
+            y_block+=9;
+            block6(0xff,0xfc,0xe0,0x03,0x1f);
+            break;
+        default:
+            break;
+    }
+    st7586_write(ST_COMMAND,  0x29);
+    
+    
+    
+    
 	APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
 	
 	hp_a = 0;	hp_k = 0;	hp_u = 0;  //for fast debug
@@ -944,10 +986,10 @@ void block1(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
 	set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
 	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block - (block_height*2+2),block_height, dot_111);
+	set_location(x_block+3, 1, y_block - (block_height*2+2),block_height, dot_111); //y+1
 	set_location(x_block+5, 0, y_block - (block_height*2+2),block_height, dot_110);
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);      //Y
 	set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
 	
 	set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
@@ -957,17 +999,35 @@ void clear_block2()
 {
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
-	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+    
+    if(current_spin==0||current_spin==2)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
 	
-	set_location(x_block+3, 1, y_block+2, block_height, 0x49);
-	set_location(x_block+5, 0, y_block+2, block_height, 0x49);
+        set_location(x_block+3, 1, y_block+2, block_height, 0x49);
+        set_location(x_block+5, 0, y_block+2, block_height, 0x49);
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
-	set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
 	
-	set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
-	set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+    }
+    else if(current_spin==1 ||current_spin==3 )
+    {
+        set_location(x_block-3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block-1, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block- (block_height*2+2), block_height, 0x49);
+        set_location(x_block+5, 0, y_block- (block_height*2+2), block_height, 0x49);
+    }
 
 }
 void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
@@ -975,33 +1035,69 @@ void block2(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
 	
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
-	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+    
+    if(current_spin==0 ||current_spin==2 )
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block+2, block_height, dot_111);
-	set_location(x_block+5, 0, y_block+2, block_height, dot_110);
+        set_location(x_block+3, 1, y_block+2, block_height, dot_111);
+        set_location(x_block+5, 0, y_block+2, block_height, dot_110);                       //y-1
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
-	set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
-	set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+    }
+    else if(current_spin==1 ||current_spin==3 )
+    {
+        
+        set_location(x_block-3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block-1, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block- (block_height*2+2), block_height, dot_111);
+        set_location(x_block+5, 0, y_block- (block_height*2+2), block_height, dot_110);
+    }
 }
 void clear_block3()
 {
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, 0x49);
-	set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, 0x49);
+    if(current_spin==0||current_spin==2)
+    {
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, 0x49);
 	
-	set_location(x_block, 1, y_block+2, block_height, 0x49);
-	set_location(x_block+2, 0, y_block+2, block_height, 0x49);
+        set_location(x_block, 1, y_block+2, block_height, 0x49);
+        set_location(x_block+2, 0, y_block+2, block_height, 0x49);
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
-	set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
 	
-	set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
-	set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+    }
+    else if(current_spin==1 ||current_spin==3 )
+    {
+        set_location(x_block-3, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block-1, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+    }
 
 }
 void block3(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
@@ -1009,104 +1105,329 @@ void block3(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
 	
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, dot_111);
-	set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, dot_110);
+    
+    if((current_spin==1 ||current_spin==3 )&&x_block>=27) current_spin--;
+    
+    if(current_spin==0 ||current_spin==2)
+    {
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, dot_110);
 	
-	set_location(x_block, 1, y_block+2, block_height, dot_111);
-	set_location(x_block+2, 0, y_block+2, block_height, dot_110);
+        set_location(x_block, 1, y_block+2, block_height, dot_111);
+        set_location(x_block+2, 0, y_block+2, block_height, dot_110);
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
-	set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
-	set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+    }
+    else if(current_spin==1 ||current_spin==3)
+    {
+        set_location(x_block-3, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block-1, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+    }
 }
 
 void clear_block4()
 {
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
-	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+    if(current_spin==0)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
 	
-	set_location(x_block, 1, y_block - (block_height*3+4),block_height, 0x49);
-	set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, 0x49);
+        set_location(x_block, 1, y_block - (block_height*3+4),block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, 0x49);    //y+2
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
-	set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
 	
-	set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
-	set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+    }else if(current_spin==1)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block+6, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+8, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, 0x49);
+    }
+    else if(current_spin==2)
+    {
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height*3+4),block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height*3+4),block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height*3+4), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*3+4), block_height, 0x49);
+    }
+    else if(current_spin==3)
+    {
+        set_location(x_block+6, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+8, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block+6, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+8, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+    }
+    
 }
 void block4(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
 {
 	
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
-	set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+    
+    
+    if((current_spin==1 ||current_spin==3)&& x_block>=27)
+        current_spin--;
+    
+    if(current_spin==0)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
 	
-	set_location(x_block, 1, y_block - (block_height*3+4),block_height, dot_111);
-	set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, dot_110);
+        set_location(x_block, 1, y_block - (block_height*3+4),block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, dot_110);
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
-	set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
-	set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+    }
+    else if(current_spin==1)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block+6, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+8, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, dot_110);
+    }
+    else if(current_spin==2)
+    {
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height*3+4),block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height*3+4),block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height*3+4), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*3+4), block_height, dot_110);
+    }
+    else if(current_spin==3)
+    {
+        set_location(x_block+6, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+8, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block+6, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+8, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+    }
 }
 void clear_block5()
 {
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, 0x49);
-	set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, 0x49);
+    
+    if(current_spin==0)
+    {
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, 0x49);
 	
-	set_location(x_block+3, 1, y_block - (block_height*3+4),block_height, 0x49);
-	set_location(x_block+5, 0, y_block - (block_height*3+4),block_height, 0x49);
+        set_location(x_block+3, 1, y_block - (block_height*3+4),block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height*3+4),block_height, 0x49);
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
-	set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
 	
-	set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
-	set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+    }
+    else if(current_spin==1)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block+6, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+8, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+    }
+    else if(current_spin==2)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height*3+4),block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height*3+4), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height*3+4), block_height, 0x49);
+    }
+    else if(current_spin==3)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block+6, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+8, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block+6, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+8, 0, y_block - (block_height*2+2), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, 0x49);
+    }
 }
 
 void block5(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
 {
-	
 	int block_height = 7;
 	//Enter by block pixel
-	set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, dot_111);
-	set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, dot_110);
+    
+    
+    if((current_spin==1 ||current_spin==3)&& x_block>=27)
+        current_spin--;
+    
+    if(current_spin==0)
+    {
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block - (block_height*3+4),block_height, dot_111);
-	set_location(x_block+5, 0, y_block - (block_height*3+4),block_height, dot_110);
+        set_location(x_block+3, 1, y_block - (block_height*3+4),block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height*3+4),block_height, dot_110);
 	
-	set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
-	set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
 	
-	set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
-	set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+    }
+    else if(current_spin==1)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block+6, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+8, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+    }
+    else if(current_spin==2)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height*3+4),block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height*3+4), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height*3+4), block_height, dot_110);
+    }
+    else if(current_spin==3)
+    {
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block+6, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+8, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block+6, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+8, 0, y_block - (block_height*2+2), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height*2+2), block_height, dot_110);
+    }
 }
 void clear_block6()
 {
     
     int block_height = 7;
     //Enter by block pixel
+    if(current_spin==0||current_spin==2)
+    {
+        set_location(x_block, 1, y_block+2, block_height, 0x49);
+        set_location(x_block+2, 0, y_block+2, block_height, 0x49);
     
-    set_location(x_block, 1, y_block+2, block_height, 0x49);
-    set_location(x_block+2, 0, y_block+2, block_height, 0x49);
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
     
-    set_location(x_block, 1, y_block - (block_height*2+2), block_height, 0x49);
-    set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, 0x49);
+        set_location(x_block, 1, y_block - (block_height*3+4),block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, 0x49);
     
-    set_location(x_block, 1, y_block - (block_height*3+4),block_height, 0x49);
-    set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, 0x49);
-    
-    set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
-    set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
-    
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+    }
+    else if(current_spin==1 ||current_spin==3)
+    {
+        set_location(x_block-3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block-1, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block-6, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block-4, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, 0x49);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, 0x49);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, 0x49);
+    }
 }
 void block6(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, uint8_t dot_011)
 {
@@ -1114,18 +1435,36 @@ void block6(uint8_t dot_111, uint8_t dot_110, uint8_t dot_100, uint8_t dot_001, 
     int block_height = 7;
     //Enter by block pixel
     
-    set_location(x_block, 1, y_block+2, block_height, dot_111);
-    set_location(x_block+2, 0, y_block+2, block_height, dot_110);
+    if((current_spin==1 ||current_spin==3)&&x_block>=30) current_spin--;
     
-    set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
-    set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
+    if(current_spin==0||current_spin==2)
+    {
+        set_location(x_block, 1, y_block+2, block_height, dot_111);
+        set_location(x_block+2, 0, y_block+2, block_height, dot_110);
     
-    set_location(x_block, 1, y_block - (block_height*3+4),block_height, dot_111);
-    set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, dot_110);
+        set_location(x_block, 1, y_block - (block_height*2+2), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*2+2), block_height, dot_110);
     
-    set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
-    set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        set_location(x_block, 1, y_block - (block_height*3+4),block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height*3+4),block_height, dot_110);
     
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+    }
+    else if(current_spin==1 ||current_spin==3)
+    {
+        set_location(x_block-3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block-1, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block-6, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block-4, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+2, 0, y_block - (block_height), block_height, dot_110);
+        
+        set_location(x_block+3, 1, y_block - (block_height), block_height, dot_111);
+        set_location(x_block+5, 0, y_block - (block_height), block_height, dot_110);
+    }
 }
 
 /**@brief Function for btn event to send scheduler
@@ -1168,7 +1507,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 2:
-            if(spin_block ==0 ||spin_block ==2){
+            if(current_spin ==0 ||current_spin ==2){
                 if(x_block > 7 && ((block_location[x_num - 1][y_num-1] == false && block_location[x_num ][y_num-1] == false
                                 && block_location[x_num - 1][y_num+1] == false && block_location[x_num-1][y_num] == false && block_location[x_num][y_num-2] == false)
                                || (block_location[x_num - 1][y_num+1] == false && block_location[x_num-1][y_num] == false && block_location[x_num][y_num-1] == false
@@ -1180,10 +1519,9 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block2(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block ==1 || spin_block ==3){
+            else if(current_spin ==1 || current_spin ==3){
                 if(x_block > 7 && ((block_location[x_num - 1][y_num+1] == false && block_location[x_num-2][y_num] == false && block_location[x_num-2][y_num-1] == false)
                                    || (block_location[x_num - 1][y_num+1] == false && block_location[x_num-2][y_num] == false &&  (y_block == 156 - y_num*9))))
-                    
                 {
                     clear_block2();
                     x_block-=3;
@@ -1193,7 +1531,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 3:
-            if(spin_block ==0 ||spin_block==2)
+            if(current_spin ==0 ||current_spin==2)
             {
                 if(x_block > 7 && ((block_location[x_num -1][y_num-1] == false && block_location[x_num -1][y_num - 2] == false && block_location[x_num -1][y_num] == false)
                                    || (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num - 1] == false && block_location[x_num][y_num+1] == false
@@ -1204,7 +1542,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block3(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block ==1 ||spin_block==3)
+            else if(current_spin ==1 ||current_spin==3)
             {
                 if(x_block > 7 && ((block_location[x_num ][y_num-1] == false && block_location[x_num ][y_num] == false && block_location[x_num -1][y_num] == false
                                      && block_location[x_num -1][y_num+1] == false)
@@ -1218,7 +1556,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 4:
-            if(spin_block==0)
+            if(current_spin==0)
             {
                 if(x_block > 7 && ((block_location[x_num -1][y_num-1] == false && block_location[x_num -1][y_num +1] == false && block_location[x_num -1][y_num] == false
                                     && block_location[x_num -1][y_num+2] == false)
@@ -1230,7 +1568,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block ==1)
+            else if(current_spin ==1)
             {
                 if(x_block > 7 && ((block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num + 1] == false && block_location[x_num -1][y_num-1] == false)
                                     || (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num+1] == false && (y_block == 156 - y_num*9))))
@@ -1240,10 +1578,10 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block ==2)
+            else if(current_spin ==2)
             {
                 if(x_block > 7 && ((block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num+2] == false
-                                     && block_location[x_num +1][y_num-1] == false) && block_location[x_num +1][y_num+1] == false
+                                     && block_location[x_num +1][y_num-1] == false && block_location[x_num +1][y_num+1] == false)
                                     || (block_location[x_num +2][y_num+2] == false && block_location[x_num +2][y_num+1] == false && block_location[x_num+1][y_num+1] == false
                                         && block_location[x_num+1][y_num] == false
                                         && (y_block == 156 - y_num*9))))
@@ -1253,7 +1591,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block ==3)
+            else if(current_spin ==3)
             {
                 if(x_block > 7 && ((block_location[x_num +1][y_num+1] == false && block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num-1] == false)
                                     || (block_location[x_num +1][y_num+1] == false && block_location[x_num -1][y_num] == false && (y_block == 156 - y_num*9))))
@@ -1267,7 +1605,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 5:
-            if(spin_block==0)
+            if(current_spin==0)
             {
                 if(x_block > 7 && ((block_location[x_num-1][y_num-1] == false && block_location[x_num][y_num +1] == false && block_location[x_num-1][y_num] == false
                                     && block_location[x_num][y_num+2] == false)
@@ -1279,7 +1617,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block5(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block==1)
+            else if(current_spin==1)
             {
                 if(x_block > 7 && ((block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num + 1] == false && block_location[x_num -1][y_num-1] == false)
                                     || (block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num+1] == false && (y_block == 156 - y_num*9))))
@@ -1289,7 +1627,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block5(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block==2)
+            else if(current_spin==2)
             {
                 if(x_block > 7 && ((block_location[x_num -1][y_num] == false && block_location[x_num -1][y_num + 1] == false && block_location[x_num -1][y_num+2] == false
                                      && block_location[x_num -1][y_num-1] == false)
@@ -1301,7 +1639,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block5(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block==3)
+            else if(current_spin==3)
             {
                 if(x_block > 7 && ((block_location[x_num +1][y_num] == false && block_location[x_num ][y_num] == false && block_location[x_num -1][y_num] == false
                                      && block_location[x_num -1][y_num + 1] == false && block_location[x_num +1][y_num-1] == false)
@@ -1318,7 +1656,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
             
         case 6:
             
-            if(spin_block==0 || spin_block == 2)
+            if(current_spin==0 || current_spin == 2)
             {
                 if(x_block > 7 && ((block_location[x_num-1][y_num-1] == false && block_location[x_num-1][y_num +1] == false && block_location[x_num-1][y_num] == false
                                      && block_location[x_num-1][y_num+2] == false&& block_location[x_num-1][y_num-2] == false)
@@ -1331,7 +1669,7 @@ void move_block_left(void * p_event_data, uint16_t event_size)
                     block6(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block == 1||spin_block == 3)
+            else if(current_spin == 1||current_spin == 3)
             {
                 if(x_block  > 7 && ((block_location[x_num+2][y_num] == false && block_location[x_num+2][y_num] == false)
                                     || (block_location[x_num+2][y_num] == false && (y_block == 156 - y_num*9))))
@@ -1368,7 +1706,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 2:
-            if(spin_block == 0|| spin_block==2){
+            if(current_spin == 0|| current_spin==2){
                 if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num - 2] == false && block_location[x_num +2][y_num] == false)
                                     || (block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num - 1] == false && block_location[x_num +1][y_num+1] == false
                                         && (y_block == 156 - y_num*9))))
@@ -1378,7 +1716,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                     block2(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block == 1|| spin_block==3){
+            else if(current_spin == 1|| current_spin==3){
                 
                 if(x_block < 30 && ((block_location[x_num +1][y_num-1] == false && block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num] == false
                                      && block_location[x_num +2][y_num+1] == false)
@@ -1393,7 +1731,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 3:
-            if(spin_block == 0 || spin_block==2)
+            if(current_spin == 0 || current_spin==2)
             {
                 if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +1][y_num-1] == false
                                      && block_location[x_num +2][y_num+1] == false && block_location[x_num+2][y_num] == false && block_location[x_num+1][y_num-2] == false)
@@ -1405,7 +1743,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                     block3(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block == 1|| spin_block==3)
+            else if(current_spin == 1|| current_spin==3)
             {
                 
                 if(x_block < 30 && ((block_location[x_num +2][y_num+1] == false && block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num-1] == false)
@@ -1419,7 +1757,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 			break;
 
 		case 4:
-            if(spin_block == 0)
+            if(current_spin == 0)
             {
                 if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +1][y_num +1] == false && block_location[x_num +2][y_num] == false
                                      && block_location[x_num +1][y_num+2] == false)
@@ -1430,7 +1768,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                     x_block+=3;
                     block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
-            }else if(spin_block == 1)
+            }else if(current_spin == 1)
             {
                 if(x_block < 30 && ((block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num] == false && block_location[x_num +3][y_num] == false
                                     && block_location[x_num +3][y_num + 1] == false && block_location[x_num +1][y_num-1] == false)
@@ -1443,7 +1781,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                     block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block == 2)
+            else if(current_spin == 2)
             {
                 if(x_block < 30 && ((block_location[x_num +2][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num+2] == false
                                      && block_location[x_num +2][y_num-1] == false)
@@ -1455,7 +1793,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                     block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block == 3)
+            else if(current_spin == 3)
             {
                 if(x_block < 30 && ((block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num + 1] == false && block_location[x_num +3][y_num-1] == false)
                                     || (block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num+1] == false && (y_block == 156 - y_num*9))))
@@ -1465,12 +1803,10 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                     block4(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-                
-                
-			break;
+                			break;
 
 		case 5:
-            if(spin_block == 0)
+            if(current_spin == 0)
             {
                 if(x_block < 30 && ((block_location[x_num +2][y_num-1] == false && block_location[x_num +2][y_num +1] == false && block_location[x_num+2][y_num] == false
                                      && block_location[x_num +2][y_num+2] == false)
@@ -1482,7 +1818,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                     block5(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block == 1)
+            else if(current_spin == 1)
             {
                 if(x_block < 30 && ((block_location[x_num +1][y_num+1] == false && block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num-1] == false)
                                     || (block_location[x_num +1][y_num+1] == false && block_location[x_num +3][y_num] == false && (y_block == 156 - y_num*9))))
@@ -1494,10 +1830,10 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                 
                 
             }
-            else if(spin_block == 2)
+            else if(current_spin == 2)
             {
                 if(x_block < 30 && ((block_location[x_num +1][y_num] == false && block_location[x_num +2][y_num + 1] == false && block_location[x_num +2][y_num+2] == false
-                                     && block_location[x_num +1][y_num-1] == false) && block_location[x_num +1][y_num+1] == false
+                                     && block_location[x_num +1][y_num-1] == false && block_location[x_num +1][y_num+1] == false)
                                     || (block_location[x_num +2][y_num+2] == false && block_location[x_num +2][y_num+1] == false && block_location[x_num+1][y_num+1] == false
                                         && block_location[x_num+1][y_num] == false
                                         && (y_block == 156 - y_num*9))))
@@ -1509,7 +1845,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                 
                 
             }
-            else if(spin_block == 3)
+            else if(current_spin == 3)
             {
                 if(x_block < 30 && ((block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num + 1] == false && block_location[x_num +3][y_num-1] == false)
                                     || (block_location[x_num +3][y_num] == false && block_location[x_num +3][y_num+1] == false && (y_block == 156 - y_num*9))))
@@ -1523,7 +1859,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
             break;
             
         case 6:
-            if(spin_block == 0||spin_block == 2)
+            if(current_spin == 0||current_spin == 2)
             {
                 if(x_block < 33 && ((block_location[x_num+1][y_num-1] == false && block_location[x_num+1][y_num +1] == false && block_location[x_num+1][y_num] == false
                                      && block_location[x_num+1][y_num+2] == false&& block_location[x_num+1][y_num-2] == false)
@@ -1536,7 +1872,7 @@ void move_block_right(void * p_event_data, uint16_t event_size)
                     block6(0xff,0xfc,0xe0,0x03,0x1f);
                 }
             }
-            else if(spin_block == 1||spin_block == 3)
+            else if(current_spin == 1||current_spin == 3)
             {
                 if(x_block < 33 && ((block_location[x_num-3][y_num] == false && block_location[x_num-3][y_num] == false)
                                     || (block_location[x_num-3][y_num] == false && (y_block == 156 - y_num*9))))
@@ -1554,7 +1890,58 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 
 void spin_block(void * p_event_data, uint16_t event_size)
 {
-	
+    
+    switch(current_block)
+    {
+        case 1:
+            clear_block1();
+            current_spin ++;
+            block1(0xff,0xfc,0xe0,0x03,0x1f);
+            break;
+        case 2:
+            if(x_block>7 )
+            {
+                clear_block2();
+                current_spin ++;
+                block2(0xff,0xfc,0xe0,0x03,0x1f);
+            }
+            break;
+        case 3:
+            if(x_block<30 )
+            {
+                clear_block3();
+                current_spin ++;
+                block3(0xff,0xfc,0xe0,0x03,0x1f);
+            }
+            break;
+        case 4:
+            if(x_block<30 )
+            {
+                clear_block4();
+                current_spin ++;
+                block4(0xff,0xfc,0xe0,0x03,0x1f);
+            }
+            break;
+        case 5:
+            if(x_block<30 )
+            {
+                clear_block5();
+                current_spin ++;
+                block5(0xff,0xfc,0xe0,0x03,0x1f);
+            }
+            break;
+        case 6:
+            if(x_block>10 )
+            {
+                clear_block6();
+                current_spin ++;
+                block6(0xff,0xfc,0xe0,0x03,0x1f);
+            }
+            break;
+        default:
+            break;
+    
+    }
 }
 void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 {
@@ -1586,7 +1973,7 @@ void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 			break;
 	}
     
-	if( (block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false) && y_num < 149 && y_block < 156 - (y_num-1)*9 +4)
+	if( (block_location[x_num][y_num-1] == false || block_location[x_num + 1][y_num-1] == false) && y_num < 147 && y_block < (156 - (y_num-1)*9) -4 )
 	{
 		y_block+=3;
 	}
@@ -1689,28 +2076,27 @@ int current_block_fixed()
 
 	if(current_block == 2)
 	{
-        if(spin_block ==0 ||spin_block ==2 )
+        if(current_spin ==0 ||current_spin ==2 )
         {
             if(y_block ==147 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-2] == true)
             {
-                if(x_num>10)
-                {
+                
                     block_location[x_num][y_num] = true;
                     block_location[x_num][y_num + 1] = true;
                     block_location[x_num + 1][y_num] = true;
                     block_location[x_num + 1][y_num - 1] = true;
 	
                     return 1;	//fix current block and go to new_block_down
-                }
+                
             }
         }
-        else if(spin_block ==1||spin_block ==3)
+        else if(current_spin ==1||current_spin ==3)
         {
-            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
+            if(y_num == 0 || block_location[x_num-1][y_num-1] == true|| block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num] == true)
             {
                 block_location[x_num][y_num] = true;
-                block_location[x_num+2][y_num + 1] = true;
-                block_location[x_num + 1][y_num] = true;
+                block_location[x_num][y_num + 1] = true;
+                block_location[x_num - 1][y_num] = true;
                 block_location[x_num + 1][y_num + 1] = true;
                 
                 return 1;    //fix current block and go to new_block_down
@@ -1722,7 +2108,7 @@ int current_block_fixed()
 
 	if(current_block == 3)
 	{
-        if(spin_block ==0 ||spin_block ==2 ){
+        if(current_spin ==0 ||current_spin ==2 ){
             if(y_block ==147 || block_location[x_num][y_num-2] == true || block_location[x_num + 1][y_num-1] == true)
             {
                 block_location[x_num][y_num] = true;
@@ -1732,9 +2118,9 @@ int current_block_fixed()
 	
                 return 1;	//fix current block and go to new_block_down
             }
-        }else if(spin_block ==1||spin_block ==3)
+        }else if(current_spin ==1||current_spin ==3)
         {
-            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
+            if(y_num == 0 || block_location[x_num][y_num] == true|| block_location[x_num+1][y_num-1] == true || block_location[x_num + 2][y_num-1] == true)
             {
                 block_location[x_num][y_num] = true;
                 block_location[x_num][y_num + 1] = true;
@@ -1749,7 +2135,7 @@ int current_block_fixed()
     
 	if(current_block == 4)
 	{
-        if(spin_block ==0)
+        if(current_spin ==0)
         {
             if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
             {
@@ -1760,22 +2146,21 @@ int current_block_fixed()
                 return 1;	//fix current block and go to new_block_down
             }
         }
-        else if(spin_block ==1)
+        else if(current_spin ==1)
         {
-            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true || block_location[x_num+2][y_num-1] == true)
+            if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num] == true || block_location[x_num+2][y_num] == true)
             {
-                if(x_num<27)
-                {
+               
                 block_location[x_num][y_num] = true;
                 block_location[x_num][y_num + 1] = true;
                 block_location[x_num +1][y_num + 1] = true;
                 block_location[x_num +2][y_num + 1] = true;
                 
                 return 1;    //fix current block and go to new_block_down
-                }
+                
             }
         }
-        else if(spin_block ==2)
+        else if(current_spin ==2)
         {
             if(y_num == 0 || block_location[x_num+1][y_num-1] == true || block_location[x_num][y_num+1] == true)
             {
@@ -1786,12 +2171,10 @@ int current_block_fixed()
                 return 1;    //fix current block and go to new_block_down
             }
         }
-        else if(spin_block ==3)
+        else if(current_spin ==3)
         {
             if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true || block_location[x_num+2][y_num-1] == true)
             {
-                if(x_num<27)
-                {
                 block_location[x_num][y_num+1] = true;
                 block_location[x_num][y_num] = true;
                 block_location[x_num +1][y_num] = true;
@@ -1799,7 +2182,7 @@ int current_block_fixed()
                 
                 return 1;    //fix current block and go to new_block_down
   
-                }
+                
             }
         }
 		else return 0;	//repeat current_block_fixed untill current block cant drop anymore
@@ -1807,7 +2190,7 @@ int current_block_fixed()
 
 	if(current_block == 5)
 	{
-        if(spin_block ==0)
+        if(current_spin ==0)
         {
             if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
             {
@@ -1819,22 +2202,20 @@ int current_block_fixed()
                 return 1;	//fix current block and go to new_block_down
             }
         }
-        else if(spin_block ==1)
+        else if(current_spin ==1)
         {
             if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true || block_location[x_num+2][y_num-1] == true)
             {
-                if(x_num<27)
-                {
                     block_location[x_num][y_num+1] = true;
                     block_location[x_num][y_num] = true;
                     block_location[x_num +1][y_num] = true;
                     block_location[x_num +2][y_num] = true;
                 
                     return 1;    //fix current block and go to new_block_down
-                }
+                
             }
         }
-        else if(spin_block ==2)
+        else if(current_spin ==2)
         {
             if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num+1][y_num+1] == true)
             {
@@ -1845,19 +2226,17 @@ int current_block_fixed()
                 return 1;    //fix current block and go to new_block_down
             }
         }
-        else if(spin_block ==3)
+        else if(current_spin ==3)
         {
             if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true || block_location[x_num+2][y_num-1] == true)
             {
-                if(x_num<27)
-                {
                     block_location[x_num+2][y_num] = true;
                     block_location[x_num][y_num + 1] = true;
                     block_location[x_num +1][y_num + 1] = true;
                     block_location[x_num +2][y_num + 1] = true;
                 
                     return 1;    //fix current block and go to new_block_down
-                }
+                
             }
         }
 		else return 0;	//repeat current_block_fixed untill current block cant drop anymore
@@ -1865,7 +2244,7 @@ int current_block_fixed()
     
     if(current_block == 6)
     {
-        if(spin_block ==0 ||spin_block ==2 )
+        if(current_spin ==0 ||current_spin ==2 )
         {
             if(y_block ==147 || block_location[x_num][y_num-2] == true )
             {
@@ -1876,19 +2255,17 @@ int current_block_fixed()
                 return 1;    //fix current block and go to new_block_down
             }
         }
-        else if(spin_block ==1 ||spin_block ==3 )
+        else if(current_spin ==1 ||current_spin ==3 )
         {
             if(y_num == 0 || block_location[x_num][y_num-1] == true || block_location[x_num + 1][y_num-1] == true)
             {
-                if(x_num>10&&x_num<30)
-                {
                     block_location[x_num][y_num] = true;
                     block_location[x_num-1][y_num] = true;
                     block_location[x_num-2][y_num] = true;
                     block_location[x_num + 1][y_num] = true;
 
                     return 1;    //fix current block and go to new_block_down
-                }
+                
             }
         }
         
@@ -1899,10 +2276,11 @@ int current_block_fixed()
 
 void new_block_down(void * p_event_data, uint16_t event_size)
 {
-    current_block = rand()%6 +1;
+    //current_block = rand()%6 +1;
 	x_block = 19;
 	y_block = 18+30;
 	
+    current_spin =0;
 	
 	switch(current_block)
 	{
@@ -2194,6 +2572,7 @@ static void advertising_init(void)
 
 void start_gallag(void * p_event_data, uint16_t event_size)
 {
+    clear_noise();
 	gallag_background();
 	plane();
 	st7586_write(ST_COMMAND,  0x29);			//disp on
@@ -2201,6 +2580,7 @@ void start_gallag(void * p_event_data, uint16_t event_size)
 
 void start_tatris(void * p_event_data, uint16_t event_size)
 {
+    clear_noise();
 	tetris_background();
 
 	switch(current_block)
