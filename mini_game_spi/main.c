@@ -116,8 +116,8 @@ static volatile bool st7586_spi_xfer_done = false;						/**< Flag used to indica
 int x = 18;
 int y = 120;
 int hp_gallag = 3;
-int game_num = 2;			//game n : 1 == gallag / 2 == tatris
-int ble_available = 0;		//if you want use ble, change to 1 else 0
+int game_num = 0;			//game n : 1 == gallag / 2 == tatris
+int ble_available = 1;		//if you want use ble, change to 1 else 0
 
 int x_enemy[7] = {0,5,10,20,4,30,6};			
 int y_enemy[7] = {0,10,20,30,40,50,60};			
@@ -304,41 +304,6 @@ int main(void)
 	st7586_write(ST_COMMAND,  0x38);
     game_start();
 	st7586_write(ST_COMMAND,  0x29);
-    nrf_delay_ms(3000);
-	st7586_write(ST_COMMAND,  0x28);
-    clear_noise();
-    tetris_background();
-    
-    switch(current_block)
-    {
-        case 1:
-            block1(0xff,0xfc,0xe0,0x03,0x1f);
-            break;
-        case 2:
-            block2(0xff,0xfc,0xe0,0x03,0x1f);
-            break;
-        case 3:
-            block3(0xff,0xfc,0xe0,0x03,0x1f);
-            break;
-        case 4:
-            y_block+=9;
-            block4(0xff,0xfc,0xe0,0x03,0x1f);
-            break;
-        case 5:
-            y_block+=9;
-            block5(0xff,0xfc,0xe0,0x03,0x1f);
-            break;
-        case 6:
-            y_block+=9;
-            block6(0xff,0xfc,0xe0,0x03,0x1f);
-            break;
-        default:
-            break;
-    }
-    st7586_write(ST_COMMAND,  0x29);
-    
-    
-    
     
 	APP_SCHED_INIT(sizeof(bsp_event_t),3*sizeof(bsp_event_t));
 	
@@ -20291,49 +20256,6 @@ void tetris_title()
 void game_start()
 {
 	set_location2(0,41,0,164);
-		st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -20770,15 +20692,8 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x03);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -20791,144 +20706,22 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe0);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -20985,6 +20778,15 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -20997,24 +20799,15 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -21028,24 +20821,110 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0xe0);
-	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe0);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x1c);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -21053,8 +20932,8 @@ void game_start()
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xe0);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x1f);
@@ -21074,40 +20953,24 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xe3);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1c);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xe3);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -21117,76 +20980,6 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1c);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1c);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -21246,6 +21039,178 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1c);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1c);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1c);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xe0);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe0);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x1c);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xe0);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -21313,49 +21278,6 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1c);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe3);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -21461,6 +21383,49 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1c);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe3);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
@@ -23360,58 +23325,15 @@ void game_start()
 	st7586_write(ST_DATA,0xe0);
 	st7586_write(ST_DATA,0x03);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x03);
-	st7586_write(ST_DATA,0xe0);
-	st7586_write(ST_DATA,0x1f);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe0);
-	st7586_write(ST_DATA,0x03);
-	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0xfc);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x03);
-	st7586_write(ST_DATA,0xe0);
-	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
@@ -23447,13 +23369,13 @@ void game_start()
 	st7586_write(ST_DATA,0x03);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
-	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0xe0);
 	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xfc);
 	st7586_write(ST_DATA,0x00);
@@ -23659,6 +23581,49 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xe0);
+	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0x1f);
+	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0x00);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xe0);
 	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0x00);
@@ -24304,7 +24269,7 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xe0);
-	st7586_write(ST_DATA,0x03);
+	st7586_write(ST_DATA,0x1f);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xe0);
@@ -24315,7 +24280,7 @@ void game_start()
 	st7586_write(ST_DATA,0x03);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xfc);
+	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0x00);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -24389,7 +24354,6 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe0);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -24402,7 +24366,8 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
-	st7586_write(ST_DATA,0xe0);
+	st7586_write(ST_DATA,0xff);
+	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
@@ -27342,6 +27307,7 @@ void game_start()
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
 	st7586_write(ST_DATA,0xff);
+	
 }
 
 void tetris_background()
@@ -28370,6 +28336,9 @@ void move_block_right(void * p_event_data, uint16_t event_size)
 
 void spin_block(void * p_event_data, uint16_t event_size)
 {
+	
+	int x_num = ((x_block - 1)/3)-2;
+	int y_num = (156 - y_block + 8)/9;
     switch(current_block)
     {
         case 1:
@@ -28379,7 +28348,7 @@ void spin_block(void * p_event_data, uint16_t event_size)
             block1(0xff,0xfc,0xe0,0x03,0x1f);
             break;
         case 2:
-            if(x_block>7 )
+            if(x_block>7 && block_location[x_num-1][y_num]==false)
             {
                 clear_block2();
                 current_spin ++;
@@ -28388,7 +28357,7 @@ void spin_block(void * p_event_data, uint16_t event_size)
             }
             break;
         case 3:
-            if(x_block<30 )
+            if(x_block<30&& block_location[x_num+2][y_num]==false )
             {
                 clear_block3();
                 current_spin ++;
@@ -28397,7 +28366,7 @@ void spin_block(void * p_event_data, uint16_t event_size)
             }
             break;
         case 4:
-            if(x_block<30 )
+            if(x_block<30 && block_location[x_num+2][y_num]==false)
             {
                 clear_block4();
                 current_spin ++;
@@ -28406,7 +28375,7 @@ void spin_block(void * p_event_data, uint16_t event_size)
             }
             break;
         case 5:
-            if(x_block<30 )
+            if(x_block<30  && block_location[x_num+2][y_num]==false)
             {
                 clear_block5();
                 current_spin ++;
@@ -28415,7 +28384,7 @@ void spin_block(void * p_event_data, uint16_t event_size)
             }
             break;
         case 6:
-            if(x_block>10 )
+            if(x_block>10  && block_location[x_num-1][y_num]==false && block_location[x_num-2][y_num]==false)
             {
                 clear_block6();
                 current_spin ++;
@@ -28460,7 +28429,7 @@ void accelerate_block_velocity(void * p_event_data, uint16_t event_size)
 			break;
 	}
     
-	if( block_location[x_num][y_num-1] == false && block_location[x_num + 1][y_num-1] == false && block_location[x_num][y_num-2] == false && block_location[x_num + 1][y_num-2] == false  && y_block < 144 )//&&y_block < (156 - (y_num-1)*9) -3
+	if( block_location[x_num][y_num-1] == false && block_location[x_num + 1][y_num-1] == false && block_location[x_num][y_num-2] == false   && y_block < 145 )//&&y_block < (156 - (y_num-1)*9) -3
 	{
 		y_block+=3;
 	}
@@ -29116,10 +29085,12 @@ static void advertising_init(void)
 
 void start_gallag(void * p_event_data, uint16_t event_size)
 {
+
 	for(int i = 0; i < ENEMY_NUM; i++)
 		hp_enemy[i] = 3;
 
 	hp_gallag = 3;
+	st7586_write(ST_COMMAND,  0x28);
 	clear_noise();
 	st7586_write(ST_COMMAND,  0x29);			//disp on
 	gallag_intro();
@@ -29133,7 +29104,9 @@ void start_gallag(void * p_event_data, uint16_t event_size)
 
 void start_tatris(void * p_event_data, uint16_t event_size)
 {
+	st7586_write(ST_COMMAND,  0x28);
     clear_noise();
+	st7586_write(ST_COMMAND,  0x29);
 	tetris_background();
 
 	switch(current_block)
