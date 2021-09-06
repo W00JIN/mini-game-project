@@ -13,6 +13,6 @@ To compile the projects, clone the repository into any folder in [SDK]/examples/
 
 About these projects
 ---------------------
-This project include 3 games. (Tetris, Gallag, Metal Slug)
+This project include 2 games. (Tetris, Gallag)
 
 Using Blutooth Low Energe connection with android device to operate games
